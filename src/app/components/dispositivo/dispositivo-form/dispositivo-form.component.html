@@ -1,0 +1,73 @@
+<h2 mat-dialog-title>
+  <mat-icon>{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
+  {{ isEditMode ? 'Editar Dispositivo' : 'Nuevo Dispositivo' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="dispositivoForm" class="dispositivo-form">
+    <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
+      <mat-label>Modelo</mat-label>
+      <input matInput formControlName="modelo">
+      <mat-icon matPrefix>phone_android</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
+      <mat-label>Tipo</mat-label>
+      <mat-select formControlName="tipo">
+        <mat-option value="telefono">Teléfono</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
+      <mat-label>Marca</mat-label>
+      <mat-select formControlName="marca">
+        <mat-option *ngFor="let marca of marcas" [value]="marca._id">
+          {{ marca.marca }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Select simple para crear -->
+    <mat-form-field *ngIf="!isEditMode" appearance="outline" class="full-width" [floatLabel]="'always'">
+      <mat-label>Distribuidor</mat-label>
+      <mat-select formControlName="distribuidor">
+        <mat-option *ngFor="let distribuidor of distribuidores" [value]="distribuidor._id">
+          {{ distribuidor.representante }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Select múltiple para editar -->
+    <mat-form-field *ngIf="isEditMode" appearance="outline" class="full-width" [floatLabel]="'always'">
+      <mat-label>Distribuidores</mat-label>
+      <mat-select formControlName="distribuidor" multiple>
+        <mat-option *ngFor="let distribuidor of distribuidores" [value]="distribuidor._id">
+          {{ distribuidor.representante }}
+        </mat-option>
+      </mat-select>
+      <mat-hint>Puedes seleccionar múltiples distribuidores</mat-hint>
+    </mat-form-field>
+
+    <app-image-upload
+      label="Foto"
+      [formControl]="$any(dispositivoForm.get('foto'))"
+      [currentUrl]="dispositivoForm.get('foto')?.value || ''"
+      (urlChange)="dispositivoForm.get('foto')?.setValue($event)">
+    </app-image-upload>
+
+    <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
+      <mat-label>Fecha de Publicación</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="fechaPublicacion" placeholder="Seleccionar fecha">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()">
+    {{ isEditMode ? 'Actualizar' : 'Crear' }}
+  </button>
+</mat-dialog-actions>
+

@@ -1,0 +1,31 @@
+<div class="home-container">
+  <h1>Bienvenido al Sistema</h1>
+  
+  <mat-grid-list [cols]="gridColumns" [rowHeight]="rowHeight" [gutterSize]="gutterSize">
+    <mat-grid-tile *ngFor="let card of cards">
+      <mat-card class="home-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon [color]="card.color">{{ card.icon }}</mat-icon>
+            <span class="card-title-text">{{ card.title }}</span>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{ card.content }}</p>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+
+  <div class="info-section">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Información del Sistema</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Esta es la página de inicio de tu aplicación. Utiliza el menú lateral para navegar entre las diferentes secciones.</p>
+        <p>API conectada a: <strong>http://localhost:3000</strong></p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

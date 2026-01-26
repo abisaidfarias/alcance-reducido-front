@@ -1,0 +1,96 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>store</mat-icon>
+        Distribuidores
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="actions-bar">
+        <button mat-raised-button color="primary" (click)="openDialog()">
+          <mat-icon>add</mat-icon>
+          Nuevo Distribuidor
+        </button>
+      </div>
+      
+      <div class="loading-container" *ngIf="loading">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Cargando distribuidores...</p>
+      </div>
+
+      <div *ngIf="!loading && dataSource.length === 0" class="no-data">
+        <p>No hay distribuidores registrados</p>
+      </div>
+
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z2" *ngIf="!loading && dataSource.length > 0">
+        <ng-container matColumnDef="representante">
+          <th mat-header-cell *matHeaderCellDef> Representante </th>
+          <td mat-cell *matCellDef="let element"> {{element.representante}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="domicilio">
+          <th mat-header-cell *matHeaderCellDef> Domicilio </th>
+          <td mat-cell *matCellDef="let element"> 
+            {{element.domicilio || '-'}} 
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="sitioWeb">
+          <th mat-header-cell *matHeaderCellDef> Sitio Web </th>
+          <td mat-cell *matCellDef="let element">
+            <a *ngIf="element.sitioWeb" [href]="element.sitioWeb" target="_blank" class="link" (click)="$event.stopPropagation()">
+              {{element.sitioWeb}}
+              <mat-icon>open_in_new</mat-icon>
+            </a>
+            <span *ngIf="!element.sitioWeb">-</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef> Correo Electrónico </th>
+          <td mat-cell *matCellDef="let element">
+            <a *ngIf="element.email" [href]="'mailto:' + element.email" class="link" (click)="$event.stopPropagation()">
+              {{element.email}}
+              <mat-icon>email</mat-icon>
+            </a>
+            <span *ngIf="!element.email">-</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dispositivos">
+          <th mat-header-cell *matHeaderCellDef> Dispositivos </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.dispositivos?.length || 0}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef> Acciones </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="accent" (click)="generateQR(element, $event)" matTooltip="Generar QR">
+              <mat-icon>qr_code</mat-icon>
+            </button>
+            <button mat-icon-button color="primary" (click)="editDistribuidor(element, $event)" matTooltip="Editar">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteDistribuidor(element, $event)" matTooltip="Eliminar">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+            (click)="onRowClick(row)" 
+            class="clickable-row"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+            No hay distribuidores registrados
+          </td>
+        </tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

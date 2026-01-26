@@ -1,0 +1,40 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>qr_code</mat-icon>
+        Generador de Código QR
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="qrForm" (ngSubmit)="generateQR()" class="qr-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>URL</mat-label>
+          <input matInput type="url" formControlName="url" placeholder="https://ejemplo.com" required>
+          <mat-icon matPrefix>link</mat-icon>
+          <mat-error *ngIf="qrForm.get('url')?.hasError('required')">
+            La URL es requerida
+          </mat-error>
+          <mat-error *ngIf="qrForm.get('url')?.hasError('pattern')">
+            Debe ser una URL válida (http:// o https://)
+          </mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="qrForm.invalid" class="full-width">
+          <mat-icon>qr_code_scanner</mat-icon>
+          Generar QR
+        </button>
+      </form>
+
+      <div class="qr-result" *ngIf="qrCodeUrl">
+        <div class="qr-image-container">
+          <img [src]="qrCodeUrl" alt="Código QR" class="qr-image">
+        </div>
+        <button mat-raised-button color="accent" (click)="downloadQR()">
+          <mat-icon>download</mat-icon>
+          Descargar QR
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,54 @@
+<div class="image-upload-container">
+  <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
+    <mat-label>{{ label }}</mat-label>
+    <input 
+      matInput 
+      type="text" 
+      [formControl]="formControl!"
+      [readonly]="true"
+      placeholder="Selecciona una imagen para subir">
+    <mat-icon matPrefix>image</mat-icon>
+    <button 
+      mat-icon-button 
+      matSuffix 
+      type="button"
+      (click)="triggerFileInput()"
+      [disabled]="uploading"
+      matTooltip="Subir imagen">
+      <mat-icon>cloud_upload</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <input 
+    type="file" 
+    [id]="fileInputId"
+    accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+    (change)="onFileSelected($event)"
+    style="display: none;"
+    [disabled]="uploading">
+
+  <!-- Preview y estado -->
+  <div class="preview-container" *ngIf="previewUrl || uploading">
+    <div class="preview-wrapper">
+      <img *ngIf="previewUrl && !uploading" [src]="previewUrl" alt="Preview" class="preview-image">
+      <div *ngIf="uploading" class="uploading-overlay">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Subiendo imagen...</p>
+      </div>
+      <button 
+        *ngIf="previewUrl && !uploading" 
+        mat-icon-button 
+        class="remove-button"
+        (click)="removeImage()"
+        matTooltip="Eliminar imagen">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="error-message">
+    <mat-icon>error</mat-icon>
+    <span>{{ error }}</span>
+  </div>
+</div>

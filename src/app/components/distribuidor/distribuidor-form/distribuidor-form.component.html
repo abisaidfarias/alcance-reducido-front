@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>
+  <mat-icon>{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
+  {{ isEditMode ? 'Editar Distribuidor' : 'Nuevo Distribuidor' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="distribuidorForm" class="distribuidor-form">
+    <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
+      <mat-label>Representante</mat-label>
+      <input matInput formControlName="representante">
+      <mat-icon matPrefix>person</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
+      <mat-label>Domicilio</mat-label>
+      <input matInput formControlName="domicilio">
+      <mat-icon matPrefix>home</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
+      <mat-label>Sitio Web</mat-label>
+      <input matInput type="text" formControlName="sitioWeb">
+      <mat-icon matPrefix>language</mat-icon>
+      <mat-hint>Ejemplo: https://ejemplo.com</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
+      <mat-label>Correo Electrónico</mat-label>
+      <input matInput type="email" formControlName="email">
+      <mat-icon matPrefix>email</mat-icon>
+      <mat-hint>Ejemplo: contacto&#64;ejemplo.com</mat-hint>
+    </mat-form-field>
+
+    <app-image-upload
+      label="Logo"
+      [formControl]="$any(distribuidorForm.get('logo'))"
+      [currentUrl]="distribuidorForm.get('logo')?.value || ''"
+      (urlChange)="distribuidorForm.get('logo')?.setValue($event)">
+    </app-image-upload>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()">
+    {{ isEditMode ? 'Actualizar' : 'Crear' }}
+  </button>
+</mat-dialog-actions>

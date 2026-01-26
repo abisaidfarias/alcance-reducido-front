@@ -1,0 +1,70 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>label</mat-icon>
+        Marcas
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="actions-bar">
+        <button mat-raised-button color="primary" (click)="openDialog()">
+          <mat-icon>add</mat-icon>
+          Nueva Marca
+        </button>
+      </div>
+      
+      <div class="loading-container" *ngIf="loading">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Cargando marcas...</p>
+      </div>
+
+      <div *ngIf="!loading && dataSource.length === 0" class="no-data">
+        <p>No hay marcas registradas</p>
+      </div>
+
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z2" *ngIf="!loading && dataSource.length > 0">
+        <ng-container matColumnDef="fabricante">
+          <th mat-header-cell *matHeaderCellDef> Fabricante </th>
+          <td mat-cell *matCellDef="let element"> {{element.fabricante}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="marca">
+          <th mat-header-cell *matHeaderCellDef> Marca </th>
+          <td mat-cell *matCellDef="let element"> {{element.marca}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="logo">
+          <th mat-header-cell *matHeaderCellDef> Logo </th>
+          <td mat-cell *matCellDef="let element">
+            <img *ngIf="element.logo" [src]="element.logo" alt="Logo" class="logo-preview" (error)="onImageError($event)">
+            <span *ngIf="!element.logo">-</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef> Acciones </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="primary" (click)="editMarca(element, $event)" matTooltip="Editar">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteMarca(element, $event)" matTooltip="Eliminar">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+            (click)="onRowClick(row)" 
+            class="clickable-row"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+            No hay marcas registradas
+          </td>
+        </tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

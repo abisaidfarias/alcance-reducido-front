@@ -1,0 +1,67 @@
+h2[mat-dialog-title] {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.distribuidor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 0;
+  min-width: 400px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-dialog-content {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 24px !important;
+}
+
+mat-dialog-actions {
+  padding: 20px 0;
+}
+
+// Asegurar que los campos de formulario funcionen correctamente
+mat-form-field {
+  width: 100%;
+}
+
+// Forzar que el label se anime correctamente cuando hay valor o focus
+::ng-deep {
+  .mat-mdc-form-field {
+    // Cuando el campo tiene focus
+    &.mat-focused {
+      .mat-mdc-floating-label {
+        transform: translateY(-1.5em) scale(0.75) !important;
+        opacity: 1 !important;
+      }
+    }
+    
+    // Cuando el campo tiene valor
+    &.mat-form-field-has-value {
+      .mat-mdc-floating-label {
+        transform: translateY(-1.5em) scale(0.75) !important;
+        opacity: 1 !important;
+      }
+    }
+    
+    // Asegurar que el input tenga el espacio correcto
+    .mat-mdc-text-field-wrapper {
+      .mat-mdc-form-field-flex {
+        .mat-mdc-form-field-input-control {
+          input {
+            padding-top: 0;
+            padding-bottom: 0;
+          }
+        }
+      }
+    }
+  }
+}
+

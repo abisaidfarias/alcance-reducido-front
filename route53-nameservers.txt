@@ -1,0 +1,15 @@
+Name Servers de Route 53 para alcance-reducido.com
+==================================================
+
+IMPORTANTE: Usa estos Name Servers en tu registrador para completar la migración
+
+ns-636.awsdns-15.net
+ns-2035.awsdns-62.co.uk
+ns-143.awsdns-17.com
+ns-1301.awsdns-34.org
+
+Hosted Zone ID: Z00603941KQBVTNY6LOLY
+Creado: 2026-01-25
+
+⚠️ RECUERDA: Después de cambiar los Name Servers en tu registrador, el sitio actual dejará de funcionar cuando se propague el DNS (15 min - 48 horas)
+

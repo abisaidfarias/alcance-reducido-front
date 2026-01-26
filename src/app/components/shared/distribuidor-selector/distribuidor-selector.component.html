@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Seleccionar Distribuidor</h2>
+
+<mat-dialog-content>
+  <div *ngIf="loading" style="display: flex; justify-content: center; align-items: center; padding: 40px;">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Distribuidor</mat-label>
+      <mat-select [formControl]="distribuidorControl">
+        <mat-option *ngFor="let distribuidor of distribuidores" [value]="distribuidor">
+          {{ distribuidor }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="distribuidorControl.hasError('required')">
+        Debe seleccionar un distribuidor
+      </mat-error>
+    </mat-form-field>
+
+    <p *ngIf="distribuidores.length === 0" style="color: rgba(255,255,255,.6); text-align: center; padding: 20px;">
+      No hay distribuidores disponibles
+    </p>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSelect()" [disabled]="distribuidorControl.invalid || loading">
+    Ir a Distribuidor
+  </button>
+</mat-dialog-actions>

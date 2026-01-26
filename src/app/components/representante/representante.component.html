@@ -1,0 +1,184 @@
+<div class="representante-container">
+  <div class="representante-header">
+    <h1 class="representante-name">{{ nombreDistribuidor }}</h1>
+    <div class="header-buttons">
+      <button 
+        (click)="goToHome()" 
+        class="home-button">
+        <mat-icon>home</mat-icon>
+        Home
+      </button>
+      <button 
+        *ngIf="!authService.isAuthenticated()" 
+        (click)="goToLogin()" 
+        class="login-button">
+        <mat-icon>login</mat-icon>
+        Iniciar Sesión
+      </button>
+      <button 
+        *ngIf="authService.isAuthenticated()" 
+        (click)="logout()" 
+        class="logout-button">
+        <mat-icon>logout</mat-icon>
+        Cerrar Sesión
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Cargando información...</p>
+  </div>
+
+  <!-- Vista de Marcas (solo si tiene datos) -->
+  <div class="marcas-section" *ngIf="!loading && !mostrarDispositivos && tieneDatos">
+    <h2 class="section-title">Marcas Disponibles</h2>
+
+    <div class="marcas-grid" *ngIf="marcas.length > 0">
+      <mat-card 
+        *ngFor="let marca of marcas" 
+        class="marca-card"
+        (click)="onMarcaClick(marca)">
+        <mat-card-content class="marca-card-content">
+          <div class="marca-logo-container">
+            <img 
+              [src]="marca.logo || getPlaceholderImage()" 
+              [alt]="marca.marca"
+              class="marca-logo"
+              (error)="onImageError($event)">
+          </div>
+          <h3 class="marca-nombre">{{ marca.marca }}</h3>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="no-data" *ngIf="marcas.length === 0">
+      <p>No hay marcas disponibles</p>
+    </div>
+  </div>
+
+  <!-- Vista vacía (sin datos pero sin error) -->
+  <div class="empty-view" *ngIf="!loading && !tieneDatos && !mostrarDispositivos">
+    <!-- Solo muestra el nombre del representante, página en blanco -->
+  </div>
+
+  <!-- Vista de Dispositivos -->
+  <div class="dispositivos-section" *ngIf="mostrarDispositivos && !mostrarDetalleDispositivo">
+    <div class="dispositivos-header">
+      <button mat-button (click)="volverAtras()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+        Volver
+      </button>
+      <h2 class="section-title">
+        {{ marcaSeleccionada?.marca }}
+      </h2>
+    </div>
+
+    <div class="dispositivos-grid" *ngIf="dispositivos.length > 0">
+      <mat-card 
+        *ngFor="let dispositivo of dispositivos" 
+        class="dispositivo-card"
+        (click)="onDispositivoClick(dispositivo)">
+        <mat-card-content class="dispositivo-card-content">
+          <div class="dispositivo-image-container">
+            <img 
+              [src]="getDispositivoImage(dispositivo)" 
+              [alt]="dispositivo.modelo"
+              class="dispositivo-image"
+              (error)="onImageError($event)">
+          </div>
+          <h3 class="dispositivo-modelo">{{ dispositivo.modelo }}</h3>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="no-data" *ngIf="dispositivos.length === 0">
+      <p>No hay dispositivos disponibles para esta marca</p>
+    </div>
+  </div>
+
+  <!-- Vista de Detalle del Dispositivo -->
+  <div class="detalle-dispositivo-section" *ngIf="mostrarDetalleDispositivo && dispositivoSeleccionado">
+    <div class="detalle-header">
+      <button mat-button (click)="volverAtras()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+        Volver
+      </button>
+    </div>
+
+    <div class="detalle-content">
+      <!-- Imagen del teléfono a la izquierda -->
+      <div class="detalle-imagen">
+        <img 
+          [src]="getDispositivoImage(dispositivoSeleccionado)" 
+          [alt]="dispositivoSeleccionado.modelo"
+          class="dispositivo-detalle-image"
+          (error)="onImageError($event)">
+      </div>
+
+      <!-- Información comercial a la derecha -->
+      <div class="detalle-info">
+        <h2 class="info-title">A. Información Comercial</h2>
+        
+        <div class="info-grid">
+          <div class="info-item">
+            <label class="info-label">FECHA DE PUBLICACIÓN</label>
+            <p class="info-value">{{ getFechaPublicacion() }}</p>
+          </div>
+
+          <div class="info-item">
+            <label class="info-label">NOMBRE COMERCIAL DEL EQUIPO</label>
+            <p class="info-value">{{ dispositivoSeleccionado.nombreComercial || dispositivoSeleccionado.modelo || 'No disponible' }}</p>
+          </div>
+
+          <div class="info-item">
+            <label class="info-label">FABRICANTE</label>
+            <p class="info-value">{{ marcaSeleccionada?.fabricante || 'No disponible' }}</p>
+          </div>
+
+          <div class="info-item">
+            <label class="info-label">IMPORTADOR O REPRESENTANTE EN CHILE</label>
+            <p class="info-value">{{ nombreDistribuidor || 'No disponible' }}</p>
+          </div>
+
+            <div class="info-item">
+              <label class="info-label">DOMICILIO</label>
+              <p class="info-value">{{ distribuidor?.domicilio || 'No disponible' }}</p>
+            </div>
+
+          <div class="info-item">
+            <label class="info-label">CORREO ELECTRÓNICO DE CONTACTO</label>
+            <p class="info-value">
+              <a *ngIf="distribuidor?.email" [href]="'mailto:' + distribuidor.email" class="info-link">
+                {{ distribuidor.email }}
+                <mat-icon>email</mat-icon>
+              </a>
+              <span *ngIf="!distribuidor?.email">No disponible</span>
+            </p>
+          </div>
+
+          <div class="info-item full-width">
+            <label class="info-label">SITIO WEB</label>
+            <p class="info-value">
+              <a *ngIf="distribuidor?.sitioWeb" [href]="distribuidor.sitioWeb" target="_blank" class="info-link">
+                {{ distribuidor.sitioWeb }}
+                <mat-icon>open_in_new</mat-icon>
+              </a>
+              <span *ngIf="!distribuidor?.sitioWeb">No disponible</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Sección B: Información Técnica (solo para usuarios logueados) -->
+        <div *ngIf="authService.isAuthenticated()" class="info-section-b">
+          <h2 class="info-title">B. Información Técnica</h2>
+          
+          <div class="info-grid">
+            <!-- Los campos se agregarán más tarde -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

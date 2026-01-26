@@ -1,0 +1,521 @@
+<div class="certificacion-wrapper">
+<!-- NAV -->
+<div class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="Inicio">
+        <img class="brand-logo-img" src="assets/lb-technology-logo.png" alt="LB Technology" />
+      </a>
+
+      <nav class="nav-links" aria-label="Secciones">
+        <a href="#normativa">Normativa</a>
+        <a href="#como">Proceso</a>
+        <a href="#docs">Docs</a>
+        <a href="#timeline">Fechas</a>
+        <a href="#servicios">Servicios</a>
+        <a href="#qr">QR</a>
+      </nav>
+
+      <div class="nav-cta">
+        <a class="btn ghost small" href="#contacto">Contacto</a>
+        <button class="btn ghost small" (click)="openDistribuidorSelector()">Distribuidores</button>
+        <button class="btn ghost small" (click)="goToLogin()">Login</button>
+        <a class="btn primary small" href="#cotizar">Solicitar certificación</a>
+        <button class="btn small burger" (click)="toggleMobileMenu()" [attr.aria-expanded]="mobileMenuOpen" aria-controls="mobileMenu">
+          <span aria-hidden="true">☰</span> Menú
+        </button>
+      </div>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu" [style.display]="mobileMenuOpen ? 'block' : 'none'">
+      <a href="#normativa" (click)="closeMobileMenu()">Normativa</a>
+      <a href="#como" (click)="closeMobileMenu()">Proceso</a>
+      <a href="#docs" (click)="closeMobileMenu()">Docs</a>
+      <a href="#timeline" (click)="closeMobileMenu()">Fechas</a>
+      <a href="#servicios" (click)="closeMobileMenu()">Servicios</a>
+      <a href="#qr" (click)="closeMobileMenu()">QR</a>
+      <a href="#contacto" (click)="closeMobileMenu()">Contacto</a>
+      <a (click)="openDistribuidorSelector(); closeMobileMenu()">Distribuidores</a>
+      <a (click)="goToLogin(); closeMobileMenu()">Login</a>
+      <a href="#cotizar" (click)="closeMobileMenu()">Solicitar certificación</a>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="container">
+    <span class="pill"><span class="dot"></span> Cumplimiento SUBTEL · equipos de alcance reducido · vigencia febrero 2026</span>
+
+    <div class="hero-grid">
+      <div>
+        <h1 class="h1">Certificación y cumplimiento de equipos de alcance reducido <span style="color:rgba(255,255,255,.75)">SUBTEL</span></h1>
+        <p class="sub">
+          Servicio ejecutivo para **cumplir normativa SUBTEL** en Chile para dispositivos que operan con radiofrecuencia
+          (WiFi, Bluetooth, Zigbee, RFID). En pocos días dejamos tu documentación ordenada, entregables listos y el camino claro para comercializar.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn primary" href="#cotizar">
+            Solicitar certificación
+            <span aria-hidden="true">→</span>
+          </a>
+          <a class="btn" href="#qr">
+            Generar QR
+            <span aria-hidden="true">↘</span>
+          </a>
+          <a class="btn" href="#normativa">
+            Conocer la normativa
+            <span aria-hidden="true">↘</span>
+          </a>
+        </div>
+      </div>
+
+      <aside class="hero-card" aria-label="Resumen ejecutivo">
+        <h3>Lo más importante</h3>
+        <p>Checklist claro, seguimiento y entregables listos para implementación (QR, documentación y soporte).</p>
+
+        <ul class="list">
+          <li class="li">
+            <div class="badge" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M20 6L9 17l-5-5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <b>Portal web + QR</b>
+              <span>Código QR listo para imprimir y pegar en el packaging, con acceso a la información requerida.</span>
+            </div>
+          </li>
+
+          <li class="li">
+            <div class="badge" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2l3 6 6 .9-4.4 4.3 1 6-5.6-3-5.6 3 1-6L3 8.9 9 8l3-6z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <b>Proceso simple y rápido</b>
+              <span>4 pasos para avanzar desde "documentos" a "comercialización".</span>
+            </div>
+          </li>
+
+          <li class="li">
+            <div class="badge" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M12 21s7-4.4 7-10V6l-7-3-7 3v5c0 5.6 7 10 7 10z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <b>Acompañamiento experto</b>
+              <span>Revisión técnica, consistencia documental y soporte ante requerimientos.</span>
+            </div>
+          </li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</header>
+
+<!-- NORMATIVA -->
+<section id="normativa">
+  <div class="container">
+    <h2 class="section-title">Normativa: ¿qué es y por qué importa?</h2>
+    <p class="section-sub">
+      La normativa SUBTEL para **equipos de alcance reducido** define requisitos para importación, distribución
+      y comercialización en Chile de dispositivos que operan con radiofrecuencia (ej. WiFi/Bluetooth/Zigbee/RFID).
+      En la práctica, tu objetivo es **cumplir con el soporte técnico exigible** y mantener **trazabilidad**.
+    </p>
+
+    <div class="grid-3" style="margin-top: 12px;">
+      <div class="card">
+        <div class="icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M4 4h16v16H4V4z" stroke="white" stroke-width="2" opacity=".9"/>
+            <path d="M7 12h10M12 7v10" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h4>Portal web y QR (si aplica)</h4>
+        <p>Implementación de acceso web conforme a SUBTEL y generación de código QR listo para empaque.</p>
+      </div>
+
+      <div class="card">
+        <div class="icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M7 7h10v10H7V7z" stroke="white" stroke-width="2"/>
+            <path d="M4 4h4M20 4h-4M4 20h4M20 20h-4" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h4>Documentación digital</h4>
+        <p>Soporte técnico organizado para respaldo y consultas, con trazabilidad.</p>
+      </div>
+
+      <div class="card">
+        <div class="icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3v18M3 12h18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <path d="M7 7l10 10" stroke="white" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+          </svg>
+        </div>
+        <h4>Proceso actualizado</h4>
+        <p>Te ayudamos a adaptar el proceso y dejarlo "operable" para tu equipo y tus proveedores.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CÓMO FUNCIONA -->
+<section id="como">
+  <div class="container">
+    <h2 class="section-title">Cómo certificar / cumplir en 4 pasos</h2>
+    <p class="section-sub">Proceso simple para avanzar rápido desde documentación hasta salida a mercado.</p>
+
+    <div class="grid-4 steps">
+      <div class="step">
+        <div class="num">1</div>
+        <h4>Envíanos la información</h4>
+        <p>Recibimos tu documentación técnica y revisamos consistencia (modelo, tecnología, variante, etc.).</p>
+      </div>
+
+      <div class="step">
+        <div class="num">2</div>
+        <h4>Habilitamos un portal web</h4>
+        <p>Implementamos un acceso web de acuerdo a la normativa SUBTEL con la información comercial y técnica.</p>
+      </div>
+
+      <div class="step">
+        <div class="num">3</div>
+        <h4>Acceso al portal Web y Código QR</h4>
+        <p>Te generamos el código QR necesario para imprimir y listo para pegar en el packing.</p>
+      </div>
+
+      <div class="step">
+        <div class="num">4</div>
+        <h4>Comercializa cumpliendo</h4>
+        <p>Quedas listo para importar/distribuir/comercializar con respaldo documental y trazabilidad.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EQUIPOS -->
+<section id="equipos">
+  <div class="container">
+    <h2 class="section-title">Equipos típicos de alcance reducido</h2>
+    <p class="section-sub">
+      Dispositivos que usan radiofrecuencia de corto alcance. (Lista referencial: ajustamos por tu caso.)
+    </p>
+
+    <div class="grid-4">
+      <div class="card">
+        <div class="icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M3 9c6-6 12-6 18 0" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6 12c4-4 8-4 12 0" stroke="white" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+            <path d="M9 15c2-2 4-2 6 0" stroke="white" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+            <circle cx="12" cy="18" r="1.6" fill="white"/>
+          </svg>
+        </div>
+        <h4>WiFi</h4>
+        <p>Routers, access points, IoT, cámaras, domótica.</p>
+      </div>
+
+      <div class="card">
+        <div class="icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M7 7c5-5 10 0 5 5L7 17c-5-5 0-10 5-5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h4>Bluetooth</h4>
+        <p>Auriculares, parlantes, wearables, accesorios.</p>
+      </div>
+
+      <div class="card">
+        <div class="icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2v20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <path d="M8 6h8M6 10h12M8 14h8M6 18h12" stroke="white" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+          </svg>
+        </div>
+        <h4>Zigbee</h4>
+        <p>Domótica, hubs, sensores inteligentes, controladores.</p>
+      </div>
+
+      <div class="card">
+        <div class="icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M7 7h10v10H7V7z" stroke="white" stroke-width="2"/>
+            <path d="M4 9h3M4 15h3M17 9h3M17 15h3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h4>RFID</h4>
+        <p>Tags, lectores, control de acceso, inventario.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOCUMENTOS -->
+<section id="docs">
+  <div class="container">
+    <h2 class="section-title">Documentos necesarios</h2>
+    <p class="section-sub">Para iniciar, necesitamos el set mínimo de documentos.</p>
+
+    <div class="grid-4" style="margin-top: 12px;">
+      <div class="card doc">
+        <div class="mini" aria-hidden="true">📷</div>
+        <div>
+          <h4>Fotos internas y externas</h4>
+          <p>Imágenes claras del interior y exterior del equipo.</p>
+        </div>
+      </div>
+
+      <div class="card doc">
+        <div class="mini" aria-hidden="true">📡</div>
+        <div>
+          <h4>Reportes RF</h4>
+          <p>Ensayos RF / test report del módulo o equipo (según corresponda).</p>
+        </div>
+      </div>
+
+      <div class="card doc">
+        <div class="mini" aria-hidden="true">📄</div>
+        <div>
+          <h4>Ficha técnica</h4>
+          <p>Especificaciones y características técnicas del producto.</p>
+        </div>
+      </div>
+
+      <div class="card doc">
+        <div class="mini" aria-hidden="true">🏢</div>
+        <div>
+          <h4>Distribuidor / Importador</h4>
+          <p>Datos del distribuidor/importador y contacto comercial/técnico.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="container">
+    <h2 class="section-title">Timeline hacia 2026</h2>
+    <p class="section-sub">Para planificar tu transición y evitar atrasos logísticos.</p>
+
+    <div class="timeline-h">
+      <div class="timeline-row">
+        <div class="t-step">
+          <div class="t-kicker">Mayo 2025</div>
+          <h4>Publicación normativa</h4>
+          <p>Se publica la resolución y comienza el proceso de adopción.</p>
+        </div>
+
+        <div class="t-arrow">➜</div>
+
+        <div class="t-step active">
+          <div class="t-kicker">Hoy – Febrero 2026</div>
+          <h4>Transición</h4>
+          <p>Preparación de portal web, QR y documentación mínima por modelo.</p>
+        </div>
+
+        <div class="t-arrow">➜</div>
+
+        <div class="t-step">
+          <div class="t-kicker">22 Febrero 2026</div>
+          <h4>Entrada en vigencia</h4>
+          <p>Los equipos comercializados deben cumplir con el soporte/implementación aplicable.</p>
+        </div>
+
+        <div class="t-arrow">➜</div>
+
+        <div class="t-step">
+          <div class="t-kicker">Post 2026</div>
+          <h4>Control y trazabilidad</h4>
+          <p>Mantener respaldo técnico y coherencia documental ante requerimientos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="container">
+    <h2 class="section-title">Nuestros servicios</h2>
+    <p class="section-sub">Soluciones completas para certificación / cumplimiento de equipos de alcance reducido.</p>
+
+    <div class="grid-4">
+      <div class="card" style="outline: 2px solid rgba(78,215,117,.22);">
+        <span class="pill" style="border-color: rgba(78,215,117,.35); color: rgba(255,255,255,.85); margin-bottom: 10px;">
+          <span class="dot"></span> Destacado
+        </span>
+        <div class="icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M20 6L9 17l-5-5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h4>Certificación / Cumplimiento SUBTEL</h4>
+        <p>Checklist, revisión documental y acompañamiento integral.</p>
+        <div style="margin-top: 10px; color: var(--muted); font-size: 13px;">
+          ✓ WiFi · Bluetooth · Zigbee · RFID<br/>
+          ✓ Soporte para importación/comercialización<br/>
+          ✓ Asesoría técnica
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M4 4h7v7H4V4zM13 4h7v7h-7V4zM4 13h7v7H4v-7zM13 13h7v7h-7v-7z" stroke="white" stroke-width="2"/>
+          </svg>
+        </div>
+        <h4>Portal web + QR</h4>
+        <p>Código QR listo para impresión y acceso web con la información requerida por SUBTEL.</p>
+        <div style="margin-top: 10px; color: var(--muted); font-size: 13px;">
+          ✓ Formato listo para packaging<br/>
+          ✓ Archivos listos para impresión
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3v18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <path d="M7 8l5-5 5 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 21h14" stroke="white" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+          </svg>
+        </div>
+        <h4>Plataforma digital</h4>
+        <p>Repositorio seguro de documentación, control de versiones y trazabilidad.</p>
+        <div style="margin-top: 10px; color: var(--muted); font-size: 13px;">
+          ✓ Gestión 100% online<br/>
+          ✓ Seguimiento y almacenamiento seguro
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M6 2h9l3 3v17H6V2z" stroke="white" stroke-width="2"/>
+            <path d="M9 12h6M9 16h6M9 8h3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h4>Documentación técnica</h4>
+        <p>Revisión, normalización y soporte para pedir correcciones al fabricante (si falta algo).</p>
+        <div style="margin-top: 10px; color: var(--muted); font-size: 13px;">
+          ✓ Informes técnicos profesionales<br/>
+          ✓ Revisión de consistencia
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QR SECTION -->
+<section id="qr">
+  <div class="container">
+    <h2 class="section-title">Generar QR</h2>
+    <p class="section-sub">
+      Te entregamos el código QR listo para imprimir y pegar en el packing, con acceso al portal web conforme a la normativa SUBTEL.
+    </p>
+
+    <div class="grid-3">
+      <div class="card">
+        <h4>1) Envía tu modelo</h4>
+        <p>Marca, modelo y tecnología (WiFi/Bluetooth/Zigbee/RFID) + país de comercialización (Chile).</p>
+      </div>
+      <div class="card">
+        <h4>2) Validamos documentos</h4>
+        <p>Revisamos el set mínimo y te pedimos lo faltante para generar el QR con respaldo.</p>
+      </div>
+      <div class="card">
+        <h4>3) Te entregamos QR</h4>
+        <p>Archivo listo para impresión y uso en empaque, asociado al portal web.</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 16px; display:flex; gap:10px; flex-wrap:wrap;">
+      <a class="btn primary" href="#cotizar">Quiero generar QR →</a>
+      <a class="btn" href="#contacto">Hablar con un asesor</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cotizar">
+  <div class="container">
+    <div class="cta">
+      <div>
+        <h3>¿Listo para cumplir y salir rápido?</h3>
+        <p>
+          Envíanos el modelo del equipo + tecnología (WiFi/Bluetooth/Zigbee/RFID). Te respondemos con checklist, ruta crítica y próximos pasos.
+        </p>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn primary" href="mailto:camilo&#64;lbtechnology-la.com?subject=Solicitud%20Alcance%20Reducido%20SUBTEL&body=Hola,%20quiero%20iniciar%20el%20proceso.%0A%0AEmpresa:%20_____%0AMarca:%20_____%0AModelo:%20_____%0ATecnolog%C3%ADa:%20(WiFi/Bluetooth/Zigbee/RFID)%0ACantidad:%20_____%0A%0AGracias.">
+          Escribir por email
+          <span aria-hidden="true">✉️</span>
+        </a>
+        <a class="btn" href="#contacto">Ver contacto</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto">
+  <div class="container">
+    <h2 class="section-title">Contacto</h2>
+
+    <div class="grid-3">
+      <div class="card">
+        <h4>Email</h4>
+        <p><a href="mailto:camilo&#64;lbtechnology-la.com">camilo&#64;lbtechnology-la.com</a></p>
+      </div>
+      <div class="card">
+        <h4>Teléfono / WhatsApp</h4>
+        <p><a href="https://wa.me/56961577724" target="_blank" rel="noopener">+56 9 6157 7724</a></p>
+      </div>
+      <div class="card">
+        <h4>WeChat</h4>
+        <p><b>camiloe81</b></p>
+      </div>
+    </div>
+
+    <div style="margin-top:14px" class="card">
+      <h4>Operado por</h4>
+      <p><b>LB Technology</b><br/>Santiago, Chile · Atención remota y coordinación logística</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div style="display:flex; gap:10px; align-items:center; margin-bottom: 8px;">
+          <img class="brand-logo-img" src="assets/lb-technology-logo.png" alt="LB Technology" style="height:28px;border-radius:8px;" />
+          <div style="font-weight: 750;">Alcance Reducido · Operado por LB Technology</div>
+        </div>
+        <div>
+          © {{ currentYear }} LB Technology. Todos los derechos reservados.
+          <div style="margin-top:6px;">
+            <span style="color: var(--muted2);">
+              Aviso: contenido informativo de alto nivel. La implementación final depende del caso y documentación del equipo.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="foot-links" style="display:grid; gap:8px; justify-content:start;">
+        <a href="#normativa">Normativa</a>
+        <a href="#docs">Docs</a>
+        <a href="#servicios">Servicios</a>
+        <a href="#qr">QR</a>
+        <a href="#contacto">Contacto</a>
+      </div>
+    </div>
+  </div>
+</footer>
+</div>

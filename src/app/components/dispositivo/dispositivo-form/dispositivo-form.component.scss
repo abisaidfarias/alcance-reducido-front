@@ -1,0 +1,37 @@
+.dispositivo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-dialog-content {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+// Ocultar la etiqueta duplicada del mes en el datepicker
+::ng-deep .mat-calendar-table-header {
+  .mat-calendar-table-header-divider {
+    &::after {
+      content: none !important;
+    }
+  }
+  
+  // Ocultar el texto del mes que aparece debajo de los días de la semana
+  .mat-calendar-table-header-cell {
+    &::after {
+      content: none !important;
+    }
+  }
+}
+
+// Alternativa: ocultar cualquier etiqueta de mes adicional
+::ng-deep .mat-calendar-body-label {
+  display: none !important;
+}
+
