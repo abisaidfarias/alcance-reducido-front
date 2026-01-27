@@ -1,6 +1,6 @@
 <div class="representante-container">
   <div class="representante-header">
-    <h1 class="representante-name">{{ nombreDistribuidor }}</h1>
+    <h1 class="representante-name">{{ getNombreRepresentante() }}</h1>
     <div class="header-buttons">
       <button 
         (click)="goToHome()" 
@@ -139,7 +139,7 @@
 
           <div class="info-item">
             <label class="info-label">IMPORTADOR O REPRESENTANTE EN CHILE</label>
-            <p class="info-value">{{ nombreDistribuidor || 'No disponible' }}</p>
+            <p class="info-value">{{ getNombreRepresentante() || 'No disponible' }}</p>
           </div>
 
             <div class="info-item">

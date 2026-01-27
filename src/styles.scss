@@ -2,3 +2,10 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// Estilos globales para modales - bordes redondeados
+// Selector exacto: .mat-mdc-dialog-container (Angular Material)
+.mat-mdc-dialog-container {
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}

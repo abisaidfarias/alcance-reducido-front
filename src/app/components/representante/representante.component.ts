@@ -259,4 +259,12 @@ export class RepresentanteComponent implements OnInit {
       return 'No disponible';
     }
   }
+
+  getNombreRepresentante(): string {
+    if (this.distribuidor && this.distribuidor.nombreRepresentante) {
+      return this.distribuidor.nombreRepresentante;
+    }
+    // Fallback al nombreDistribuidor si no hay nombreRepresentante
+    return this.nombreDistribuidor || 'Representante';
+  }
 }

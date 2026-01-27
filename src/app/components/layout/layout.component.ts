@@ -7,6 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -29,7 +31,9 @@ interface MenuItem {
     MatButtonModule,
     MatIconModule,
     MatListModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatMenuModule,
+    MatDividerModule
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
@@ -43,7 +47,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     { label: 'Distribuidor', icon: 'store', route: '/admin/distribuidor' },
     { label: 'Marca', icon: 'label', route: '/admin/marca' },
     { label: 'Dispositivo', icon: 'devices', route: '/admin/dispositivo' },
-    { label: 'QR', icon: 'qr_code', route: '/admin/qr' },
     { label: 'Usuario', icon: 'person', route: '/admin/usuario' }
   ];
 
@@ -87,5 +90,21 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   logout(): void {
     this.authService.logout();
+  }
+
+  getUserName(): string {
+    const user = this.authService.getUser();
+    if (!user) return 'Usuario';
+    return user.nombre || user.name || user.representante || user.email?.split('@')[0] || 'Usuario';
+  }
+
+  getUserEmail(): string {
+    const user = this.authService.getUser();
+    if (!user) return '';
+    return user.email || '';
+  }
+
+  goToHome(): void {
+    this.router.navigate(['/']);
   }
 }

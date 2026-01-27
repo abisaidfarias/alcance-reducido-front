@@ -1,20 +1,23 @@
-<h2 mat-dialog-title>
-  <mat-icon color="warn">error</mat-icon>
-  {{ data.title || 'Error' }}
-</h2>
-
-<mat-dialog-content>
-  <p>{{ getErrorMessage() }}</p>
-  <div *ngIf="data.error" class="error-details">
-    <details>
-      <summary>Detalles técnicos</summary>
-      <pre>{{ data.error | json }}</pre>
-    </details>
+<div class="modal-wrapper">
+  <div class="modal-header">
+    <h2 mat-dialog-title>
+      {{ data.title || 'Error' }}
+    </h2>
   </div>
-</mat-dialog-content>
 
-<mat-dialog-actions align="end">
-  <button mat-raised-button color="primary" (click)="onClose()">
-    Cerrar
-  </button>
-</mat-dialog-actions>
+  <mat-dialog-content class="modal-body">
+    <p>{{ getErrorMessage() }}</p>
+    <div *ngIf="data.error" class="error-details">
+      <details>
+        <summary>Detalles técnicos</summary>
+        <pre>{{ data.error | json }}</pre>
+      </details>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="modal-footer" align="end">
+    <button mat-raised-button color="primary" (click)="onClose()">
+      Cerrar
+    </button>
+  </mat-dialog-actions>
+</div>

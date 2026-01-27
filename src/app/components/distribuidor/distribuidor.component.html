@@ -26,7 +26,7 @@
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z2" *ngIf="!loading && dataSource.length > 0">
         <ng-container matColumnDef="representante">
           <th mat-header-cell *matHeaderCellDef> Representante </th>
-          <td mat-cell *matCellDef="let element"> {{element.representante}} </td>
+          <td mat-cell *matCellDef="let element"> {{element.nombreRepresentante || element.representante}} </td>
         </ng-container>
 
         <ng-container matColumnDef="domicilio">
@@ -68,6 +68,9 @@
         <ng-container matColumnDef="acciones">
           <th mat-header-cell *matHeaderCellDef> Acciones </th>
           <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="accent" (click)="openRepresentanteUrl(element, $event)" matTooltip="Abrir página del representante">
+              <mat-icon>open_in_new</mat-icon>
+            </button>
             <button mat-icon-button color="accent" (click)="generateQR(element, $event)" matTooltip="Generar QR">
               <mat-icon>qr_code</mat-icon>
             </button>

@@ -1,34 +1,37 @@
-<h2 mat-dialog-title>
-  <mat-icon>{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
-  {{ isEditMode ? 'Editar Marca' : 'Nueva Marca' }}
-</h2>
+<div class="modal-wrapper">
+  <div class="modal-header">
+    <h2 mat-dialog-title>
+      {{ isEditMode ? 'Editar Marca' : 'Nueva Marca' }}
+    </h2>
+  </div>
 
-<mat-dialog-content>
-  <form [formGroup]="marcaForm" class="marca-form">
-    <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
-      <mat-label>Fabricante</mat-label>
-      <input matInput formControlName="fabricante">
-      <mat-icon matPrefix>business</mat-icon>
-    </mat-form-field>
+  <mat-dialog-content class="modal-body">
+    <form [formGroup]="marcaForm" class="marca-form">
+      <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
+        <mat-label>Fabricante</mat-label>
+        <input matInput formControlName="fabricante">
+        <mat-icon matPrefix>business</mat-icon>
+      </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
-      <mat-label>Marca</mat-label>
-      <input matInput formControlName="marca">
-      <mat-icon matPrefix>label</mat-icon>
-    </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
+        <mat-label>Marca</mat-label>
+        <input matInput formControlName="marca">
+        <mat-icon matPrefix>label</mat-icon>
+      </mat-form-field>
 
-    <app-image-upload
-      label="Logo"
-      [formControl]="$any(marcaForm.get('logo'))"
-      [currentUrl]="marcaForm.get('logo')?.value || ''"
-      (urlChange)="marcaForm.get('logo')?.setValue($event)">
-    </app-image-upload>
-  </form>
-</mat-dialog-content>
+      <app-image-upload
+        label="Logo"
+        [formControl]="$any(marcaForm.get('logo'))"
+        [currentUrl]="marcaForm.get('logo')?.value || ''"
+        (urlChange)="marcaForm.get('logo')?.setValue($event)">
+      </app-image-upload>
+    </form>
+  </mat-dialog-content>
 
-<mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">Cancelar</button>
-  <button mat-raised-button color="primary" (click)="onSubmit()">
-    {{ isEditMode ? 'Actualizar' : 'Crear' }}
-  </button>
-</mat-dialog-actions>
+  <mat-dialog-actions class="modal-footer" align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()">
+      {{ isEditMode ? 'Actualizar' : 'Crear' }}
+    </button>
+  </mat-dialog-actions>
+</div>

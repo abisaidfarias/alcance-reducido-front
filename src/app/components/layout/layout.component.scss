@@ -90,14 +90,24 @@ mat-list-item {
   }
 }
 
-.toolbar-title {
+.toolbar-logo {
+  display: flex;
+  align-items: center;
   margin-left: 10px;
-  font-size: 18px;
-  font-weight: 500;
+  
+  .logo-img {
+    height: 40px;
+    width: auto;
+    border-radius: 8px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  }
   
   @media (max-width: 599px) {
-    font-size: 16px;
     margin-left: 8px;
+    
+    .logo-img {
+      height: 32px;
+    }
   }
 }
 
@@ -105,9 +115,122 @@ mat-list-item {
   flex: 1 1 auto;
 }
 
-.logout-button {
+.user-menu-container {
+  display: flex;
+  align-items: center;
+}
+
+.user-menu-button {
+  padding: 0;
+  
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #3f51b5; // Color morado
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+    border: 2px solid rgba(255, 255, 255, 0.3); // Borde sutil
+    
+    mat-icon {
+      color: white;
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+  
+  &:hover .user-avatar {
+    background-color: #303f9f; // Morado más oscuro al hover
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  
   @media (max-width: 599px) {
     margin-right: -8px;
+    
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}
+
+// Estilos para el menú de usuario
+::ng-deep .user-menu {
+  min-width: 280px;
+  padding: 0;
+  
+  .user-menu-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background-color: #f5f5f5;
+    
+    .user-avatar-large {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: #3f51b5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      
+      mat-icon {
+        color: white;
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+    }
+    
+    .user-info {
+      flex: 1;
+      min-width: 0;
+      
+      .user-name {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      .user-email {
+        font-size: 14px;
+        color: #666;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+  
+  .logout-menu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #f44336;
+    
+    mat-icon {
+      color: #f44336;
+    }
+    
+    &:hover {
+      background-color: rgba(244, 67, 54, 0.1);
+    }
   }
 }
 

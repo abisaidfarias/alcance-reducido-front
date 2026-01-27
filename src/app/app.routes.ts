@@ -45,10 +45,6 @@ export const routes: Routes = [
         loadComponent: () => import('./components/dispositivo/dispositivo.component').then(m => m.DispositivoComponent)
       },
       {
-        path: 'qr',
-        loadComponent: () => import('./components/qr/qr.component').then(m => m.QrComponent)
-      },
-      {
         path: 'usuario',
         loadComponent: () => import('./components/usuario/usuario.component').then(m => m.UsuarioComponent)
       },

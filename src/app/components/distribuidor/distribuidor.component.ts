@@ -92,16 +92,61 @@ export class DistribuidorComponent implements OnInit {
 
   openDialog(distribuidor?: Distribuidor): void {
     const dialogRef = this.dialog.open(DistribuidorFormComponent, {
-      width: '500px',
+      width: '650px',
+      maxWidth: '95vw',
+      panelClass: 'rounded-dialog',
       data: distribuidor || null
+    });
+    
+    // Aplicar border-radius después de que el modal se abra
+    dialogRef.afterOpened().subscribe(() => {
+      try {
+        setTimeout(() => {
+          const dialogContainer = document.querySelector('.mat-mdc-dialog-container') as HTMLElement;
+          if (dialogContainer) {
+            dialogContainer.style.setProperty('border-radius', '8px', 'important');
+            dialogContainer.style.setProperty('overflow', 'hidden', 'important');
+          }
+        }, 0);
+      } catch (error) {
+        console.error('Error aplicando border-radius:', error);
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        // Validar que nombreRepresentante esté presente
+        if (!result.nombreRepresentante || result.nombreRepresentante.trim() === '') {
+          this.snackBar.open('El nombre del representante es requerido', 'Cerrar', {
+            duration: 3000
+          });
+          return;
+        }
+
+        // Validar que representante esté presente
+        if (!result.representante || result.representante.trim() === '') {
+          this.snackBar.open('El identificador es requerido', 'Cerrar', {
+            duration: 3000
+          });
+          return;
+        }
+
+        // Preparar datos para enviar
+        const distribuidorData: any = {
+          representante: result.representante.trim(),
+          nombreRepresentante: result.nombreRepresentante.trim(),
+          domicilio: result.domicilio || '',
+          sitioWeb: result.sitioWeb || '',
+          email: result.email || '',
+          logo: result.logo || ''
+        };
+
+        console.log('Datos a enviar:', distribuidorData);
+
         this.loading = true;
         if (distribuidor) {
           // Actualizar
-          this.distribuidorService.update(distribuidor._id!, result).subscribe({
+          this.distribuidorService.update(distribuidor._id!, distribuidorData).subscribe({
             next: () => {
               this.snackBar.open('Distribuidor actualizado exitosamente', 'Cerrar', {
                 duration: 3000
@@ -110,13 +155,14 @@ export class DistribuidorComponent implements OnInit {
             },
             error: (error) => {
               console.error('Error al actualizar distribuidor:', error);
+              console.error('Datos enviados:', distribuidorData);
               this.loading = false;
               this.showErrorDialog('Error al actualizar distribuidor', error);
             }
           });
         } else {
           // Crear
-          this.distribuidorService.create(result).subscribe({
+          this.distribuidorService.create(distribuidorData).subscribe({
             next: (response) => {
               console.log('Distribuidor creado:', response);
               this.snackBar.open('Distribuidor creado exitosamente', 'Cerrar', {
@@ -127,6 +173,7 @@ export class DistribuidorComponent implements OnInit {
             },
             error: (error) => {
               console.error('Error al crear distribuidor:', error);
+              console.error('Datos enviados:', distribuidorData);
               this.loading = false;
               this.showErrorDialog('Error al crear distribuidor', error);
             }
@@ -151,7 +198,7 @@ export class DistribuidorComponent implements OnInit {
     
     const dialogData: ConfirmDialogData = {
       title: 'Confirmar eliminación',
-      message: `¿Estás seguro de eliminar a "${distribuidor.representante}"? Esta acción no se puede deshacer.`,
+      message: `¿Estás seguro de eliminar a "${distribuidor.nombreRepresentante || distribuidor.representante}"? Esta acción no se puede deshacer.`,
       confirmText: 'Eliminar',
       cancelText: 'Cancelar'
     };
@@ -194,14 +241,22 @@ export class DistribuidorComponent implements OnInit {
     });
   }
 
+  getRepresentanteUrl(distribuidor: Distribuidor): string {
+    const baseUrl = environment.appUrl || window.location.origin;
+    const nombreEncoded = encodeURIComponent(distribuidor.representante);
+    return `${baseUrl}/representante/${nombreEncoded}`;
+  }
+
+  openRepresentanteUrl(distribuidor: Distribuidor, event: Event): void {
+    event.stopPropagation();
+    const url = this.getRepresentanteUrl(distribuidor);
+    window.open(url, '_blank');
+  }
+
   generateQR(distribuidor: Distribuidor, event: Event): void {
     event.stopPropagation();
     
-    // Obtener el dominio actual (usa environment en producción)
-    const baseUrl = environment.appUrl || window.location.origin;
-    // Codificar el nombre del distribuidor para la URL
-    const nombreEncoded = encodeURIComponent(distribuidor.representante);
-    const qrUrl = `${baseUrl}/representante/${nombreEncoded}`;
+    const qrUrl = this.getRepresentanteUrl(distribuidor);
     
     // Generar el QR como imagen
     QRCode.toDataURL(qrUrl, {
@@ -212,7 +267,7 @@ export class DistribuidorComponent implements OnInit {
         light: '#FFFFFF'
       }
     }).then((qrDataUrl: string) => {
-      // Crear un canvas para combinar el QR con el texto
+      // Crear un canvas para combinar el QR con el texto SUBTEL
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       
@@ -228,9 +283,9 @@ export class DistribuidorComponent implements OnInit {
         // Dimensiones del QR
         const qrSize = 300;
         const padding = 20;
-        const textHeight = 40;
+        const textHeight = 50; // Espacio para el texto SUBTEL
         
-        // Configurar el canvas
+        // Configurar el canvas (con espacio para texto SUBTEL)
         canvas.width = qrSize + (padding * 2);
         canvas.height = qrSize + (padding * 2) + textHeight;
         
@@ -241,32 +296,15 @@ export class DistribuidorComponent implements OnInit {
         // Dibujar el QR
         ctx.drawImage(qrImage, padding, padding, qrSize, qrSize);
         
-        // Dibujar el texto de la URL debajo del QR
+        // Dibujar el texto "SUBTEL" en negrita y más grande
         ctx.fillStyle = '#000000';
-        ctx.font = '12px Arial';
+        ctx.font = 'bold 24px Arial'; // Negrita y tamaño más grande
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
         
-        // Dividir la URL en líneas si es muy larga
-        const maxWidth = canvas.width - (padding * 2);
-        const words = qrUrl.split('/');
-        let line = '';
-        let y = qrSize + padding + 10;
-        
-        for (let i = 0; i < words.length; i++) {
-          const testLine = line + (line ? '/' : '') + words[i];
-          const metrics = ctx.measureText(testLine);
-          const testWidth = metrics.width;
-          
-          if (testWidth > maxWidth && i > 0) {
-            ctx.fillText(line, canvas.width / 2, y);
-            y += 15;
-            line = words[i];
-          } else {
-            line = testLine;
-          }
-        }
-        ctx.fillText(line, canvas.width / 2, y);
+        // Posición del texto debajo del QR
+        const textY = qrSize + padding + 15;
+        ctx.fillText('SUBTEL', canvas.width / 2, textY);
         
         // Convertir el canvas a imagen y descargar
         canvas.toBlob((blob) => {

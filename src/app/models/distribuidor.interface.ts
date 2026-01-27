@@ -1,6 +1,7 @@
 export interface Distribuidor {
   _id?: string;
-  representante: string;
+  representante: string; // Identificador para URL (solo alfanuméricos)
+  nombreRepresentante: string; // Nombre completo para mostrar (permite cualquier carácter)
   domicilio?: string;
   sitioWeb?: string;
   email?: string;
@@ -11,7 +12,8 @@ export interface Distribuidor {
 }
 
 export interface DistribuidorCreate {
-  representante: string;
+  representante: string; // Identificador para URL (solo alfanuméricos)
+  nombreRepresentante: string; // Nombre completo para mostrar (permite cualquier carácter)
   domicilio?: string;
   sitioWeb?: string;
   email?: string;
@@ -20,7 +22,8 @@ export interface DistribuidorCreate {
 }
 
 export interface DistribuidorUpdate {
-  representante?: string;
+  representante?: string; // Identificador para URL (solo alfanuméricos)
+  nombreRepresentante?: string; // Nombre completo para mostrar (permite cualquier carácter)
   domicilio?: string;
   sitioWeb?: string;
   email?: string;
