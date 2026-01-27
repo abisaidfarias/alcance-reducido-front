@@ -45,7 +45,10 @@ export class CertificacionComponent implements OnInit, AfterViewInit {
   openDistribuidorSelector(): void {
     this.dialog.open(DistribuidorSelectorComponent, {
       width: '500px',
-      disableClose: false
+      maxWidth: '800px',
+      disableClose: false,
+      panelClass: 'glass-dialog',
+      backdropClass: 'glass-dialog-backdrop'
     });
   }
 }

@@ -1,33 +1,478 @@
-:host {
-  display: block;
+// Estilos del componente - ViewEncapsulation.None permite estilos sin ::ng-deep
+
+// Wrapper del modal con flex column (igual al modal de referencia)
+.modal-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh;
+  min-height: 0;
+  position: relative;
+  z-index: 1;
+  font-family: inherit;
+  line-height: inherit;
 }
 
-::ng-deep .mat-mdc-dialog-container {
-  background: rgba(11, 18, 32, 0.95) !important;
-  color: rgba(255, 255, 255, 0.92) !important;
+// Cabecera del modal - igual al modal de referencia pero con fondo glass
+.modal-header {
+  background: transparent;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  flex-shrink: 0;
+  position: relative;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1;
+  font-family: inherit;
+  line-height: inherit;
+  
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .header-text {
+    flex: 1;
+    text-align: left;
+    
+    h2[mat-dialog-title] {
+      margin: 0;
+      padding: 0;
+      font-size: 24px;
+      font-weight: 500;
+      color: white;
+      display: block;
+      text-align: left;
+      line-height: 1.2;
+      font-family: inherit !important;
+      letter-spacing: normal;
+    }
+    
+    .header-subtitle {
+      margin: 4px 0 0 0;
+      padding: 0;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.4;
+    }
+  }
+  
+  // Botón cerrar (X) - cuadrado con esquinas redondeadas, perfectamente centrado
+  .glass-close {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    padding: 0;
+    margin: 0;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.85);
+    display: grid;
+    place-items: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-family: inherit;
+    
+    // Eliminar cualquier estilo heredado de Material
+    box-shadow: none;
+    text-transform: none;
+    letter-spacing: normal;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+    
+    &:focus {
+      outline: 2px solid rgba(78, 215, 117, 0.5);
+      outline-offset: 2px;
+    }
+    
+    // Icono SVG centrado
+    .close-icon {
+      width: 18px;
+      height: 18px;
+      display: block;
+      margin: 0;
+      padding: 0;
+    }
+  }
+  
+  @media (max-width: 599px) {
+    padding: 8px 20px;
+    
+    .header-text {
+      h2[mat-dialog-title] {
+        font-size: 22px;
+      }
+      
+      .header-subtitle {
+        font-size: 13px;
+      }
+    }
+    
+    .glass-close {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      
+      .close-icon {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
 }
 
-mat-dialog-content {
-  min-width: 400px;
-  padding: 24px;
+// Body del modal - igual al modal de referencia
+.modal-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 24px !important;
+  min-height: 0;
+  position: relative;
+  z-index: 1;
+  font-family: inherit;
+  line-height: inherit;
+  
+  @media (max-width: 599px) {
+    padding: 20px !important;
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  position: relative;
+  z-index: 1;
+  
+  .mat-mdc-progress-spinner circle {
+    stroke: rgba(78, 215, 117, 0.8);
+  }
+}
+
+.no-data-message {
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  padding: 20px;
+  margin: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .full-width {
   width: 100%;
 }
 
-mat-dialog-actions {
-  padding: 16px 24px;
+// Footer del modal - igual al modal de referencia
+.modal-footer {
+  flex-shrink: 0;
+  padding: 16px 24px 24px 24px;
+  margin: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 1;
+  
+  button {
+    border-radius: 8px;
+    font-weight: 500;
+    text-transform: none;
+    min-width: 120px;
+    height: 44px;
+    padding: 0 24px;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    position: relative;
+    z-index: 1;
+    font-family: inherit !important;
+    line-height: inherit !important;
+    letter-spacing: normal;
+    
+    // Botón Cancelar - estilo ghost oscuro (igual al modal de referencia)
+    &.mat-mdc-button {
+      background-color: transparent !important;
+      color: rgba(255, 255, 255, 0.85) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        color: rgba(255, 255, 255, 0.95) !important;
+        border-color: rgba(255, 255, 255, 0.3) !important;
+      }
+      
+      &:focus {
+        outline: 2px solid rgba(255, 255, 255, 0.3);
+        outline-offset: 2px;
+      }
+    }
+    
+    // Botón principal - VERDE (igual al modal de referencia)
+    &.mat-mdc-raised-button {
+      background: linear-gradient(135deg, rgba(78, 215, 117, 1), rgba(78, 215, 117, 0.9)) !important;
+      border: 1px solid rgba(78, 215, 117, 0.4) !important;
+      color: rgba(0, 0, 0, 0.9) !important;
+      box-shadow: 0 4px 12px rgba(78, 215, 117, 0.3) !important;
+      
+      &:hover {
+        background: linear-gradient(135deg, rgba(78, 215, 117, 1), rgba(78, 215, 117, 1)) !important;
+        box-shadow: 0 6px 16px rgba(78, 215, 117, 0.4) !important;
+        transform: translateY(-1px);
+      }
+      
+      &:focus {
+        outline: 2px solid rgba(78, 215, 117, 0.5);
+        outline-offset: 2px;
+      }
+      
+      &:disabled {
+        background: rgba(78, 215, 117, 0.3) !important;
+        color: rgba(0, 0, 0, 0.5) !important;
+        border-color: rgba(78, 215, 117, 0.2) !important;
+        box-shadow: none !important;
+        transform: none;
+      }
+    }
+  }
+  
+  @media (max-width: 599px) {
+    padding: 12px 20px 20px 20px;
+    gap: 8px;
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+    }
+  }
 }
 
-::ng-deep .mat-mdc-form-field {
-  width: 100%;
+// Estilos para los inputs dentro del modal glass-dialog
+.glass-dialog {
+  .mat-mdc-form-field {
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    overflow: visible !important;
+    padding-top: 8px; // Espacio adicional arriba para el label
+    font-family: inherit !important;
+    line-height: inherit !important;
+    
+    // Forzar que el label se anime correctamente cuando hay valor o focus
+    &.mat-focused {
+      .mat-mdc-floating-label {
+        transform: translateY(-1.5em) scale(0.75) !important;
+        opacity: 1 !important;
+        overflow: visible !important;
+        max-width: none !important;
+        width: auto !important;
+      }
+    }
+    
+    &.mat-form-field-has-value {
+      .mat-mdc-floating-label {
+        transform: translateY(-1.5em) scale(0.75) !important;
+        opacity: 1 !important;
+        overflow: visible !important;
+        max-width: none !important;
+        width: auto !important;
+      }
+    }
+    
+    .mat-mdc-text-field-wrapper {
+      .mat-mdc-form-field-flex {
+        .mat-mdc-form-field-input-control {
+          input,
+          .mat-mdc-select {
+            padding-top: 0;
+            padding-bottom: 0;
+            color: rgba(255, 255, 255, 0.95) !important;
+          }
+        }
+      }
+    }
+    
+    // Estilos del wrapper - fondo oscuro translúcido, borde sutil, radius más redondeado (pill)
+    .mat-mdc-text-field-wrapper {
+      background-color: rgba(255, 255, 255, 0.05) !important;
+      border-radius: 18px !important;
+      overflow: visible; // Cambiar a visible para que el label no se corte
+      
+      // Outline con border sutil - respeta el radius
+      .mdc-notched-outline {
+        .mdc-notched-outline__leading {
+          border-color: rgba(255, 255, 255, 0.2) !important;
+          border-width: 1px !important;
+          border-top-left-radius: 18px !important;
+          border-bottom-left-radius: 18px !important;
+        }
+        
+        .mdc-notched-outline__notch {
+          border-color: rgba(255, 255, 255, 0.2) !important;
+          border-width: 1px !important;
+        }
+        
+        .mdc-notched-outline__trailing {
+          border-color: rgba(255, 255, 255, 0.2) !important;
+          border-width: 1px !important;
+          border-top-right-radius: 18px !important;
+          border-bottom-right-radius: 18px !important;
+        }
+      }
+      
+      // Focus state - verde igual al modal de referencia, respeta radius
+      &.mdc-text-field--focused {
+        .mdc-notched-outline {
+          .mdc-notched-outline__leading {
+            border-color: rgba(78, 215, 117, 0.7) !important;
+            border-width: 2px !important;
+            border-top-left-radius: 18px !important;
+            border-bottom-left-radius: 18px !important;
+          }
+          
+          .mdc-notched-outline__notch {
+            border-color: rgba(78, 215, 117, 0.7) !important;
+            border-width: 2px !important;
+          }
+          
+          .mdc-notched-outline__trailing {
+            border-color: rgba(78, 215, 117, 0.7) !important;
+            border-width: 2px !important;
+            border-top-right-radius: 18px !important;
+            border-bottom-right-radius: 18px !important;
+          }
+        }
+      }
+      
+      // Hover state - respeta radius
+      &:hover:not(.mdc-text-field--focused) {
+        .mdc-notched-outline {
+          .mdc-notched-outline__leading,
+          .mdc-notched-outline__notch,
+          .mdc-notched-outline__trailing {
+            border-color: rgba(255, 255, 255, 0.3) !important;
+          }
+        }
+      }
+    }
+  }
+  
+  // Label flotante - siempre visible y completo (no cortado)
+  .mat-mdc-floating-label,
+  .mdc-floating-label {
+    color: rgba(255, 255, 255, 0.65) !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+    max-width: none !important;
+    
+    // Estado normal (sin focus, sin valor)
+    &.mdc-floating-label--float-above {
+      color: rgba(255, 255, 255, 0.65) !important;
+    }
+    
+    // Estado con focus
+    .mat-mdc-form-field.mat-focused & {
+      color: rgba(255, 255, 255, 0.85) !important;
+    }
+    
+    // Estado con valor
+    .mat-mdc-form-field.mat-form-field-has-value & {
+      color: rgba(255, 255, 255, 0.65) !important;
+    }
+    
+    // Estado con focus y valor
+    .mat-mdc-form-field.mat-focused.mat-form-field-has-value & {
+      color: rgba(255, 255, 255, 0.85) !important;
+    }
+  }
+  
+  // Wrapper del label para evitar cortes
+  .mat-mdc-form-field-label-wrapper {
+    overflow: visible !important;
+    max-width: none !important;
+    width: auto !important;
+    padding: 0 4px; // Padding para que el label no se pegue a los bordes
+  }
+  
+  // Notch del outline - asegurar espacio para el label
+  .mdc-notched-outline__notch {
+    max-width: none !important;
+    min-width: 0 !important;
+    padding: 0 8px; // Espacio adicional en el notch
+  }
+  
+  // Flex container del form-field - asegurar espacio
+  .mat-mdc-form-field-flex {
+    overflow: visible !important;
+  }
+  
+  // Label wrapper (para asegurar visibilidad)
+  .mat-mdc-form-field-label {
+    color: rgba(255, 255, 255, 0.65) !important;
+    
+    .mat-mdc-form-field.mat-focused & {
+      color: rgba(255, 255, 255, 0.85) !important;
+    }
+  }
+  
+  // Valor seleccionado del select - blanco visible
+  .mat-mdc-select-value,
+  .mat-mdc-select-value-text,
+  .mdc-select__selected-text {
+    color: rgba(255, 255, 255, 0.92) !important;
+  }
+  
+  // Placeholder del select (si no hay valor)
+  .mat-mdc-select-placeholder,
+  .mdc-select__placeholder {
+    color: rgba(255, 255, 255, 0.65) !important;
+  }
+  
+  // Icono de flecha del select - visible
+  .mat-mdc-select-arrow,
+  .mdc-select__dropdown-icon {
+    color: rgba(255, 255, 255, 0.7) !important;
+    fill: rgba(255, 255, 255, 0.7) !important;
+  }
+  
+  // Estado disabled
+  .mat-mdc-form-field.mat-form-field-disabled {
+    .mat-mdc-floating-label,
+    .mdc-floating-label,
+    .mat-mdc-select-value {
+      color: rgba(255, 255, 255, 0.4) !important;
+    }
+  }
+  
+  // Panel del dropdown - fondo dark glass un poco más transparente, radius redondeado
+  .mat-mdc-select-panel {
+    background: linear-gradient(
+      135deg,
+      rgba(11, 18, 32, 0.80) 0%,
+      rgba(6, 10, 20, 0.80) 50%,
+      rgba(4, 7, 15, 0.80) 100%
+    ) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 18px !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.5),
+      0 2px 8px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    margin-top: 4px;
+    overflow: hidden;
+  }
 }
 
-::ng-deep .mat-mdc-select-value {
-  color: rgba(255, 255, 255, 0.92) !important;
-}
+// Estilos del select panel ya están en styles.scss global
 
-::ng-deep .mat-mdc-form-field-label {
-  color: rgba(255, 255, 255, 0.72) !important;
-}
