@@ -17,16 +17,16 @@ DISTRIBUTION_ID="" # Se detectará automáticamente si está vacío
 echo -e "${YELLOW}📦 Construyendo aplicación...${NC}"
 npm run build
 
-if [ ! -d "dist/alcance-reducido-front" ]; then
-  echo "❌ Error: No se encontró la carpeta dist/alcance-reducido-front"
+if [ ! -d "dist/alcance-reducido-front/browser" ]; then
+  echo "❌ Error: No se encontró la carpeta dist/alcance-reducido-front/browser"
   exit 1
 fi
 
 # Subir a S3
-echo -e "${YELLOW}☁️ Subiendo archivos a S3...${NC}"
+echo -e "${YELLOW}☁️ Subiendo archivos a S3 (desde browser/ a raíz)...${NC}"
 
-# Subir archivos estáticos con cache largo
-aws s3 sync dist/alcance-reducido-front/ s3://$BUCKET_NAME/ \
+# Subir archivos estáticos con cache largo desde browser/ a la raíz del bucket
+aws s3 sync dist/alcance-reducido-front/browser/ s3://$BUCKET_NAME/ \
   --delete \
   --cache-control "public, max-age=31536000" \
   --exclude "*.html" \
@@ -34,8 +34,8 @@ aws s3 sync dist/alcance-reducido-front/ s3://$BUCKET_NAME/ \
   --exclude "service-worker.js" \
   || { echo "❌ Error al subir archivos estáticos"; exit 1; }
 
-# Subir HTML y JSON sin cache
-aws s3 sync dist/alcance-reducido-front/ s3://$BUCKET_NAME/ \
+# Subir HTML y JSON sin cache desde browser/ a la raíz del bucket
+aws s3 sync dist/alcance-reducido-front/browser/ s3://$BUCKET_NAME/ \
   --delete \
   --cache-control "no-cache, no-store, must-revalidate" \
   --exclude "*" \

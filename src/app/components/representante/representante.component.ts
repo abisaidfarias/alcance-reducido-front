@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,6 +17,7 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatCardModule,
     MatIconModule,
     MatGridListModule,
@@ -29,7 +31,11 @@ export class RepresentanteComponent implements OnInit {
   nombreDistribuidor: string = '';
   distribuidor: any = null;
   marcas: any[] = [];
+  marcasFiltradas: any[] = [];
+  searchQuery: string = '';
   dispositivos: Dispositivo[] = [];
+  dispositivosFiltrados: Dispositivo[] = [];
+  searchQueryDispositivos: string = '';
   marcaSeleccionada: any | null = null;
   dispositivoSeleccionado: any | null = null;
   mostrarDispositivos = false;
@@ -81,10 +87,12 @@ export class RepresentanteComponent implements OnInit {
               }
             });
             this.marcas = distribuidor.marcas;
+            this.marcasFiltradas = [...this.marcas];
             this.tieneDatos = true;
           } else {
             // No tiene registros, solo mostrar el nombre
             this.marcas = [];
+            this.marcasFiltradas = [];
             this.tieneDatos = false;
           }
         } else {
@@ -111,12 +119,15 @@ export class RepresentanteComponent implements OnInit {
   onMarcaClick(marca: any): void {
     this.marcaSeleccionada = marca;
     this.mostrarDispositivos = true;
+    this.searchQueryDispositivos = '';
     
     // Los dispositivos vienen dentro de la marca desde el API
     if (marca.dispositivos && Array.isArray(marca.dispositivos)) {
       this.dispositivos = marca.dispositivos;
+      this.dispositivosFiltrados = [...this.dispositivos];
     } else {
       this.dispositivos = [];
+      this.dispositivosFiltrados = [];
     }
   }
 
@@ -266,5 +277,48 @@ export class RepresentanteComponent implements OnInit {
     }
     // Fallback al nombreDistribuidor si no hay nombreRepresentante
     return this.nombreDistribuidor || 'Representante';
+  }
+
+  filterMarcas(): void {
+    const query = (this.searchQuery || '').trim().toLowerCase();
+    if (!query) {
+      this.marcasFiltradas = [...this.marcas];
+      return;
+    }
+    
+    this.marcasFiltradas = this.marcas.filter(marca => {
+      const nombreMarca = (marca.marca || marca.fabricante || '').toLowerCase();
+      return nombreMarca.includes(query);
+    });
+  }
+
+  get currentYear(): number {
+    return new Date().getFullYear();
+  }
+
+  filterDispositivos(): void {
+    const query = (this.searchQueryDispositivos || '').trim().toLowerCase();
+    if (!query) {
+      this.dispositivosFiltrados = [...this.dispositivos];
+      return;
+    }
+    
+    this.dispositivosFiltrados = this.dispositivos.filter(dispositivo => {
+      const modelo = (dispositivo.modelo || '').toLowerCase();
+      const nombreComercial = (dispositivo.nombreComercial || '').toLowerCase();
+      return modelo.includes(query) || nombreComercial.includes(query);
+    });
+  }
+
+  hasTechnicalData(): boolean {
+    if (!this.dispositivoSeleccionado) return false;
+    return !!(
+      this.dispositivoSeleccionado.tipo ||
+      (this.dispositivoSeleccionado.tecnologia && this.dispositivoSeleccionado.tecnologia.length > 0) ||
+      (this.dispositivoSeleccionado.frecuencias && this.dispositivoSeleccionado.frecuencias.length > 0) ||
+      (this.dispositivoSeleccionado.gananciaAntena && this.dispositivoSeleccionado.gananciaAntena.length > 0) ||
+      (this.dispositivoSeleccionado.EIRP && this.dispositivoSeleccionado.EIRP.length > 0) ||
+      (this.dispositivoSeleccionado.modulo && this.dispositivoSeleccionado.modulo.length > 0)
+    );
   }
 }

@@ -1,27 +1,24 @@
 <div class="representante-container">
-  <div class="representante-header">
-    <h1 class="representante-name">{{ getNombreRepresentante() }}</h1>
-    <div class="header-buttons">
-      <button 
-        (click)="goToHome()" 
-        class="home-button">
-        <mat-icon>home</mat-icon>
-        Home
-      </button>
-      <button 
-        *ngIf="!authService.isAuthenticated()" 
-        (click)="goToLogin()" 
-        class="login-button">
-        <mat-icon>login</mat-icon>
-        Iniciar Sesión
-      </button>
-      <button 
-        *ngIf="authService.isAuthenticated()" 
-        (click)="logout()" 
-        class="logout-button">
-        <mat-icon>logout</mat-icon>
-        Cerrar Sesión
-      </button>
+  <!-- NAV -->
+  <div class="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a class="brand-row" (click)="goToHome()" style="cursor: pointer;" aria-label="Ir al Home">
+          <img class="brand-logo-img" src="assets/lb-technology-logo.png" alt="LB Technology" />
+        </a>
+
+        <nav class="nav-links" aria-label="Navegación">
+          <a (click)="goToHome()" style="cursor: pointer;">Home</a>
+          <a (click)="goToHome()" style="cursor: pointer;">Normativa</a>
+          <a (click)="goToHome()" style="cursor: pointer;">Servicios</a>
+          <a (click)="goToHome()" style="cursor: pointer;">Contacto</a>
+        </nav>
+
+        <div class="nav-cta">
+          <a class="btn ghost" (click)="goToHome()" style="cursor: pointer;">Contacto</a>
+          <a class="btn primary" (click)="goToHome()" style="cursor: pointer;">Solicitar asesoría</a>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -33,29 +30,72 @@
 
   <!-- Vista de Marcas (solo si tiene datos) -->
   <div class="marcas-section" *ngIf="!loading && !mostrarDispositivos && tieneDatos">
-    <h2 class="section-title">Marcas Disponibles</h2>
+    <!-- PAGE HEADER -->
+    <header class="page">
+      <div class="container">
+        <span class="pill">
+          <span class="dot"></span>
+          Página del distribuidor / importador
+        </span>
 
-    <div class="marcas-grid" *ngIf="marcas.length > 0">
-      <mat-card 
-        *ngFor="let marca of marcas" 
-        class="marca-card"
-        (click)="onMarcaClick(marca)">
-        <mat-card-content class="marca-card-content">
-          <div class="marca-logo-container">
-            <img 
-              [src]="marca.logo || getPlaceholderImage()" 
-              [alt]="marca.marca"
-              class="marca-logo"
-              (error)="onImageError($event)">
+        <div class="breadcrumbs" aria-label="Breadcrumbs">
+          <a class="crumb" (click)="goToHome()" style="cursor: pointer;" title="Volver al Home">← Volver</a>
+          <span style="opacity:.6;">/</span>
+          <span class="crumb" aria-current="page">{{ getNombreRepresentante() }}</span>
+        </div>
+
+        <div class="title-row">
+          <div>
+            <h1 class="h1">{{ getNombreRepresentante() }}</h1>
+            <p class="sub">
+              Selecciona una marca para ver los equipos disponibles. Esta página corresponde al importador/distribuidor asociado al QR del empaque.
+            </p>
           </div>
-          <h3 class="marca-nombre">{{ marca.marca }}</h3>
-        </mat-card-content>
-      </mat-card>
-    </div>
 
-    <div class="no-data" *ngIf="marcas.length === 0">
-      <p>No hay marcas disponibles</p>
-    </div>
+          <div class="filters">
+            <div class="input" role="search">
+              <span aria-hidden="true" style="opacity:.8;">🔎</span>
+              <input 
+                id="brandSearch" 
+                type="search" 
+                placeholder="Buscar marca (ej: Xiaomi, Samsung, Nothing…)" 
+                [(ngModel)]="searchQuery"
+                (input)="filterMarcas()" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- BRANDS -->
+    <section>
+      <div class="container">
+        <div class="grid" id="brandGrid" *ngIf="marcasFiltradas.length > 0">
+          <a 
+            class="brand-card" 
+            *ngFor="let marca of marcasFiltradas"
+            (click)="onMarcaClick(marca)"
+            style="cursor: pointer;"
+            [attr.data-name]="marca.marca?.toLowerCase()">
+            <div>
+              <p class="brand-name">{{ marca.marca || marca.fabricante }}</p>
+              <p class="brand-hint">Ver modelos disponibles</p>
+            </div>
+            <div class="brand-cta">
+              <span class="arrow">→</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="no-data" *ngIf="marcasFiltradas.length === 0 && marcas.length > 0">
+          <p>No se encontraron marcas con ese nombre</p>
+        </div>
+
+        <div class="no-data" *ngIf="marcas.length === 0">
+          <p>No hay marcas disponibles</p>
+        </div>
+      </div>
+    </section>
   </div>
 
   <!-- Vista vacía (sin datos pero sin error) -->
@@ -63,122 +103,321 @@
     <!-- Solo muestra el nombre del representante, página en blanco -->
   </div>
 
+  <!-- FOOTER -->
+  <footer *ngIf="!loading && !mostrarDispositivos && !mostrarDetalleDispositivo">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div style="display:flex; gap:10px; align-items:center; margin-bottom: 8px;">
+            <img class="brand-logo-img" src="assets/lb-technology-logo.png" alt="LB Technology" style="height:28px;border-radius:8px;" />
+            <div style="font-weight: 750;">Alcance Reducido · Operado por LB Technology</div>
+          </div>
+          <div>
+            © {{ currentYear }} LB Technology. Todos los derechos reservados.
+            <div style="margin-top:6px;">
+              <span style="color: var(--muted2);">
+                Aviso: contenido informativo de alto nivel. La implementación final depende del caso y documentación del equipo.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="foot-links">
+          <a (click)="goToHome()" style="cursor: pointer;">Home</a>
+          <a (click)="goToHome()" style="cursor: pointer;">Normativa</a>
+          <a (click)="goToHome()" style="cursor: pointer;">Servicios</a>
+          <a (click)="goToHome()" style="cursor: pointer;">Contacto</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
   <!-- Vista de Dispositivos -->
   <div class="dispositivos-section" *ngIf="mostrarDispositivos && !mostrarDetalleDispositivo">
-    <div class="dispositivos-header">
-      <button mat-button (click)="volverAtras()" class="back-button">
-        <mat-icon>arrow_back</mat-icon>
-        Volver
-      </button>
-      <h2 class="section-title">
-        {{ marcaSeleccionada?.marca }}
-      </h2>
-    </div>
+    <!-- PAGE HEADER -->
+    <header class="page">
+      <div class="container">
+        <span class="pill">
+          <span class="dot"></span>
+          Marca habilitada
+        </span>
 
-    <div class="dispositivos-grid" *ngIf="dispositivos.length > 0">
-      <mat-card 
-        *ngFor="let dispositivo of dispositivos" 
-        class="dispositivo-card"
-        (click)="onDispositivoClick(dispositivo)">
-        <mat-card-content class="dispositivo-card-content">
-          <div class="dispositivo-image-container">
-            <img 
-              [src]="getDispositivoImage(dispositivo)" 
-              [alt]="dispositivo.modelo"
-              class="dispositivo-image"
-              (error)="onImageError($event)">
+        <div class="breadcrumbs" aria-label="Breadcrumbs">
+          <a class="crumb" (click)="volverAtras()" style="cursor: pointer;" title="Volver a marcas">← {{ getNombreRepresentante() }}</a>
+          <span style="opacity:.6;">/</span>
+          <span class="crumb" aria-current="page">{{ marcaSeleccionada?.marca || marcaSeleccionada?.fabricante }}</span>
+        </div>
+
+        <div class="title-row">
+          <div>
+            <h1 class="h1">{{ marcaSeleccionada?.marca || marcaSeleccionada?.fabricante }}</h1>
+            <p class="sub">
+              Selecciona un modelo para acceder a la información comercial y técnica asociada al QR del empaque.
+            </p>
           </div>
-          <h3 class="dispositivo-modelo">{{ dispositivo.modelo }}</h3>
-        </mat-card-content>
-      </mat-card>
-    </div>
 
-    <div class="no-data" *ngIf="dispositivos.length === 0">
-      <p>No hay dispositivos disponibles para esta marca</p>
-    </div>
+          <div class="filters">
+            <div class="input" role="search">
+              <span aria-hidden="true" style="opacity:.8;">🔎</span>
+              <input 
+                id="modelSearch" 
+                type="search" 
+                placeholder="Buscar modelo (ej: v10, v11…)" 
+                [(ngModel)]="searchQueryDispositivos"
+                (input)="filterDispositivos()" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- DEVICES -->
+    <section>
+      <div class="container">
+        <div class="grid" id="deviceGrid" *ngIf="dispositivosFiltrados.length > 0">
+          <a 
+            class="brand-card dispositivo-card-link" 
+            *ngFor="let dispositivo of dispositivosFiltrados"
+            (click)="onDispositivoClick(dispositivo)"
+            style="cursor: pointer;"
+            [attr.data-name]="dispositivo.modelo.toLowerCase()">
+            <div>
+              <p class="brand-name">{{ dispositivo.modelo }}</p>
+              <p class="brand-hint">Ver información del dispositivo</p>
+            </div>
+            <div class="brand-cta">
+              <span class="arrow">→</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="no-data" *ngIf="dispositivosFiltrados.length === 0 && dispositivos.length > 0">
+          <p>No se encontraron modelos con ese nombre</p>
+        </div>
+
+        <div class="no-data" *ngIf="dispositivos.length === 0">
+          <p>No hay dispositivos disponibles para esta marca</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom: 8px;">
+              <img class="brand-logo-img" src="assets/lb-technology-logo.png" alt="LB Technology" style="height:28px;border-radius:8px;" />
+              <div style="font-weight: 750;">Alcance Reducido · Operado por LB Technology</div>
+            </div>
+            <div>
+              © {{ currentYear }} LB Technology. Todos los derechos reservados.
+              <div style="margin-top:6px;">
+                <span style="color: var(--muted2);">
+                  Aviso: contenido informativo de alto nivel. La implementación final depende del caso y documentación del equipo.
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="foot-links">
+            <a (click)="goToHome()" style="cursor: pointer;">Home</a>
+            <a (click)="goToHome()" style="cursor: pointer;">Normativa</a>
+            <a (click)="goToHome()" style="cursor: pointer;">Servicios</a>
+            <a (click)="goToHome()" style="cursor: pointer;">Contacto</a>
+          </div>
+        </div>
+      </div>
+    </footer>
   </div>
 
   <!-- Vista de Detalle del Dispositivo -->
   <div class="detalle-dispositivo-section" *ngIf="mostrarDetalleDispositivo && dispositivoSeleccionado">
-    <div class="detalle-header">
-      <button mat-button (click)="volverAtras()" class="back-button">
-        <mat-icon>arrow_back</mat-icon>
-        Volver
-      </button>
-    </div>
+    <!-- PAGE HEADER -->
+    <header class="page">
+      <div class="container">
+        <span class="pill">
+          <span class="dot"></span>
+          Ficha del dispositivo
+        </span>
 
-    <div class="detalle-content">
-      <!-- Imagen del teléfono a la izquierda -->
-      <div class="detalle-imagen">
-        <img 
-          [src]="getDispositivoImage(dispositivoSeleccionado)" 
-          [alt]="dispositivoSeleccionado.modelo"
-          class="dispositivo-detalle-image"
-          (error)="onImageError($event)">
+        <div class="breadcrumbs" aria-label="Breadcrumbs">
+          <a class="crumb" (click)="volverAtras()" style="cursor: pointer;" title="Volver a modelos">← {{ getNombreRepresentante() }} / {{ marcaSeleccionada?.marca || marcaSeleccionada?.fabricante }}</a>
+          <span style="opacity:.6;">/</span>
+          <span class="crumb" aria-current="page">{{ dispositivoSeleccionado.modelo }}</span>
+        </div>
+
+        <div class="title-row">
+          <div>
+            <h1 class="h1">{{ marcaSeleccionada?.marca || marcaSeleccionada?.fabricante }} • {{ dispositivoSeleccionado.modelo }}</h1>
+            <p class="sub">
+              Información comercial y técnica disponible para consulta pública (QR del empaque). Contenido conforme a alcance reducido SUBTEL, según documentación proporcionada por el importador/distribuidor.
+            </p>
+          </div>
+        </div>
       </div>
+    </header>
 
-      <!-- Información comercial a la derecha -->
-      <div class="detalle-info">
-        <h2 class="info-title">A. Información Comercial</h2>
-        
-        <div class="info-grid">
-          <div class="info-item">
-            <label class="info-label">FECHA DE PUBLICACIÓN</label>
-            <p class="info-value">{{ getFechaPublicacion() }}</p>
-          </div>
+    <!-- CONTENT -->
+    <section class="detalle-section">
+      <div class="container">
+        <div class="detalle-content-grid">
+          <!-- Columna izquierda: Información Comercial -->
+          <div class="detalle-info-column">
+            <div class="info-section-card">
+              <h2 class="info-section-title">A. INFORMACIÓN COMERCIAL</h2>
+              <p class="info-section-subtitle">Datos de publicación y contacto</p>
+              
+              <div class="info-grid">
+                <div class="info-item">
+                  <label class="info-label">FECHA DE PUBLICACIÓN</label>
+                  <p class="info-value">{{ getFechaPublicacion() }}</p>
+                </div>
 
-          <div class="info-item">
-            <label class="info-label">NOMBRE COMERCIAL DEL EQUIPO</label>
-            <p class="info-value">{{ dispositivoSeleccionado.nombreComercial || dispositivoSeleccionado.modelo || 'No disponible' }}</p>
-          </div>
+                <div class="info-item">
+                  <label class="info-label">NOMBRE COMERCIAL DEL EQUIPO</label>
+                  <p class="info-value">{{ dispositivoSeleccionado.nombreComercial || dispositivoSeleccionado.modelo || 'No disponible' }}</p>
+                </div>
 
-          <div class="info-item">
-            <label class="info-label">FABRICANTE</label>
-            <p class="info-value">{{ marcaSeleccionada?.fabricante || 'No disponible' }}</p>
-          </div>
+                <div class="info-item">
+                  <label class="info-label">FABRICANTE</label>
+                  <p class="info-value">{{ marcaSeleccionada?.fabricante || marcaSeleccionada?.marca || 'No disponible' }}</p>
+                </div>
 
-          <div class="info-item">
-            <label class="info-label">IMPORTADOR O REPRESENTANTE EN CHILE</label>
-            <p class="info-value">{{ getNombreRepresentante() || 'No disponible' }}</p>
-          </div>
+                <div class="info-item">
+                  <label class="info-label">IMPORTADOR O REPRESENTANTE EN CHILE</label>
+                  <p class="info-value">{{ getNombreRepresentante() || 'No disponible' }}</p>
+                </div>
 
-            <div class="info-item">
-              <label class="info-label">DOMICILIO</label>
-              <p class="info-value">{{ distribuidor?.domicilio || 'No disponible' }}</p>
+                <div class="info-item">
+                  <label class="info-label">DOMICILIO</label>
+                  <p class="info-value">{{ distribuidor?.domicilio || 'No disponible' }}</p>
+                </div>
+
+                <div class="info-item">
+                  <label class="info-label">CORREO ELECTRÓNICO DE CONTACTO</label>
+                  <p class="info-value">
+                    <a *ngIf="distribuidor?.email" [href]="'mailto:' + distribuidor.email" class="info-link">
+                      {{ distribuidor.email }}
+                    </a>
+                    <span *ngIf="!distribuidor?.email">No disponible</span>
+                  </p>
+                </div>
+
+                <div class="info-item full-width">
+                  <label class="info-label">SITIO WEB</label>
+                  <p class="info-value">
+                    <a *ngIf="distribuidor?.sitioWeb" [href]="distribuidor.sitioWeb" target="_blank" class="info-link">
+                      {{ distribuidor.sitioWeb }}
+                    </a>
+                    <span *ngIf="!distribuidor?.sitioWeb">No disponible</span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="info-notice" *ngIf="distribuidor">
+                <p><strong>Importante sobre el representante:</strong> Según confirmación oficial de OIRS-SUBTEL, el importador o representante debe tener domicilio legal en Chile. Es un requisito obligatorio sin excepciones.</p>
+              </div>
             </div>
 
-          <div class="info-item">
-            <label class="info-label">CORREO ELECTRÓNICO DE CONTACTO</label>
-            <p class="info-value">
-              <a *ngIf="distribuidor?.email" [href]="'mailto:' + distribuidor.email" class="info-link">
-                {{ distribuidor.email }}
-                <mat-icon>email</mat-icon>
-              </a>
-              <span *ngIf="!distribuidor?.email">No disponible</span>
-            </p>
+            <!-- Sección B: Características Técnicas -->
+            <div class="info-section-card" *ngIf="authService.isAuthenticated() || hasTechnicalData()">
+              <h2 class="info-section-title">B. CARACTERÍSTICAS TÉCNICAS</h2>
+              <p class="info-section-subtitle">Parámetros principales</p>
+              
+              <div class="tech-table">
+                <div class="tech-row" *ngIf="dispositivoSeleccionado.tipo">
+                  <div class="tech-param">Tipo de equipo</div>
+                  <div class="tech-value">{{ dispositivoSeleccionado.tipo }}</div>
+                </div>
+                
+                <div class="tech-row" *ngIf="dispositivoSeleccionado.tecnologia && dispositivoSeleccionado.tecnologia.length > 0">
+                  <div class="tech-param">Tecnología / modulación</div>
+                  <div class="tech-value">{{ dispositivoSeleccionado.tecnologia.join(' · ') }}</div>
+                </div>
+                
+                <div class="tech-row" *ngIf="dispositivoSeleccionado.frecuencias && dispositivoSeleccionado.frecuencias.length > 0">
+                  <div class="tech-param">Frecuencias</div>
+                  <div class="tech-value">{{ dispositivoSeleccionado.frecuencias.join(' · ') }}</div>
+                </div>
+                
+                <div class="tech-row" *ngIf="dispositivoSeleccionado.gananciaAntena && dispositivoSeleccionado.gananciaAntena.length > 0">
+                  <div class="tech-param">Ganancia de antena (dBi)</div>
+                  <div class="tech-value">{{ dispositivoSeleccionado.gananciaAntena.join(' · ') }}</div>
+                </div>
+                
+                <div class="tech-row" *ngIf="dispositivoSeleccionado.EIRP && dispositivoSeleccionado.EIRP.length > 0">
+                  <div class="tech-param">P.I.R.E. (EIRP)</div>
+                  <div class="tech-value">{{ dispositivoSeleccionado.EIRP.join(' · ') }}</div>
+                </div>
+                
+                <div class="tech-row" *ngIf="dispositivoSeleccionado.modulo && dispositivoSeleccionado.modulo.length > 0">
+                  <div class="tech-param">Módulos</div>
+                  <div class="tech-value">{{ dispositivoSeleccionado.modulo.join(' · ') }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sección C: Declaración de Conformidad -->
+            <div class="info-section-card">
+              <h2 class="info-section-title">C. DECLARACIÓN DE CONFORMIDAD</h2>
+              <p class="info-section-subtitle">Texto requerido</p>
+              
+              <div class="conformidad-quote">
+                <p>El equipo previamente individualizado cumple con las disposiciones establecidas en la Norma Técnica de Equipos de alcance reducido, aprobada por la resolución exenta N° 1.985, de 2017, de la Subsecretaría de Telecomunicaciones.</p>
+              </div>
+              
+              <p class="conformidad-note">
+                Este texto se presenta como declaración requerida por el proceso de alcance reducido. La documentación de respaldo se mantiene disponible para requerimientos.
+              </p>
+            </div>
           </div>
 
-          <div class="info-item full-width">
-            <label class="info-label">SITIO WEB</label>
-            <p class="info-value">
-              <a *ngIf="distribuidor?.sitioWeb" [href]="distribuidor.sitioWeb" target="_blank" class="info-link">
-                {{ distribuidor.sitioWeb }}
-                <mat-icon>open_in_new</mat-icon>
-              </a>
-              <span *ngIf="!distribuidor?.sitioWeb">No disponible</span>
-            </p>
-          </div>
-        </div>
-
-        <!-- Sección B: Información Técnica (solo para usuarios logueados) -->
-        <div *ngIf="authService.isAuthenticated()" class="info-section-b">
-          <h2 class="info-title">B. Información Técnica</h2>
-          
-          <div class="info-grid">
-            <!-- Los campos se agregarán más tarde -->
+          <!-- Columna derecha: Imagen -->
+          <div class="detalle-imagen-column">
+            <div class="detalle-imagen-card">
+              <h3 class="imagen-title">IMAGEN</h3>
+              <p class="imagen-subtitle">Fotografía del equipo</p>
+              <div class="detalle-imagen">
+                <img 
+                  [src]="getDispositivoImage(dispositivoSeleccionado)" 
+                  [alt]="dispositivoSeleccionado.modelo"
+                  class="dispositivo-detalle-image"
+                  (error)="onImageError($event)">
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom: 8px;">
+              <img class="brand-logo-img" src="assets/lb-technology-logo.png" alt="LB Technology" style="height:28px;border-radius:8px;" />
+              <div style="font-weight: 750;">Alcance Reducido · Operado por LB Technology</div>
+            </div>
+            <div>
+              © {{ currentYear }} LB Technology. Todos los derechos reservados.
+              <div style="margin-top:6px;">
+                <span style="color: var(--muted2);">
+                  Aviso: contenido informativo de alto nivel. La implementación final depende del caso y documentación del equipo.
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="foot-links">
+            <a (click)="goToHome()" style="cursor: pointer;">Home</a>
+            <a (click)="goToHome()" style="cursor: pointer;">Normativa</a>
+            <a (click)="goToHome()" style="cursor: pointer;">Servicios</a>
+            <a (click)="goToHome()" style="cursor: pointer;">Contacto</a>
+          </div>
+        </div>
+      </div>
+    </footer>
   </div>
 </div>

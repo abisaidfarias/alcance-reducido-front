@@ -39,3 +39,5 @@ while ($intentos -lt $maxIntentos) {
 
 Write-Host "`nMonitoreo finalizado." -ForegroundColor Cyan
 
+
+

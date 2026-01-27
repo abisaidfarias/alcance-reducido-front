@@ -1,6 +1,7 @@
 export interface Dispositivo {
   _id?: string;
   modelo: string;
+  nombreComercial?: string; // Nombre comercial del equipo
   tipo: string; // Campo abierto (no enum)
   foto?: string;
   marca: string; // ObjectId de Marca
