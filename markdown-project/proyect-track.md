@@ -139,133 +139,97 @@ Proyecto Angular con diseño estándar bonito que incluye:
 
 ## Despliegue en AWS
 
-### Arquitectura Confirmada
+### Arquitectura
 - **Frontend**: S3 + CloudFront
-- **Subdominio**: `app.alcance-reducido.com` (configuración inicial)
-- **Dominio raíz**: `alcance-reducido.com` (opción para migrar a Route 53)
+- **Dominio**: `alcance-reducido.com`
 - **API Backend**: `https://api.alcance-reducido.com/api`
 - **Región**: `us-east-1`
+- **Bucket S3**: `alcance-reducido-app`
+- **CloudFront Distribution**: `E2ANIEKR516BL9`
+- **CloudFront Domain**: `d116qh3ntei4la.cloudfront.net`
+- **Route 53 Hosted Zone**: `Z00603941KQBVTNY6LOLY`
 
-### Documentación de Despliegue
-- `DEPLOY.md` - Guía de despliegue con subdominio
-- `deploy-aws.md` - Guía detallada de arquitectura S3 + CloudFront
-- `migrar-dominio-aws.md` - Guía para migrar dominio completo a Route 53
-- `ESTADO-ACTUAL-AWS.md` - **Estado actual del despliegue y pasos pendientes (Opción B)**
-
-### Estado Actual del Despliegue AWS (Opción B)
-**Última revisión**: 25 de Enero 2025
+### Estado del Despliegue
+**Última actualización**: 27 de Enero 2025
 
 #### ✅ Completado
-- [x] Bucket S3 creado: `alcance-reducido-app`
-- [x] Archivos subidos a S3
-- [x] CloudFront Distribution creada: `E2ANIEKR516BL9` (Status: Deployed)
-- [x] CloudFront Domain: `d116qh3ntei4la.cloudfront.net`
-- [x] OAC configurado: `E32MO9CLRFRSEA`
-- [x] Custom Error Responses configurados (403, 404 → /browser/index.html)
-- [x] Script de despliegue creado (`deploy.sh`)
-- [x] Políticas de bucket creadas
-- [x] `environment.prod.ts` actualizado para dominio raíz
+- [x] Bucket S3 creado y configurado
+- [x] CloudFront Distribution creada y desplegada
+- [x] OAC configurado
+- [x] Custom Error Responses configurados (403, 404 → /index.html)
+- [x] Route 53 Hosted Zone creada
+- [x] Registros DNS configurados (A para dominio raíz y www)
+- [x] Certificado SSL validado y asociado
+- [x] Name Servers actualizados en Namecheap
+- [x] Registros MX (email) preservados
+- [x] URL API actualizada a `https://api.alcance-reducido.com/api`
+- [x] Base href configurado correctamente
+- [x] CloudFront Function para redirección creada (`redirect-fabricante-infinix`)
+- [x] Sitio en producción: `https://alcance-reducido.com`
 
-#### ✅ Completado (25 de Enero 2025)
-- [x] **Hosted Zone creada en Route 53**: `Z00603941KQBVTNY6LOLY`
-- [x] **Registro A para dominio raíz**: `alcance-reducido.com` → CloudFront
-- [x] **Registro A para www**: `www.alcance-reducido.com` → CloudFront
-- [x] **Certificado SSL solicitado en ACM**: `arn:aws:acm:us-east-1:438758934896:certificate/444c9d61-0878-4d39-8067-9f27885ce8d5`
-- [x] **Registros de validación DNS creados** en Route 53
-- [x] **Scripts de automatización creados**: `update-cloudfront.py`, `completar-cloudfront.ps1`
-- [x] **Documentación completa**: `RESUMEN-DESPLIEGUE.md`, `COMPLETAR-CLOUDFRONT.md`
+#### Scripts de Despliegue
+- `deploy.sh` - Script principal de despliegue
+- `update-cloudfront.py` - Actualización de configuración CloudFront
+- `completar-cloudfront.ps1` - Script PowerShell para completar configuración
 
-#### ✅ COMPLETADO - Despliegue Finalizado (25 de Enero 2025, 22:02 UTC)
-- [x] **Certificado SSL validado**: Estado `ISSUED`
-- [x] **CloudFront configurado**: Aliases y certificado SSL asociados
-- [x] **Registros DNS existentes copiados**: MX (email) y TXT (SPF) copiados a Route 53
-- [x] **Name Servers actualizados**: Cambiados en Namecheap a Route 53
-- [x] **CloudFront desplegado**: Status `Deployed`
-- [x] **Sitio accesible**: `https://alcance-reducido.com` (Status 200)
-- [x] **Aliases configurados**: `alcance-reducido.com`, `www.alcance-reducido.com`
+## Historial de Cambios
 
-#### 🎉 Despliegue Completado
-- ✅ **Sitio en producción**: `https://alcance-reducido.com`
-- ✅ **Email preservado**: Registros MX copiados correctamente
-- ✅ **HTTPS funcionando**: Certificado SSL válido
-- ✅ **CloudFront activo**: Distribución desplegada y funcionando
+### 27 de Enero 2025 - Separación de Campos en Distribuidor
+- [x] **Campo 'representante' actualizado**: Ahora solo acepta caracteres alfanuméricos (a-z, A-Z, 0-9), sin espacios ni caracteres especiales
+- [x] **Nuevo campo 'nombreRepresentante' agregado**: Permite cualquier carácter y se usa para mostrar el nombre completo en la tabla y página pública
+- [x] **Validación implementada**: El campo 'representante' tiene validación de patrón y filtro automático en el input
+- [x] **URLs preservadas**: El campo 'representante' sigue siendo usado para generar las URLs (`/representante/{representante}`)
+- [x] **Visualización actualizada**: La tabla y página pública muestran 'nombreRepresentante' en lugar de 'representante'
+- [x] **Archivos actualizados**:
+  - `distribuidor.interface.ts` - Agregado campo `nombreRepresentante`
+  - `distribuidor-form.component.html` - Agregado campo nuevo con validaciones
+  - `distribuidor-form.component.ts` - Validación y filtro de input
+  - `distribuidor.component.html` - Muestra `nombreRepresentante`
+  - `representante.component.ts` - Método `getNombreRepresentante()` agregado
+  - `representante.component.html` - Usa `getNombreRepresentante()`
 
-#### ✅ Corrección de Base Href (25 de Enero 2025, tarde)
-- [x] **Problema identificado**: Angular app no cargaba correctamente debido a `base href` incorrecto
-- [x] **Solución aplicada**: Configurado `baseHref: "/browser/"` en `angular.json` para producción
-- [x] **Aplicación reconstruida**: Build con configuración correcta
-- [x] **Archivos re-subidos a S3**: Archivos actualizados sincronizados
-- [x] **CloudFront invalidado**: Cache limpiado para `/browser/*`
-- [x] **Verificación**: CloudFront sirve correctamente en `https://d116qh3ntei4la.cloudfront.net/browser/`
+### 27 de Enero 2025 - Tipos de Dispositivos Expandidos
+- [x] **Nuevos tipos agregados**: Reloj, Audífonos, Laptop (además de Teléfono existente)
+- [x] **Union type creado**: `TipoDispositivo` con valores: 'telefono' | 'reloj' | 'audifonos' | 'laptop'
+- [x] **Formulario actualizado**: Opciones agregadas al select de tipo de dispositivo
+- [x] **Formateo de visualización**: Método `getTipoDisplay()` agregado para mostrar nombres capitalizados en la tabla
+- [x] **Archivos actualizados**:
+  - `dispositivo.interface.ts` - Union type `TipoDispositivo` creado
+  - `dispositivo-form.component.html` - Opciones de tipo agregadas
+  - `dispositivo.component.ts` - Método `getTipoDisplay()` agregado
+  - `dispositivo.component.html` - Usa `getTipoDisplay()` para mostrar tipo
 
-#### ⏳ Estado Actual - Propagación DNS (25 de Enero 2025, noche)
-- ✅ **Todo configurado correctamente**: CloudFront, S3, Route 53, Name Servers
-- ⏳ **Propagación DNS en proceso**: Name Servers correctos en Namecheap, pero DNS aún no propagado globalmente
-- ✅ **Sitio funciona en CloudFront directo**: `https://d116qh3ntei4la.cloudfront.net/browser/`
-- ⏳ **Esperando propagación**: Normalmente 15-30 minutos, puede tardar hasta 48 horas
-- 📝 **Documentación creada**: `ESTADO-ACTUAL-FINAL.md`, `PROPAGACION-DNS.md`
+### 25-26 de Enero 2025 - Despliegue en AWS
+- [x] Configuración inicial de S3 y CloudFront
+- [x] Migración de dominio a Route 53
+- [x] Configuración de certificado SSL
+- [x] Actualización de Name Servers
+- [x] Corrección de base href
+- [x] Actualización de URL de API
+- [x] Eliminación de `/browser/` de URL
+- [x] CloudFront Function para redirección
 
-#### ✅ Actualización URL API (25 de Enero 2025, noche)
-- [x] **URL API actualizada**: Cambiada de Elastic Beanstalk a `https://api.alcance-reducido.com/api`
-- [x] **Motivo**: Evitar problemas de CORS (dominio cruzado) usando mismo dominio
-- [x] **Archivo actualizado**: `src/environments/environment.prod.ts`
-- [x] **Aplicación reconstruida**: Build con nueva URL de API
-- [x] **Archivos subidos a S3**: Archivos actualizados sincronizados
-- [x] **CloudFront invalidado**: Cache limpiado para `/browser/*`
+## Notas Importantes
 
-#### ✅ Eliminación de /browser/ de URL (25 de Enero 2025, noche)
-- [x] **baseHref actualizado**: Cambiado de `/browser/` a `/` en `angular.json`
-- [x] **Archivos movidos**: De `browser/` a raíz en S3
-- [x] **CloudFront actualizado**: `DefaultRootObject` cambiado a `index.html`
-- [x] **Custom Error Responses**: Actualizados para usar `/index.html`
-- [x] **URL final**: `https://alcance-reducido.com` (sin `/browser/`)
-
-#### ✅ Redirección CloudFront Function (26 de Enero 2025)
-- [x] **CloudFront Function creada**: `redirect-fabricante-infinix`
-- [x] **Redirección configurada**: `/fabricante/infinix` → `/representante/luxuryspa`
-- [x] **Función publicada**: Estado `LIVE`
-- [x] **Asociada a CloudFront**: Evento `viewer-request` en distribución `E2ANIEKR516BL9`
-- [x] **Tipo**: Redirección 301 permanente
-- [x] **Motivo**: Error del cliente, solución sin modificar código Angular
-
-**Ver detalles completos en**: `DESPLIEGUE-COMPLETADO.md`, `ESTADO-ACTUAL-FINAL.md`, `PROPAGACION-DNS.md`
-
-### Opciones de Migración de Dominio
-1. **Opción 1 (Recomendada)**: Usar Route 53 solo para DNS
-   - Mantener dominio en registrador actual
-   - Usar Route 53 para gestionar registros DNS
-   - Más rápido y fácil de revertir
-
-2. **Opción 2**: Transferir dominio completo a Route 53
-   - Transferir registro del dominio a AWS
-   - Todo centralizado en AWS
-   - Requiere más tiempo y proceso
-
-### Decisiones Importantes sobre el Dominio
-**⚠️ Pregunta clave**: ¿Reemplazar el sitio actual o mantener ambos?
-
-**Opción A (Actual)**: Mantener sitio actual + Subdominio
-- `alcance-reducido.com` → Mantiene sitio actual
-- `app.alcance-reducido.com` → Nueva aplicación Angular
-- ✅ No interrumpe el sitio actual
-- ✅ Permite migración gradual
-
-**Opción B**: Reemplazar sitio actual completamente
-- `alcance-reducido.com` → Nueva aplicación Angular
-- ❌ El sitio actual dejará de funcionar
-- ✅ URL más limpia (sin subdominio)
-
-**IMPORTANTE**: Si se usa Route 53, se deben copiar TODOS los registros DNS existentes (MX, TXT, CNAME, etc.) antes de cambiar los Name Servers para evitar perder servicios como email.
-
-## Notas
+### Desarrollo Local
 - El proyecto está listo para ejecutarse con `ng serve`
 - La API debe estar corriendo en http://localhost:3000
 - El Swagger está disponible en http://localhost:3000/api-docs/
 - El token se almacena en localStorage con la clave 'auth_token'
 - La URL base de la API incluye el prefijo `/api` automáticamente
 - El endpoint de login es: `http://localhost:3000/api/auth/login`
-- El generador de QR usa una API externa (qrserver.com) para generar los códigos
+
+### Producción
+- **Sitio en producción**: `https://alcance-reducido.com`
+- **API Backend**: `https://api.alcance-reducido.com/api`
 - La página principal (`/`) es pública y muestra información sobre certificación SUBTEL
 - La plataforma administrativa está en `/admin/*` y requiere autenticación de admin
 - Los usuarios no-admin son redirigidos a `/representante/:nombre` después del login
 
+### Backend - Cambios Requeridos
+- **IMPORTANTE**: El backend debe actualizarse para soportar el nuevo campo `nombreRepresentante` en el modelo Distribuidor
+- **IMPORTANTE**: El backend debe actualizarse para aceptar los nuevos tipos de dispositivos: 'reloj', 'audifonos', 'laptop'
+
+### Funcionalidades
+- El generador de QR usa una API externa (qrserver.com) para generar los códigos
+- CloudFront Function configurada para redirección: `/fabricante/infinix` → `/representante/luxuryspa`

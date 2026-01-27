@@ -9,6 +9,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatChipInputEvent } from '@angular/material/chips';
 import { Dispositivo } from '../../../models/dispositivo.interface';
 import { ImageUploadComponent } from '../../shared/image-upload/image-upload.component';
 import { MarcaService } from '../../../services/marca.service';
@@ -30,6 +32,7 @@ import { Distribuidor } from '../../../models/distribuidor.interface';
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatChipsModule,
     ImageUploadComponent
   ],
   templateUrl: './dispositivo-form.component.html',
@@ -57,11 +60,16 @@ export class DispositivoFormComponent implements OnInit {
     const isEdit = !!this.data;
     this.dispositivoForm = this.fb.group({
       modelo: [''],
-      tipo: ['telefono'],
+      tipo: [''], // Campo abierto, no enum
       foto: [''],
       marca: [''],
       distribuidor: isEdit ? [[] as string[]] : [''],
-      fechaPublicacion: ['']
+      fechaPublicacion: [''],
+      tecnologia: [[] as string[]],
+      frecuencias: [[] as string[]],
+      gananciaAntena: [[] as string[]],
+      EIRP: [[] as string[]],
+      modulo: [[] as string[]]
     });
   }
 
@@ -145,8 +153,13 @@ export class DispositivoFormComponent implements OnInit {
     setTimeout(() => {
       this.dispositivoForm.patchValue({
         modelo: this.data!.modelo || '',
-        tipo: this.data!.tipo || 'telefono',
+        tipo: this.data!.tipo || '',
         foto: this.data!.foto || '',
+        tecnologia: this.data!.tecnologia || [],
+        frecuencias: this.data!.frecuencias || [],
+        gananciaAntena: this.data!.gananciaAntena || [],
+        EIRP: this.data!.EIRP || [],
+        modulo: this.data!.modulo || [],
         marca: marcaId,
         distribuidor: distribuidorArray,
         fechaPublicacion: fechaPublicacionDate
@@ -232,10 +245,15 @@ export class DispositivoFormComponent implements OnInit {
     
     const submitData: any = {
       modelo: formValue.modelo,
-      tipo: formValue.tipo,
-      foto: formValue.foto,
+      tipo: formValue.tipo || '',
+      foto: formValue.foto || '',
       marca: formValue.marca,
-      fechaPublicacion: fechaPublicacionString
+      fechaPublicacion: fechaPublicacionString,
+      tecnologia: Array.isArray(formValue.tecnologia) ? formValue.tecnologia.filter((v: string) => v && v.trim() !== '') : [],
+      frecuencias: Array.isArray(formValue.frecuencias) ? formValue.frecuencias.filter((v: string) => v && v.trim() !== '') : [],
+      gananciaAntena: Array.isArray(formValue.gananciaAntena) ? formValue.gananciaAntena.filter((v: string) => v && v.trim() !== '') : [],
+      EIRP: Array.isArray(formValue.EIRP) ? formValue.EIRP.filter((v: string) => v && v.trim() !== '') : [],
+      modulo: Array.isArray(formValue.modulo) ? formValue.modulo.filter((v: string) => v && v.trim() !== '') : []
     };
     
     // En modo edición, distribuidor es array; en creación, es string
@@ -263,6 +281,49 @@ export class DispositivoFormComponent implements OnInit {
   getDistribuidorDisplay(distribuidorId: string): string {
     const distribuidor = this.distribuidores.find(d => d._id === distribuidorId);
     return distribuidor ? distribuidor.representante : distribuidorId;
+  }
+
+  // Separadores de teclado para chips (Enter y coma)
+  separatorKeysCodes: number[] = [13, 188]; // Enter y coma
+
+  // Obtener valor de un array del formulario
+  getArrayValue(fieldName: string): string[] {
+    const value = this.dispositivoForm.get(fieldName)?.value;
+    return Array.isArray(value) ? value : [];
+  }
+
+  // Agregar valor a un array
+  addToArray(event: MatChipInputEvent, fieldName: string): void {
+    const input = event.input;
+    const value = event.value;
+
+    // Agregar el valor si no está vacío
+    if ((value || '').trim()) {
+      const currentValue = this.getArrayValue(fieldName);
+      const trimmedValue = value.trim();
+      
+      // Evitar duplicados
+      if (!currentValue.includes(trimmedValue)) {
+        currentValue.push(trimmedValue);
+        this.dispositivoForm.get(fieldName)?.setValue([...currentValue]);
+      }
+    }
+
+    // Limpiar el input
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  // Remover valor de un array
+  removeFromArray(fieldName: string, value: string): void {
+    const currentValue = this.getArrayValue(fieldName);
+    const index = currentValue.indexOf(value);
+
+    if (index >= 0) {
+      currentValue.splice(index, 1);
+      this.dispositivoForm.get(fieldName)?.setValue([...currentValue]);
+    }
   }
 }
 

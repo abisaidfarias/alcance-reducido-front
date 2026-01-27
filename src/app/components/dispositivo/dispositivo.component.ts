@@ -119,7 +119,8 @@ export class DispositivoComponent implements OnInit {
 
   openDialog(dispositivo?: Dispositivo): void {
     const dialogRef = this.dialog.open(DispositivoFormComponent, {
-      width: '600px',
+      width: '900px',
+      maxWidth: '95vw',
       data: dispositivo || null
     });
 
@@ -275,5 +276,13 @@ export class DispositivoComponent implements OnInit {
       // Si hay más de uno, mostrar el número
       return `${distribuidoresArray.length} distribuidores`;
     }
+  }
+
+  getTipoDisplay(tipo: string): string {
+    // Tipo ahora es campo abierto, solo capitalizar si existe
+    if (!tipo || tipo.trim() === '') {
+      return '-';
+    }
+    return tipo.charAt(0).toUpperCase() + tipo.slice(1);
   }
 }
