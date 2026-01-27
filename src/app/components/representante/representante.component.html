@@ -39,7 +39,9 @@
         </span>
 
         <div class="breadcrumbs" aria-label="Breadcrumbs">
-          <a class="crumb" (click)="goToHome()" style="cursor: pointer;" title="Volver al Home">← Volver</a>
+          <a class="crumb" (click)="goToHome()" style="cursor: pointer;" title="Ir al Home">
+            <mat-icon style="font-size: 16px; width: 16px; height: 16px; line-height: 16px; vertical-align: middle;">home</mat-icon>
+          </a>
           <span style="opacity:.6;">/</span>
           <span class="crumb" aria-current="page">{{ getNombreRepresentante() }}</span>
         </div>
@@ -242,7 +244,9 @@
         </span>
 
         <div class="breadcrumbs" aria-label="Breadcrumbs">
-          <a class="crumb" (click)="volverAtras()" style="cursor: pointer;" title="Volver a modelos">← {{ getNombreRepresentante() }} / {{ marcaSeleccionada?.marca || marcaSeleccionada?.fabricante }}</a>
+          <a class="crumb" (click)="volverAtras()" style="cursor: pointer;" title="Volver a modelos">← {{ getNombreRepresentante() }}</a>
+          <span style="opacity:.6;">/</span>
+          <a class="crumb" (click)="volverADispositivos()" style="cursor: pointer;" title="Volver a dispositivos">{{ marcaSeleccionada?.marca || marcaSeleccionada?.fabricante }}</a>
           <span style="opacity:.6;">/</span>
           <span class="crumb" aria-current="page">{{ dispositivoSeleccionado.modelo }}</span>
         </div>
@@ -261,7 +265,8 @@
     <!-- CONTENT -->
     <section class="detalle-section">
       <div class="container">
-        <div class="detalle-content-grid">
+        <!-- Primera fila: A. INFORMACIÓN COMERCIAL + IMAGEN (2 columnas) -->
+        <div class="top-grid">
           <!-- Columna izquierda: Información Comercial -->
           <div class="detalle-info-column">
             <div class="info-section-card">
@@ -307,7 +312,7 @@
                 <div class="info-item full-width">
                   <label class="info-label">SITIO WEB</label>
                   <p class="info-value">
-                    <a *ngIf="distribuidor?.sitioWeb" [href]="distribuidor.sitioWeb" target="_blank" class="info-link">
+                    <a *ngIf="distribuidor?.sitioWeb" [href]="getWebsiteUrl(distribuidor.sitioWeb)" target="_blank" class="info-link">
                       {{ distribuidor.sitioWeb }}
                     </a>
                     <span *ngIf="!distribuidor?.sitioWeb">No disponible</span>
@@ -319,58 +324,6 @@
                 <p><strong>Importante sobre el representante:</strong> Según confirmación oficial de OIRS-SUBTEL, el importador o representante debe tener domicilio legal en Chile. Es un requisito obligatorio sin excepciones.</p>
               </div>
             </div>
-
-            <!-- Sección B: Características Técnicas -->
-            <div class="info-section-card" *ngIf="authService.isAuthenticated() || hasTechnicalData()">
-              <h2 class="info-section-title">B. CARACTERÍSTICAS TÉCNICAS</h2>
-              <p class="info-section-subtitle">Parámetros principales</p>
-              
-              <div class="tech-table">
-                <div class="tech-row" *ngIf="dispositivoSeleccionado.tipo">
-                  <div class="tech-param">Tipo de equipo</div>
-                  <div class="tech-value">{{ dispositivoSeleccionado.tipo }}</div>
-                </div>
-                
-                <div class="tech-row" *ngIf="dispositivoSeleccionado.tecnologia && dispositivoSeleccionado.tecnologia.length > 0">
-                  <div class="tech-param">Tecnología / modulación</div>
-                  <div class="tech-value">{{ dispositivoSeleccionado.tecnologia.join(' · ') }}</div>
-                </div>
-                
-                <div class="tech-row" *ngIf="dispositivoSeleccionado.frecuencias && dispositivoSeleccionado.frecuencias.length > 0">
-                  <div class="tech-param">Frecuencias</div>
-                  <div class="tech-value">{{ dispositivoSeleccionado.frecuencias.join(' · ') }}</div>
-                </div>
-                
-                <div class="tech-row" *ngIf="dispositivoSeleccionado.gananciaAntena && dispositivoSeleccionado.gananciaAntena.length > 0">
-                  <div class="tech-param">Ganancia de antena (dBi)</div>
-                  <div class="tech-value">{{ dispositivoSeleccionado.gananciaAntena.join(' · ') }}</div>
-                </div>
-                
-                <div class="tech-row" *ngIf="dispositivoSeleccionado.EIRP && dispositivoSeleccionado.EIRP.length > 0">
-                  <div class="tech-param">P.I.R.E. (EIRP)</div>
-                  <div class="tech-value">{{ dispositivoSeleccionado.EIRP.join(' · ') }}</div>
-                </div>
-                
-                <div class="tech-row" *ngIf="dispositivoSeleccionado.modulo && dispositivoSeleccionado.modulo.length > 0">
-                  <div class="tech-param">Módulos</div>
-                  <div class="tech-value">{{ dispositivoSeleccionado.modulo.join(' · ') }}</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Sección C: Declaración de Conformidad -->
-            <div class="info-section-card">
-              <h2 class="info-section-title">C. DECLARACIÓN DE CONFORMIDAD</h2>
-              <p class="info-section-subtitle">Texto requerido</p>
-              
-              <div class="conformidad-quote">
-                <p>El equipo previamente individualizado cumple con las disposiciones establecidas en la Norma Técnica de Equipos de alcance reducido, aprobada por la resolución exenta N° 1.985, de 2017, de la Subsecretaría de Telecomunicaciones.</p>
-              </div>
-              
-              <p class="conformidad-note">
-                Este texto se presenta como declaración requerida por el proceso de alcance reducido. La documentación de respaldo se mantiene disponible para requerimientos.
-              </p>
-            </div>
           </div>
 
           <!-- Columna derecha: Imagen -->
@@ -378,14 +331,88 @@
             <div class="detalle-imagen-card">
               <h3 class="imagen-title">IMAGEN</h3>
               <p class="imagen-subtitle">Fotografía del equipo</p>
-              <div class="detalle-imagen">
+              <div class="photo-frame">
                 <img 
-                  [src]="getDispositivoImage(dispositivoSeleccionado)" 
+                  *ngIf="dispositivoSeleccionado?.foto && !imageLoadError"
+                  [src]="dispositivoSeleccionado.foto" 
                   [alt]="dispositivoSeleccionado.modelo"
-                  class="dispositivo-detalle-image"
-                  (error)="onImageError($event)">
+                  class="photo-frame-image"
+                  (error)="onImageError($event)"
+                  (load)="imageLoadError = false">
+                <div *ngIf="!dispositivoSeleccionado?.foto || imageLoadError" class="photo-placeholder">
+                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 19V5C21 3.9 20.1 3 19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.5 13.5C9.32843 13.5 10 12.8284 10 12C10 11.1716 9.32843 10.5 8.5 10.5C7.67157 10.5 7 11.1716 7 12C7 12.8284 7.67157 13.5 8.5 13.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 15L16 10L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <p>Sin imagen</p>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Segunda fila: B. CARACTERÍSTICAS TÉCNICAS (full width) -->
+        <div class="tech-section" *ngIf="authService.isAuthenticated() || hasTechnicalData()">
+          <div class="info-section-card">
+            <h2 class="info-section-title">B. CARACTERÍSTICAS TÉCNICAS</h2>
+            <p class="info-section-subtitle">Parámetros principales</p>
+            
+            <table class="tech-table">
+              <thead>
+                <tr>
+                  <th class="tech-header-param">PARÁMETRO</th>
+                  <th class="tech-header-value">VALOR</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="dispositivoSeleccionado.tipo">
+                  <td class="tech-param">Tipo de equipo</td>
+                  <td class="tech-value">{{ dispositivoSeleccionado.tipo }}</td>
+                </tr>
+                
+                <tr *ngIf="dispositivoSeleccionado.tecnologia && dispositivoSeleccionado.tecnologia.length > 0">
+                  <td class="tech-param">Tecnología / modulación</td>
+                  <td class="tech-value">{{ dispositivoSeleccionado.tecnologia.join(' · ') }}</td>
+                </tr>
+                
+                <tr *ngIf="dispositivoSeleccionado.frecuencias && dispositivoSeleccionado.frecuencias.length > 0">
+                  <td class="tech-param">Frecuencias</td>
+                  <td class="tech-value">{{ dispositivoSeleccionado.frecuencias.join(' · ') }}</td>
+                </tr>
+                
+                <tr *ngIf="dispositivoSeleccionado.gananciaAntena && dispositivoSeleccionado.gananciaAntena.length > 0">
+                  <td class="tech-param">Ganancia de antena (dBi)</td>
+                  <td class="tech-value">{{ dispositivoSeleccionado.gananciaAntena.join(' · ') }}</td>
+                </tr>
+                
+                <tr *ngIf="dispositivoSeleccionado.EIRP && dispositivoSeleccionado.EIRP.length > 0">
+                  <td class="tech-param">P.I.R.E. (EIRP)</td>
+                  <td class="tech-value">{{ dispositivoSeleccionado.EIRP.join(' · ') }}</td>
+                </tr>
+                
+                <tr *ngIf="dispositivoSeleccionado.modulo && dispositivoSeleccionado.modulo.length > 0">
+                  <td class="tech-param">Módulos</td>
+                  <td class="tech-value">{{ dispositivoSeleccionado.modulo.join(' · ') }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tercera fila: C. DECLARACIÓN DE CONFORMIDAD (full width) -->
+        <div class="conformidad-section">
+          <div class="info-section-card">
+            <h2 class="info-section-title">C. DECLARACIÓN DE CONFORMIDAD</h2>
+            <p class="info-section-subtitle">Texto requerido</p>
+            
+            <div class="conformidad-quote">
+              <p>El equipo previamente individualizado cumple con las disposiciones establecidas en la Norma Técnica de Equipos de alcance reducido, aprobada por la resolución exenta N° 1.985, de 2017, de la Subsecretaría de Telecomunicaciones.</p>
+            </div>
+            
+            <p class="conformidad-note">
+              Este texto se presenta como declaración requerida por el proceso de alcance reducido. La documentación de respaldo se mantiene disponible para requerimientos.
+            </p>
           </div>
         </div>
       </div>

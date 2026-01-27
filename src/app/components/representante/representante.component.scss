@@ -213,10 +213,21 @@
   color: inherit;
   text-decoration: none;
   transition: all .15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   
   &:hover {
     background: rgba(255,255,255,.06);
     color: var(--text);
+  }
+  
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    vertical-align: middle;
   }
 }
 
@@ -426,30 +437,39 @@ footer {
   padding: 18px 0 44px;
 }
 
-.detalle-content-grid {
+// La grilla 2 columnas se limita al bloque superior (A + Imagen). 
+// La sección B se renderiza en full-width (span 2 columnas), evitando espacio reservado en la derecha.
+
+// Primera fila: A. INFORMACIÓN COMERCIAL + IMAGEN (2 columnas)
+.top-grid {
   display: grid;
   grid-template-columns: 1.25fr 1fr;
-  grid-template-rows: auto auto;
   gap: 24px;
   align-items: start;
+  margin-bottom: 24px;
 }
 
 .detalle-info-column {
-  grid-column: 1;
-  grid-row: 1 / span 2; // Ocupa ambas filas
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  height: 100%;
 }
 
 .detalle-imagen-column {
-  grid-column: 2;
-  grid-row: 1 / span 2; // Ocupa ambas filas (misma altura que A + B)
-  position: sticky;
-  top: 100px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  height: 100%;
+}
+
+// Segunda fila: B. CARACTERÍSTICAS TÉCNICAS (full width)
+.tech-section {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+// Tercera fila: C. DECLARACIÓN DE CONFORMIDAD (full width)
+.conformidad-section {
+  width: 100%;
 }
 
 .info-section-card {
@@ -465,7 +485,7 @@ footer {
   font-size: 18px;
   font-weight: 800;
   color: var(--text);
-  margin: 0 0 8px 0;
+  margin: 0 0 4px 0;
   letter-spacing: 0.5px;
 }
 
@@ -512,22 +532,31 @@ footer {
 }
 
 .info-value {
-  font-size: 16px;
+  font-size: 18px;
   color: var(--text);
   margin: 0;
   word-break: break-word;
   line-height: 1.6;
   font-weight: 500;
+  
+  a.info-link {
+    color: #3b82f6 !important;
+    text-decoration: underline;
+    transition: color .15s ease;
+    
+    &:hover {
+      color: #2563eb !important;
+    }
+  }
 }
 
 .info-link {
-  color: var(--brand);
-  text-decoration: none;
+  color: #3b82f6 !important;
+  text-decoration: underline;
   transition: color .15s ease;
   
   &:hover {
-    color: var(--brand2);
-    text-decoration: underline;
+    color: #2563eb !important;
   }
 }
 
@@ -550,51 +579,80 @@ footer {
   }
 }
 
-// Tabla de características técnicas - Mismo patrón que info-grid
+// Tabla de características técnicas - Tabla real con headers (estilo de la imagen de referencia)
 .tech-table {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.tech-row {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 16px;
-  background: rgba(255,255,255,.08);
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
   border: 1px solid rgba(255,255,255,.12);
   border-radius: 14px;
-  transition: background .15s ease, border .15s ease;
+  overflow: hidden;
+  background: rgba(255,255,255,.03);
   
-  &:hover {
-    background: rgba(255,255,255,.10);
-    border-color: rgba(255,255,255,.16);
+  thead {
+    background: rgba(255,255,255,.06);
+    
+    tr {
+      border-bottom: 2px solid rgba(255,255,255,.15);
+    }
   }
   
-  // Si algún campo necesita ancho completo
-  &.full-width {
-    grid-column: 1 / -1;
+  tbody {
+    background: transparent;
+    
+    tr {
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      transition: background .15s ease;
+      
+      &:hover {
+        background: rgba(255,255,255,.04);
+      }
+      
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+  
+  th, td {
+    padding: 20px 24px;
+    text-align: left;
+    vertical-align: top;
+  }
+  
+  th {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    background: rgba(255,255,255,.06);
+  }
+  
+  td {
+    background: transparent;
   }
 }
 
+.tech-header-param,
 .tech-param {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--muted);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin: 0;
-  line-height: 1.4;
+  letter-spacing: 1.2px;
+  width: 35%;
+  padding-right: 24px;
 }
 
+.tech-header-value,
 .tech-value {
-  font-size: 16px;
+  font-size: 18px;
   color: var(--text);
-  line-height: 1.6;
+  line-height: 1.8;
   font-weight: 500;
-  margin: 0;
   word-break: break-word;
+  width: 65%;
 }
 
 // Declaración de conformidad
@@ -649,23 +707,51 @@ footer {
   margin: 0 0 20px 0; // Ya estaba unificado
 }
 
-.detalle-imagen {
-  flex: 1; // Crecer para ocupar espacio disponible (frame interno)
+// PhotoFrame para la imagen del dispositivo
+.photo-frame {
+  height: clamp(280px, 45vh, 520px);
+  width: 100%;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255,255,255,.03);
-  border-radius: 12px;
-  padding: 40px;
-  border: 1px solid rgba(255,255,255,.08);
-  overflow: hidden; // Prevenir overflow
-  min-height: 0; // Permitir que flex funcione correctamente
+  position: relative;
+  min-height: 280px;
 }
 
-.dispositivo-detalle-image {
-  max-width: 100%;
-  max-height: 400px;
+.photo-frame-image {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+.photo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  color: rgba(255,255,255,0.4);
+  
+  svg {
+    width: 64px;
+    height: 64px;
+    stroke: rgba(255,255,255,0.3);
+  }
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 500;
+  }
 }
 
 // RESPONSIVE - Exacto del diseño de referencia
@@ -735,6 +821,44 @@ footer {
   
   .detalle-content-grid {
     grid-template-columns: 1fr;
+  }
+  
+  // Estilos responsive para detalle del dispositivo
+  .top-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .info-section-card {
+    padding: 20px;
+  }
+  
+  .detalle-imagen-card {
+    padding: 20px;
+    height: auto;
+  }
+  
+  .photo-frame {
+    height: clamp(240px, 40vh, 400px);
+    min-height: 240px;
+  }
+  
+  .tech-table {
+    th, td {
+      padding: 14px 16px;
+      font-size: 14px;
+    }
+    
+    .tech-header-param,
+    .tech-param {
+      font-size: 10px;
+      width: 35%;
+    }
+    
+    .tech-header-value,
+    .tech-value {
+      font-size: 16px;
+    }
   }
   
   footer {
@@ -844,7 +968,70 @@ footer {
   
   .info-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
+  }
+  
+  // Estilos mobile para detalle del dispositivo
+  .top-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .info-section-card {
+    padding: 18px;
+  }
+  
+  .detalle-imagen-card {
+    padding: 18px;
+    height: auto;
+  }
+  
+  .photo-frame {
+    height: clamp(200px, 35vh, 320px);
+    min-height: 200px;
+  }
+  
+  .info-item {
+    padding: 12px;
+  }
+  
+  .info-value {
+    font-size: 16px;
+  }
+  
+  .tech-section,
+  .conformidad-section {
+    margin-bottom: 20px;
+  }
+  
+  .tech-table {
+    font-size: 13px;
+    
+    th, td {
+      padding: 12px 14px;
+    }
+    
+    .tech-header-param,
+    .tech-param {
+      font-size: 9px;
+      width: 38%;
+      padding-right: 12px;
+    }
+    
+    .tech-header-value,
+    .tech-value {
+      font-size: 14px;
+      width: 62%;
+    }
+  }
+  
+  .info-section-title {
+    font-size: 16px;
+  }
+  
+  .info-section-subtitle {
+    font-size: 12px;
   }
   
   section {

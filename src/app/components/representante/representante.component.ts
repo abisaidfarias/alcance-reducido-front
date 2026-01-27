@@ -42,6 +42,7 @@ export class RepresentanteComponent implements OnInit {
   mostrarDetalleDispositivo = false;
   loading = false;
   tieneDatos = false;
+  imageLoadError = false;
   
   // Exponer authService para usar en el template
   authService: AuthService;
@@ -144,6 +145,14 @@ export class RepresentanteComponent implements OnInit {
     }
   }
 
+  volverADispositivos(): void {
+    // Volver a la vista de dispositivos desde el detalle
+    if (this.mostrarDetalleDispositivo) {
+      this.mostrarDetalleDispositivo = false;
+      this.dispositivoSeleccionado = null;
+    }
+  }
+
   onDispositivoClick(dispositivo: any): void {
     console.log('=== DISPOSITIVO SELECCIONADO ===');
     console.log('Dispositivo completo:', dispositivo);
@@ -152,6 +161,7 @@ export class RepresentanteComponent implements OnInit {
     console.log('Todas las propiedades:', Object.keys(dispositivo));
     this.dispositivoSeleccionado = dispositivo;
     this.mostrarDetalleDispositivo = true;
+    this.imageLoadError = false; // Resetear error de imagen al cambiar de dispositivo
   }
 
   getDispositivoImage(dispositivo: Dispositivo): string {
@@ -209,14 +219,8 @@ export class RepresentanteComponent implements OnInit {
       // Evitar bucle infinito: remover el handler
       img.onerror = null;
       
-      // Determinar qué tipo de placeholder usar según el tamaño
-      if (img.classList.contains('marca-logo')) {
-        img.src = this.getImagePlaceholderSVG();
-      } else if (img.classList.contains('dispositivo-image') || img.classList.contains('dispositivo-detalle-image')) {
-        img.src = this.getDevicePlaceholderSVG();
-      } else {
-        img.src = this.getDevicePlaceholderSVG();
-      }
+      // Marcar que hubo un error para mostrar el placeholder
+      this.imageLoadError = true;
     }
   }
 
@@ -320,5 +324,15 @@ export class RepresentanteComponent implements OnInit {
       (this.dispositivoSeleccionado.EIRP && this.dispositivoSeleccionado.EIRP.length > 0) ||
       (this.dispositivoSeleccionado.modulo && this.dispositivoSeleccionado.modulo.length > 0)
     );
+  }
+
+  getWebsiteUrl(url: string): string {
+    if (!url) return '';
+    // Si la URL ya tiene protocolo, devolverla tal cual
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    // Si no tiene protocolo, agregar https://
+    return 'https://' + url;
   }
 }
