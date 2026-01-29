@@ -4,7 +4,9 @@
   <div class="container">
     <div class="nav-inner">
       <a class="brand" href="#top" aria-label="Inicio">
-        <img class="brand-logo-img" src="assets/lb-technology-logo.png" alt="LB Technology" />
+        <div class="brand-logo-wrapper">
+          <img class="brand-logo-img" src="assets/lb-technology-logo.png" alt="LB Technology" />
+        </div>
       </a>
 
       <nav class="nav-links" aria-label="Secciones">
@@ -494,10 +496,12 @@
   <div class="container">
     <div class="footer-grid">
       <div>
-        <div style="display:flex; gap:10px; align-items:center; margin-bottom: 8px;">
-          <img class="brand-logo-img" src="assets/lb-technology-logo.png" alt="LB Technology" style="height:28px;border-radius:8px;" />
-          <div style="font-weight: 750;">Alcance Reducido · Operado por LB Technology</div>
-        </div>
+          <div style="display:flex; gap:10px; align-items:center; margin-bottom: 8px;">
+            <div class="footer-logo-wrapper">
+              <img class="brand-logo-img footer-logo" src="assets/lb-technology-logo.png" alt="LB Technology" />
+            </div>
+            <div style="font-weight: 750;">Alcance Reducido · Operado por LB Technology</div>
+          </div>
         <div>
           © {{ currentYear }} LB Technology. Todos los derechos reservados.
           <div style="margin-top:6px;">

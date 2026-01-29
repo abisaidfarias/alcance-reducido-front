@@ -80,17 +80,63 @@ export class UploadService {
     return this.http.post<MultipleUploadResponse>(uploadUrl, formData, { headers });
   }
 
+  uploadFile(file: File, type?: string): Observable<UploadResponse> {
+    const formData = new FormData();
+    // El backend espera el campo 'image' incluso para ZIP/RAR
+    formData.append('image', file);
+    // Campo opcional para distinguir el tipo en el backend (ej: 'testReport')
+    if (type) {
+      formData.append('type', type);
+    }
+
+    const token = this.authService.getToken();
+    if (!token) {
+      throw new Error('No hay token de autenticación');
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    const uploadUrl = `${environment.apiUrl}/upload`;
+    return this.http.post<UploadResponse>(uploadUrl, formData, { headers });
+  }
+
   validateFile(file: File): { valid: boolean; error?: string } {
-    // Validar tamaño (5MB máximo)
-    const maxSize = 5 * 1024 * 1024; // 5MB en bytes
+    // Validar tamaño (20MB máximo - el backend comprimirá automáticamente)
+    // NOTA: El backend comprimirá todas las imágenes automáticamente antes de subirlas a S3
+    // Esto permite subir imágenes grandes sin preocuparse por el tamaño final
+    const maxSize = 20 * 1024 * 1024; // 20MB en bytes
     if (file.size > maxSize) {
-      return { valid: false, error: 'El archivo es demasiado grande. Máximo 5MB' };
+      return { valid: false, error: 'El archivo es demasiado grande. Máximo 20MB (se comprimirá automáticamente)' };
     }
 
     // Validar tipo
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
       return { valid: false, error: 'Tipo de archivo no permitido. Solo se permiten: JPEG, JPG, PNG, GIF, WEBP' };
+    }
+
+    return { valid: true };
+  }
+
+  validateArchiveFile(file: File): { valid: boolean; error?: string } {
+    // Validar tamaño (50MB máximo para archivos comprimidos)
+    const maxSize = 50 * 1024 * 1024; // 50MB en bytes
+    if (file.size > maxSize) {
+      return { valid: false, error: 'El archivo es demasiado grande. Máximo 50MB' };
+    }
+
+    // Validar tipo - ZIP y RAR
+    const allowedTypes = ['application/zip', 'application/x-zip-compressed', 'application/x-rar-compressed', 'application/vnd.rar'];
+    const allowedExtensions = ['.zip', '.rar'];
+    const fileName = file.name.toLowerCase();
+    
+    const hasValidExtension = allowedExtensions.some(ext => fileName.endsWith(ext));
+    const hasValidType = allowedTypes.includes(file.type) || file.type === '';
+    
+    if (!hasValidExtension && !hasValidType) {
+      return { valid: false, error: 'Tipo de archivo no permitido. Solo se permiten archivos ZIP o RAR' };
     }
 
     return { valid: true };

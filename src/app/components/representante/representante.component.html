@@ -4,7 +4,9 @@
     <div class="container">
       <div class="nav-inner">
         <a class="brand-row" (click)="goToHome()" style="cursor: pointer;" aria-label="Ir al Home">
-          <img class="brand-logo-img" src="assets/lb-technology-logo.png" alt="LB Technology" />
+          <div class="brand-logo-wrapper">
+            <img class="brand-logo-img" src="assets/lb-technology-logo.png" alt="LB Technology" />
+          </div>
         </a>
 
         <nav class="nav-links" aria-label="Navegación">
@@ -111,7 +113,9 @@
       <div class="footer-grid">
         <div>
           <div style="display:flex; gap:10px; align-items:center; margin-bottom: 8px;">
-            <img class="brand-logo-img" src="assets/lb-technology-logo.png" alt="LB Technology" style="height:28px;border-radius:8px;" />
+            <div class="footer-logo-wrapper">
+              <img class="brand-logo-img footer-logo" src="assets/lb-technology-logo.png" alt="LB Technology" />
+            </div>
             <div style="font-weight: 750;">Alcance Reducido · Operado por LB Technology</div>
           </div>
           <div>
@@ -209,7 +213,9 @@
         <div class="footer-grid">
           <div>
             <div style="display:flex; gap:10px; align-items:center; margin-bottom: 8px;">
-              <img class="brand-logo-img" src="assets/lb-technology-logo.png" alt="LB Technology" style="height:28px;border-radius:8px;" />
+              <div class="footer-logo-wrapper">
+                <img class="brand-logo-img footer-logo" src="assets/lb-technology-logo.png" alt="LB Technology" />
+              </div>
               <div style="font-weight: 750;">Alcance Reducido · Operado por LB Technology</div>
             </div>
             <div>
@@ -318,6 +324,7 @@
                     <span *ngIf="!distribuidor?.sitioWeb">No disponible</span>
                   </p>
                 </div>
+
               </div>
 
               <div class="info-notice" *ngIf="distribuidor">
@@ -352,11 +359,11 @@
           </div>
         </div>
 
-        <!-- Segunda fila: B. CARACTERÍSTICAS TÉCNICAS (full width) -->
-        <div class="tech-section" *ngIf="authService.isAuthenticated() || hasTechnicalData()">
+        <!-- Segunda fila: B. CARACTERÍSTICAS TÉCNICAS (full width) - Visible para ambas resoluciones -->
+        <div class="tech-section" *ngIf="authService.isAuthenticated() || hasTechnicalData() || dispositivoSeleccionado.resolutionVersion == 2017 || dispositivoSeleccionado.resolutionVersion === '2017'">
           <div class="info-section-card">
             <h2 class="info-section-title">B. CARACTERÍSTICAS TÉCNICAS</h2>
-            <p class="info-section-subtitle">Parámetros principales</p>
+            <p class="info-section-subtitle">Resolución {{ dispositivoSeleccionado.resolutionVersion || '—' }}</p>
             
             <table class="tech-table">
               <thead>
@@ -366,37 +373,123 @@
                 </tr>
               </thead>
               <tbody>
+                <!-- Fila: Tipo de Dispositivo - Visible para ambas resoluciones -->
                 <tr *ngIf="dispositivoSeleccionado.tipo">
-                  <td class="tech-param">Tipo de equipo</td>
+                  <td class="tech-param">Tipo de Dispositivo</td>
                   <td class="tech-value">{{ dispositivoSeleccionado.tipo }}</td>
                 </tr>
                 
-                <tr *ngIf="dispositivoSeleccionado.tecnologia && dispositivoSeleccionado.tecnologia.length > 0">
-                  <td class="tech-param">Tecnología / modulación</td>
-                  <td class="tech-value">{{ dispositivoSeleccionado.tecnologia.join(' · ') }}</td>
-                </tr>
+                <!-- Filas específicas para Resolución 2017 -->
+                <ng-container *ngIf="dispositivoSeleccionado.resolutionVersion == 2017 || dispositivoSeleccionado.resolutionVersion === '2017'">
+                  <tr>
+                    <td class="tech-param">Fecha de Certificación SUBTEL</td>
+                    <td class="tech-value">{{ getFechaCertificacionSubtel() }}</td>
+                  </tr>
+                  
+                  <tr>
+                    <td class="tech-param">Oficio de Certificación SUBTEL</td>
+                    <td class="tech-value">{{ dispositivoSeleccionado.oficioCertificacionSubtel || '—' }}</td>
+                  </tr>
+                </ng-container>
                 
-                <tr *ngIf="dispositivoSeleccionado.frecuencias && dispositivoSeleccionado.frecuencias.length > 0">
-                  <td class="tech-param">Frecuencias</td>
-                  <td class="tech-value">{{ dispositivoSeleccionado.frecuencias.join(' · ') }}</td>
-                </tr>
-                
-                <tr *ngIf="dispositivoSeleccionado.gananciaAntena && dispositivoSeleccionado.gananciaAntena.length > 0">
-                  <td class="tech-param">Ganancia de antena (dBi)</td>
-                  <td class="tech-value">{{ dispositivoSeleccionado.gananciaAntena.join(' · ') }}</td>
-                </tr>
-                
-                <tr *ngIf="dispositivoSeleccionado.EIRP && dispositivoSeleccionado.EIRP.length > 0">
-                  <td class="tech-param">P.I.R.E. (EIRP)</td>
-                  <td class="tech-value">{{ dispositivoSeleccionado.EIRP.join(' · ') }}</td>
-                </tr>
-                
-                <tr *ngIf="dispositivoSeleccionado.modulo && dispositivoSeleccionado.modulo.length > 0">
-                  <td class="tech-param">Módulos</td>
-                  <td class="tech-value">{{ dispositivoSeleccionado.modulo.join(' · ') }}</td>
-                </tr>
+                <!-- Filas específicas para Resolución 2025 - Todas las especificaciones técnicas -->
+                <ng-container *ngIf="dispositivoSeleccionado.resolutionVersion == 2025 || dispositivoSeleccionado.resolutionVersion === '2025'">
+                  <tr *ngIf="dispositivoSeleccionado.tecnologia && dispositivoSeleccionado.tecnologia.length > 0">
+                    <td class="tech-param">Tecnología / modulación</td>
+                    <td class="tech-value">
+                      <div class="array-value-list">
+                        <div *ngFor="let item of dispositivoSeleccionado.tecnologia" class="array-value-item">{{ item }}</div>
+                      </div>
+                    </td>
+                  </tr>
+                  
+                  <tr *ngIf="dispositivoSeleccionado.frecuencias && dispositivoSeleccionado.frecuencias.length > 0">
+                    <td class="tech-param">Frecuencias</td>
+                    <td class="tech-value">
+                      <div class="array-value-list">
+                        <div *ngFor="let item of dispositivoSeleccionado.frecuencias" class="array-value-item">{{ item }}</div>
+                      </div>
+                    </td>
+                  </tr>
+                  
+                  <tr *ngIf="dispositivoSeleccionado.gananciaAntena && dispositivoSeleccionado.gananciaAntena.length > 0">
+                    <td class="tech-param">Ganancia de antena (dBi)</td>
+                    <td class="tech-value">
+                      <div class="array-value-list">
+                        <div *ngFor="let item of dispositivoSeleccionado.gananciaAntena" class="array-value-item">{{ item }}</div>
+                      </div>
+                    </td>
+                  </tr>
+                  
+                  <tr *ngIf="dispositivoSeleccionado.EIRP && dispositivoSeleccionado.EIRP.length > 0">
+                    <td class="tech-param">P.I.R.E. (EIRP)</td>
+                    <td class="tech-value">
+                      <div class="array-value-list">
+                        <div *ngFor="let item of dispositivoSeleccionado.EIRP" class="array-value-item">{{ item }}</div>
+                      </div>
+                    </td>
+                  </tr>
+                  
+                  <tr *ngIf="dispositivoSeleccionado.modulo && dispositivoSeleccionado.modulo.length > 0">
+                    <td class="tech-param">Módulos</td>
+                    <td class="tech-value">
+                      <div class="array-value-list">
+                        <div *ngFor="let item of dispositivoSeleccionado.modulo" class="array-value-item">{{ item }}</div>
+                      </div>
+                    </td>
+                  </tr>
+                  
+                  <tr *ngIf="dispositivoSeleccionado.nombreTestReport && dispositivoSeleccionado.nombreTestReport.length > 0">
+                    <td class="tech-param">Nombre de Test Report</td>
+                    <td class="tech-value">
+                      <div class="test-report-list">
+                        <div *ngFor="let report of dispositivoSeleccionado.nombreTestReport" class="test-report-item">
+                          <a *ngIf="getTestReportUrl(parseTestReport(report).fileName)" 
+                             [href]="getTestReportUrl(parseTestReport(report).fileName)" 
+                             target="_blank" 
+                             class="test-report-link">
+                            {{ parseTestReport(report).fileName }}
+                          </a>
+                          <span *ngIf="!getTestReportUrl(parseTestReport(report).fileName)" class="test-report-text">
+                            {{ parseTestReport(report).fileName }}
+                          </span>
+                          <span *ngIf="parseTestReport(report).pages" class="test-report-pill">
+                            {{ parseTestReport(report).pages }}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
               </tbody>
             </table>
+
+            <!-- Banner de Test Report debajo de la tabla técnica - Solo visible para Resolución 2025 -->
+            <div *ngIf="(dispositivoSeleccionado.resolutionVersion == 2025 || dispositivoSeleccionado.resolutionVersion === '2025') && dispositivoSeleccionado.testReportFiles && dispositivoSeleccionado.testReportFiles.trim() !== ''" class="test-report-banner">
+              <div class="test-report-banner-left">
+                <div class="test-report-banner-icon">
+                  <mat-icon>description</mat-icon>
+                </div>
+                <div class="test-report-banner-texts">
+                  <div class="test-report-banner-title">
+                    INFORME DE ENSAYO (TEST REPORT)
+                  </div>
+                  <div class="test-report-banner-subtitle">
+                    En una página real, aquí se incluiría el PDF descargable del informe de ensayo.
+                  </div>
+                </div>
+              </div>
+
+              <a
+                class="test-report-banner-button"
+                [href]="dispositivoSeleccionado.testReportFiles"
+                target="_blank"
+                rel="noopener"
+                download
+              >
+                Descargar Test Report
+              </a>
+            </div>
           </div>
         </div>
 
@@ -424,7 +517,9 @@
         <div class="footer-grid">
           <div>
             <div style="display:flex; gap:10px; align-items:center; margin-bottom: 8px;">
-              <img class="brand-logo-img" src="assets/lb-technology-logo.png" alt="LB Technology" style="height:28px;border-radius:8px;" />
+              <div class="footer-logo-wrapper">
+                <img class="brand-logo-img footer-logo" src="assets/lb-technology-logo.png" alt="LB Technology" />
+              </div>
               <div style="font-weight: 750;">Alcance Reducido · Operado por LB Technology</div>
             </div>
             <div>

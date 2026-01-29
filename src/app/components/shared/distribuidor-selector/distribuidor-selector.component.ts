@@ -70,7 +70,7 @@ export class DistribuidorSelectorComponent implements OnInit {
   getDistributorLabel(d: any): string {
     if (!d) return '';
     if (typeof d === 'string') return d;
-    return d?.nombre ?? d?.name ?? d?.razonSocial ?? d?.representante ?? d?.email ?? String(d ?? '');
+    return d?.nombreRepresentante ?? d?.nombre ?? d?.name ?? d?.razonSocial ?? d?.representante ?? d?.email ?? String(d ?? '');
   }
 
   getDistributorId(d: any): string {
@@ -96,11 +96,11 @@ export class DistribuidorSelectorComponent implements OnInit {
       // Buscar el distribuidor por ID para obtener el nombre del representante
       const distribuidor = this.distribuidores.find(d => this.getDistributorId(d) === selectedId);
       
-      // Obtener el nombre del representante (campo 'representante' del objeto)
+      // Obtener el nombre del representante para la redirección (usar 'representante', no 'nombreRepresentante')
       let nombreRepresentante: string;
       if (distribuidor) {
-        // Priorizar el campo 'representante', luego otros campos
-        nombreRepresentante = distribuidor?.representante ?? distribuidor?.nombre ?? distribuidor?.name ?? this.getDistributorLabel(distribuidor);
+        // Priorizar el campo 'representante' para la redirección
+        nombreRepresentante = distribuidor?.representante ?? distribuidor?.nombreRepresentante ?? distribuidor?.nombre ?? distribuidor?.name ?? this.getDistributorLabel(distribuidor);
       } else {
         nombreRepresentante = selectedId;
       }

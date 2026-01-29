@@ -79,8 +79,8 @@
     display: flex; 
     align-items: center; 
     justify-content: space-between;
-    padding: 16px 16px;
-    gap: 20px;
+    padding: 12px 116px;
+    gap: 24px;
     flex-wrap: nowrap;
     min-height: 64px;
   }
@@ -93,6 +93,7 @@
     letter-spacing: .2px;
     flex: 0 0 auto;
     min-width: 0;
+    height: 100%;
   }
   
   .logo {
@@ -102,12 +103,29 @@
     flex: 0 0 auto;
   }
 
+  // Contenedor para el logo con overflow hidden para recortar espacio transparente
+  .brand-logo-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 240px;
+    height: 52px;
+    overflow: hidden;
+    flex: 0 0 auto;
+    padding: 0;
+  }
+
   .brand-logo-img {
-    height: 40px;
+    height: 200px;
     width: auto;
     display: block;
+    margin: 0;
+    padding: 0;
     border-radius: 8px;
     filter: drop-shadow(0 10px 30px rgba(78,215,117,.14));
+    object-fit: contain;
+    transform: translateX(-8px) translateY(3px) scale(1.25); // Reducido de 1.35 a 1.25 para laptop
+    transform-origin: left center;
   }
   
   .nav-links { 
@@ -473,6 +491,31 @@
   .foot-links a { color: var(--muted2); }
   .foot-links a:hover { color: var(--text); }
 
+  // Wrapper para el logo en el footer
+  .footer-logo-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 240px;
+    height: 56px;
+    overflow: hidden;
+    flex: 0 0 auto;
+    padding: 4px 12px 4px 0;
+  }
+
+  .footer-logo {
+    height: 200px;
+    width: auto;
+    display: block;
+    margin: 0;
+    padding: 0;
+    border-radius: 8px;
+    filter: drop-shadow(0 10px 30px rgba(78,215,117,.14));
+    object-fit: contain;
+    transform: translateX(-8px) translateY(5px) scale(1.35);
+    transform-origin: left center;
+  }
+
   /* TIMELINE HORIZONTAL */
   .timeline-h {
     margin-top: 18px;
@@ -543,9 +586,30 @@
     .nav-cta {
       gap: 10px;
     }
-    .brand-logo-img {
+    .brand-logo-wrapper {
+      width: 200px;
       height: 44px;
+      padding-left: 15px;
     }
+    .brand-logo-img {
+      height: 123px;
+      margin-top: 4px;
+      transform: translateX(-49px) translateY(2px) scale(1.35);
+    }
+    
+    .footer-logo-wrapper {
+      width: 200px;
+      height: 48px;
+      padding: 3px 8px;
+    }
+    
+    .footer-logo {
+      height: 100px;
+      transform: translateX(-6px) translateY(2px) scale(1.28);
+      margin-top: -22px !important;
+      margin: -28px;
+    }
+    
     header.hero {
       padding: 80px 24px 40px;
     }
@@ -578,9 +642,27 @@
     .brand > div > div:last-child {
       font-size: 12px;
     }
-    .brand-logo-img {
-      height: 36px;
+    .brand-logo-wrapper {
+      width: 200px;
+      height: 44px;
+      padding-left: 15px;
     }
+    .brand-logo-img {
+      height: 108px;
+      transform: translateX(-8px) translateY(2px) scale(1.35);
+    }
+    
+    .footer-logo-wrapper {
+      width: 200px;
+      height: 48px;
+      padding: 3px 8px;
+    }
+    
+    .footer-logo {
+      height: 108px;
+      transform: translateX(-6px) translateY(2px) scale(1.28);
+    }
+    
     .hero-grid { grid-template-columns: 1fr; gap: 24px; }
     .grid-4 { grid-template-columns: repeat(2, 1fr); gap: 16px; }
     .grid-3 { grid-template-columns: 1fr; gap: 16px; }
@@ -611,6 +693,8 @@
     }
     .mobile-menu a:hover { background: rgba(255,255,255,.06); color: var(--text); }
     .footer-grid { grid-template-columns: 1fr; gap: 20px; }
+    
+    
     .cta { flex-direction: column; align-items: flex-start; gap: 16px; }
     .timeline-row { min-width: 100%; flex-direction: column; }
     .t-arrow { transform: rotate(90deg); min-width: auto; min-height: 34px; }
@@ -636,17 +720,60 @@
       padding: 12px 12px;
       gap: 8px;
       min-height: 56px;
+      flex-wrap: nowrap !important; // Evitar que se envuelva
     }
     .brand {
       gap: 8px;
-      min-width: 0;
+      min-width: 200px !important;
+      max-width: 200px !important;
+      flex: 0 0 auto !important;
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      position: relative !important;
+      z-index: 10 !important;
     }
     .brand > div {
       display: none;
     }
-    .brand-logo-img {
-      height: 32px;
+    .brand-logo-wrapper {
+      width: 200px !important;
+      min-width: 200px !important;
+      max-width: 200px !important;
+      height: 44px !important;
+      padding: 0 !important;
+      overflow: hidden !important; // Mantener hidden pero con más espacio
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      flex: 0 0 auto !important;
+      position: relative !important;
+      z-index: 10 !important;
     }
+    .brand-logo-img {
+      height: 100px !important;
+      width: auto !important;
+      transform: translateX(-3px) translateY(2px) scale(1.35) !important;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      position: relative !important;
+      z-index: 10 !important;
+    }
+    
+    .footer-logo-wrapper {
+      width: 180px;
+      height: 44px;
+      padding: 3px 8px 3px 0;
+    }
+    
+    .footer-logo {
+      height: 160px;
+      transform: translateX(-5px) translateY(2px) scale(1.2);
+      transform-origin: left center;
+      margin: -30px;
+    }
+    
     .nav-cta {
       gap: 4px;
     }
@@ -670,6 +797,7 @@
     footer {
       padding: 20px 16px 30px;
     }
+    
     .grid-4 { grid-template-columns: 1fr; }
     .grid-3 { grid-template-columns: 1fr; }
     .section-title { font-size: 24px; }
@@ -693,9 +821,28 @@
     .brand {
       font-size: 12px;
     }
-    .brand-logo-img {
-      height: 28px;
+    .brand-logo-wrapper {
+      width: 180px;
+      height: 40px;
+      padding-left: 12px;
     }
+    .brand-logo-img {
+      height: 160px;
+      transform: translateX(-6px) translateY(2px) scale(1.25);
+    }
+    
+    .footer-logo-wrapper {
+      width: 180px;
+      height: 44px;
+      padding: 3px 6px;
+    }
+    
+    .footer-logo {
+      height: 160px;
+      transform: translateX(-5px) translateY(2px) scale(1.2);
+      transform-origin: left center;
+    }
+    
     .hero-card {
       padding: 20px;
     }

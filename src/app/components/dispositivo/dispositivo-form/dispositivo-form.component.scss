@@ -180,6 +180,55 @@ mat-dialog-content {
 
   .spec-field {
     width: 100%;
+    
+    &.full-width {
+      grid-column: 1 / -1; // Ocupa ambas columnas
+    }
+
+    &.radio-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+
+  // Estilos para radio buttons
+  .radio-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.87);
+    margin-bottom: 4px;
+
+    .radio-label-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      color: rgba(0, 0, 0, 0.54);
+    }
+
+    .required-asterisk {
+      color: #f44336;
+    }
+  }
+
+  .radio-group {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    padding: 8px 0;
+
+    .radio-button {
+      margin-right: 8px;
+    }
+  }
+
+  .error-message {
+    font-size: 12px;
+    color: #f44336;
+    margin-top: 4px;
   }
 }
 
@@ -202,5 +251,56 @@ mat-dialog-content {
       flex: 1;
       min-width: 150px;
     }
+  }
+}
+
+// Estilos para drag and drop de chips
+::ng-deep {
+  // Chip siendo arrastrado
+  .cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    opacity: 0.9;
+    transform: rotate(2deg);
+    cursor: grabbing !important;
+  }
+
+  // Área donde se puede soltar
+  .cdk-drop-list {
+    min-height: 40px;
+  }
+
+  // Chip en posición de destino durante el arrastre
+  .cdk-drop-list-dragging .mat-mdc-chip-row:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  // Placeholder mientras se arrastra
+  .cdk-drag-placeholder {
+    opacity: 0.3;
+    border: 2px dashed rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    background: transparent;
+  }
+
+  // Animación al soltar
+  .cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  // Cursor al arrastrar
+  .mat-mdc-chip-row.cdk-drag {
+    cursor: grab;
+    
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  // Efecto hover en chips arrastrables
+  .mat-mdc-chip-row.cdk-drag:hover {
+    background-color: rgba(63, 81, 181, 0.1);
+    transition: background-color 0.2s ease;
   }
 }

@@ -64,6 +64,10 @@ export class LoginComponent {
     }
   }
 
+  goToHome(): void {
+    this.router.navigate(['/']);
+  }
+
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.loading = true;
@@ -71,29 +75,20 @@ export class LoginComponent {
       
       this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
-          console.log('Login response:', response);
-          console.log('User from response:', response.user);
-          
           // Esperar un momento para asegurar que el usuario se guardó en localStorage
           setTimeout(() => {
-            console.log('User from service:', this.authService.getUser());
-            console.log('Is admin?', this.authService.isAdmin());
-            
             // Redirigir según el tipo de usuario
             if (this.authService.isAdmin()) {
               // Si es admin, redirigir a la plataforma administrativa
-              console.log('Redirecting to /admin/distribuidor (admin)');
               this.router.navigate(['/admin/distribuidor']);
             } else {
               // Si NO es admin, redirigir a la pantalla de representante
-              console.log('Redirecting to /representante (non-admin)');
               const nombreRepresentante = this.authService.getRepresentanteNombre();
               if (nombreRepresentante) {
                 const nombreEncoded = encodeURIComponent(nombreRepresentante);
                 this.router.navigate(['/representante', nombreEncoded]);
               } else {
                 // Si no se puede obtener el nombre, mostrar error
-                console.error('No se pudo obtener el nombre del representante');
                 this.error = 'No se pudo obtener la información del representante';
                 this.loading = false;
                 return;
@@ -103,7 +98,18 @@ export class LoginComponent {
           }, 100);
         },
         error: (err) => {
-          this.error = err.error?.message || 'Error al iniciar sesión';
+          // Manejar diferentes tipos de errores
+          if (err.status === 0) {
+            this.error = 'No se pudo conectar con el servidor. Verifica tu conexión.';
+          } else if (err.status === 401) {
+            this.error = err.error?.message || 'Credenciales incorrectas';
+          } else if (err.status === 404) {
+            this.error = 'Endpoint no encontrado. Verifica la configuración de la API.';
+          } else if (err.status >= 500) {
+            this.error = 'Error del servidor. Intenta más tarde.';
+          } else {
+            this.error = err.error?.message || err.message || 'Error al iniciar sesión';
+          }
           this.loading = false;
         }
       });

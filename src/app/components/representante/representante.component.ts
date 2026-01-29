@@ -275,6 +275,29 @@ export class RepresentanteComponent implements OnInit {
     }
   }
 
+  getFechaCertificacionSubtel(): string {
+    if (!this.dispositivoSeleccionado) {
+      return '—';
+    }
+    const fecha = this.dispositivoSeleccionado.fechaCertificacionSubtel;
+    if (!fecha) {
+      return '—';
+    }
+    try {
+      const fechaDate = fecha instanceof Date ? fecha : new Date(fecha);
+      if (isNaN(fechaDate.getTime())) {
+        return '—';
+      }
+      const day = String(fechaDate.getDate()).padStart(2, '0');
+      const month = String(fechaDate.getMonth() + 1).padStart(2, '0');
+      const year = fechaDate.getFullYear();
+      return `${day}/${month}/${year}`;
+    } catch (error) {
+      console.warn('Error al formatear fecha de certificación SUBTEL:', error);
+      return '—';
+    }
+  }
+
   getNombreRepresentante(): string {
     if (this.distribuidor && this.distribuidor.nombreRepresentante) {
       return this.distribuidor.nombreRepresentante;
@@ -322,7 +345,9 @@ export class RepresentanteComponent implements OnInit {
       (this.dispositivoSeleccionado.frecuencias && this.dispositivoSeleccionado.frecuencias.length > 0) ||
       (this.dispositivoSeleccionado.gananciaAntena && this.dispositivoSeleccionado.gananciaAntena.length > 0) ||
       (this.dispositivoSeleccionado.EIRP && this.dispositivoSeleccionado.EIRP.length > 0) ||
-      (this.dispositivoSeleccionado.modulo && this.dispositivoSeleccionado.modulo.length > 0)
+      (this.dispositivoSeleccionado.modulo && this.dispositivoSeleccionado.modulo.length > 0) ||
+      (this.dispositivoSeleccionado.nombreTestReport && this.dispositivoSeleccionado.nombreTestReport.length > 0) ||
+      (this.dispositivoSeleccionado.testReportFiles && this.dispositivoSeleccionado.testReportFiles.trim() !== '')
     );
   }
 
@@ -334,5 +359,34 @@ export class RepresentanteComponent implements OnInit {
     }
     // Si no tiene protocolo, agregar https://
     return 'https://' + url;
+  }
+
+  parseTestReport(reportString: string): { fileName: string, pages: string } {
+    if (!reportString) return { fileName: '', pages: '' };
+    
+    // Buscar "Pag." en el string (case insensitive)
+    const pagIndex = reportString.toLowerCase().indexOf('pag.');
+    if (pagIndex === -1) {
+      return { fileName: reportString.trim(), pages: '' };
+    }
+    
+    const fileName = reportString.substring(0, pagIndex).trim();
+    const pages = reportString.substring(pagIndex).trim();
+    
+    return { fileName, pages };
+  }
+
+  getTestReportUrl(fileName: string): string | null {
+    // Devolver la URL directamente si existe
+    if (!this.dispositivoSeleccionado?.testReportFiles || !fileName) {
+      return null;
+    }
+    
+    // Si el nombre del archivo coincide con parte de la URL, devolver la URL
+    if (this.dispositivoSeleccionado.testReportFiles.includes(fileName.split(' ')[0])) {
+      return this.dispositivoSeleccionado.testReportFiles;
+    }
+    
+    return this.dispositivoSeleccionado.testReportFiles || null;
   }
 }

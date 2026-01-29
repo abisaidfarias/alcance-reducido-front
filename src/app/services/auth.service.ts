@@ -83,8 +83,6 @@ export class AuthService {
     // Intentar obtener el tipo de usuario de diferentes campos posibles
     // El campo en el API es 'rol' (sin 'e')
     const userType = user.rol || user.tipo || user.role || user.userType || user.tipoUsuario || null;
-    console.log('User object:', user);
-    console.log('User type found:', userType);
     return userType;
   }
 
@@ -92,7 +90,6 @@ export class AuthService {
     const userType = this.getUserType();
     // Verificar si es admin (puede venir como 'admin' o 'admi' si está truncado)
     const isAdminResult = userType?.toLowerCase().startsWith('admin') || userType?.toLowerCase() === 'admin';
-    console.log('Is admin check:', { userType, isAdminResult });
     return isAdminResult;
   }
 

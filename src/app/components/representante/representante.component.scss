@@ -57,8 +57,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 16px;
-  gap: 20px;
+  padding: 12px 16px;
+  gap: 24px;
   flex-wrap: nowrap;
   min-height: 64px;
 }
@@ -73,15 +73,32 @@
   color: inherit;
   font-weight: 700;
   letter-spacing: .2px;
+  height: 100%;
+}
+
+// Contenedor para el logo con overflow hidden para recortar espacio transparente
+.brand-logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 240px;
+  height: 52px;
+  overflow: hidden;
+  flex: 0 0 auto;
+  padding: 0;
 }
 
 .brand-logo-img {
-  height: 46px;
+  height: 150px;
   width: auto;
   display: block;
+  margin: 0;
+  padding: 0;
   border-radius: 8px;
   filter: drop-shadow(0 10px 30px rgba(78,215,117,.14));
-  flex: 0 0 auto;
+  object-fit: contain;
+  transform: translateX(-42px) translateY(3px) scale(1.25); // Reducido para laptop 1024px
+  transform-origin: left center;
 }
 
 .brand-title {
@@ -408,6 +425,31 @@ footer {
   align-items: start;
 }
 
+// Wrapper para el logo en el footer
+.footer-logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 240px;
+  height: 56px;
+  overflow: hidden;
+  flex: 0 0 auto;
+  padding: 4px 12px 4px 0;
+}
+
+.footer-logo {
+  height: 135px;
+  width: auto;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-radius: 8px;
+  filter: drop-shadow(0 10px 30px rgba(78,215,117,.14));
+  object-fit: contain;
+  transform: translateX(-33px) translateY(5px) scale(1.35);
+  transform-origin: left center;
+}
+
 .foot-links {
   display: grid;
   gap: 8px;
@@ -655,6 +697,177 @@ footer {
   width: 65%;
 }
 
+// Estilos para listas de valores de arreglos (tecnologia, frecuencias, etc.)
+.array-value-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.array-value-item {
+  color: var(--text);
+  line-height: 1.6;
+}
+
+// Estilos para Test Reports
+.test-report-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.test-report-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.test-report-link {
+  color: var(--text);
+  text-decoration: none;
+  transition: color .15s ease;
+  
+  &:hover {
+    color: var(--brand);
+    text-decoration: underline;
+  }
+}
+
+.test-report-text {
+  color: var(--text);
+}
+
+.test-report-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(78, 215, 117, 0.2);
+  border: 1px solid rgba(78, 215, 117, 0.4);
+  color: rgba(78, 215, 117, 1);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+// Banner de Test Report debajo de la tabla técnica
+.test-report-banner {
+  margin-top: 20px;
+  padding: 18px 22px;
+  border-radius: 14px;
+  background: linear-gradient(120deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.88));
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.test-report-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.test-report-banner-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon {
+    color: rgba(248, 250, 252, 0.95);
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.test-report-banner-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.test-report-banner-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.96);
+}
+
+.test-report-banner-subtitle {
+  font-size: 13px;
+  color: rgba(148, 163, 184, 0.95);
+  line-height: 1.5;
+}
+
+.test-report-banner-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.8);
+  color: rgba(240, 253, 244, 0.98);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease, box-shadow 0.12s ease;
+
+  &:hover {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 1);
+    box-shadow: 0 10px 25px rgba(34, 197, 94, 0.35);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .test-report-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .test-report-banner-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 599px) {
+  .test-report-banner {
+    margin-top: 16px;
+    padding: 16px 16px;
+  }
+
+  .test-report-banner-title {
+    font-size: 13px;
+  }
+
+  .test-report-banner-subtitle {
+    font-size: 12px;
+  }
+}
+
 // Declaración de conformidad
 .conformidad-quote {
   margin: 20px 0;
@@ -766,8 +979,30 @@ footer {
     min-height: 60px;
   }
   
+  .brand-logo-wrapper {
+    width: 200px;
+    height: 48px;
+    padding: 0;
+    display: flex !important;
+    visibility: visible !important;
+  }
+  
   .brand-logo-img {
-    height: 36px;
+    height: 121px;
+    transform: translateX(-6px) translateY(2px) scale(1.28);
+    display: block !important;
+    visibility: visible !important;
+  }
+  
+  .footer-logo-wrapper {
+    width: 200px;
+    height: 48px;
+    padding: 3px 8px;
+  }
+  
+  .footer-logo {
+    height: 180px;
+    transform: translateX(-6px) translateY(2px) scale(1.28);
   }
   
   .nav-links {
@@ -809,6 +1044,18 @@ footer {
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 20px;
+  }
+  
+  .footer-logo-wrapper {
+    width: 200px;
+    height: 48px;
+    padding: 3px 10px 3px 0;
+  }
+  
+  .footer-logo {
+    height: 117px;
+    transform: translateX(-6px) translateY(2px) scale(1.28);
+    transform-origin: left center;
   }
   
   section {
@@ -876,10 +1123,55 @@ footer {
     padding: 12px 12px;
     gap: 8px;
     min-height: 56px;
+    flex-wrap: nowrap !important; // Evitar que se envuelva
+  }
+  
+  .brand-row {
+    flex: 0 0 auto !important;
+    min-width: 200px !important;
+    max-width: 200px !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 10 !important;
+  }
+  
+  .brand-logo-wrapper {
+    width: 200px !important;
+    min-width: 200px !important;
+    max-width: 200px !important;
+    height: 44px !important;
+    padding: 0 !important;
+    overflow: hidden !important; // Mantener hidden pero con más espacio
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex: 0 0 auto !important;
+    position: relative !important;
+    z-index: 10 !important;
   }
   
   .brand-logo-img {
-    height: 32px;
+    height: 109px !important;
+    width: auto !important;
+    transform: translateX(-3px) translateY(2px) scale(1.35) !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 10 !important;
+  }
+  
+  .footer-logo-wrapper {
+    width: 180px;
+    height: 44px;
+    padding: 3px 6px;
+  }
+  
+  .footer-logo {
+    height: 160px;
+    transform: translateX(-5px) translateY(2px) scale(1.2);
   }
   
   .nav-cta {
@@ -1041,6 +1333,18 @@ footer {
   footer {
     padding: 30px 0 24px;
     margin-top: 30px;
+  }
+  
+  .footer-logo-wrapper {
+    width: 180px;
+    height: 44px;
+    padding: 3px 8px 3px 0;
+  }
+  
+  .footer-logo {
+    height: 160px;
+    transform: translateX(-5px) translateY(2px) scale(1.2);
+    transform-origin: left center;
   }
 }
 

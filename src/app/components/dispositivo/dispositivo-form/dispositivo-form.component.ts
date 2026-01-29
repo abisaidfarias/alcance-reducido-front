@@ -10,9 +10,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatRadioModule } from '@angular/material/radio';
+import { Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Dispositivo } from '../../../models/dispositivo.interface';
 import { ImageUploadComponent } from '../../shared/image-upload/image-upload.component';
+import { FileUploadComponent } from '../../shared/file-upload/file-upload.component';
 import { MarcaService } from '../../../services/marca.service';
 import { DistribuidorService } from '../../../services/distribuidor.service';
 import { Marca } from '../../../models/marca.interface';
@@ -33,7 +37,10 @@ import { Distribuidor } from '../../../models/distribuidor.interface';
     MatDatepickerModule,
     MatNativeDateModule,
     MatChipsModule,
-    ImageUploadComponent
+    MatRadioModule,
+    DragDropModule,
+    ImageUploadComponent,
+    FileUploadComponent
   ],
   templateUrl: './dispositivo-form.component.html',
   styleUrl: './dispositivo-form.component.scss'
@@ -47,6 +54,9 @@ export class DispositivoFormComponent implements OnInit {
   loadingDistribuidores = false;
   marcasLoaded = false;
   distribuidoresLoaded = false;
+  // Guardar valores originales de certificación para restaurarlos si se cambia de 2025 a 2017
+  private originalFechaCertificacionSubtel: Date | null = null;
+  private originalOficioCertificacionSubtel: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -69,7 +79,12 @@ export class DispositivoFormComponent implements OnInit {
       frecuencias: [[] as string[]],
       gananciaAntena: [[] as string[]],
       EIRP: [[] as string[]],
-      modulo: [[] as string[]]
+      modulo: [[] as string[]],
+      nombreTestReport: [[] as string[]],
+      testReportFiles: [''],
+      resolutionVersion: [null, Validators.required], // Resolución SUBTEL (obligatorio, se establece en ngOnInit o patchFormValues)
+      fechaCertificacionSubtel: [null], // Fecha Certificación SUBTEL (opcional)
+      oficioCertificacionSubtel: [''] // Oficio Certificación SUBTEL (opcional)
     });
   }
 
@@ -77,9 +92,98 @@ export class DispositivoFormComponent implements OnInit {
     // Establecer isEditMode inmediatamente si hay data
     if (this.data) {
       this.isEditMode = true;
+      // Establecer resolutionVersion inmediatamente para evitar delay visual
+      const resolutionVersionValue = this.getResolutionVersionValue();
+      this.dispositivoForm.patchValue({
+        resolutionVersion: resolutionVersionValue
+      }, { emitEvent: false });
+    } else {
+      // Solo para crear: establecer 2025 por defecto
+      this.dispositivoForm.patchValue({
+        resolutionVersion: 2025
+      }, { emitEvent: false });
     }
+    
     this.loadMarcas();
     this.loadDistribuidores();
+
+    // Manejar cambios en resolutionVersion: guardar/restaurar valores de certificación
+    let previousResolutionVersion: 2017 | 2025 | null = null;
+    
+    // Guardar valores de certificación cada vez que cambian (solo si estamos en resolución 2017)
+    this.dispositivoForm.get('fechaCertificacionSubtel')?.valueChanges.subscribe(() => {
+      if (this.dispositivoForm.get('resolutionVersion')?.value === 2017) {
+        this.originalFechaCertificacionSubtel = this.dispositivoForm.get('fechaCertificacionSubtel')?.value;
+      }
+    });
+    
+    this.dispositivoForm.get('oficioCertificacionSubtel')?.valueChanges.subscribe(() => {
+      if (this.dispositivoForm.get('resolutionVersion')?.value === 2017) {
+        this.originalOficioCertificacionSubtel = this.dispositivoForm.get('oficioCertificacionSubtel')?.value || '';
+      }
+    });
+    
+    // Manejar cambios en resolutionVersion
+    this.dispositivoForm.get('resolutionVersion')?.valueChanges.subscribe(value => {
+      // Solo procesar si realmente cambió el valor (no en la carga inicial)
+      if (previousResolutionVersion !== null && previousResolutionVersion !== value) {
+        if (value === 2025) {
+          // Guardar valores actuales antes de limpiar (por si el usuario cambia de vuelta a 2017)
+          this.originalFechaCertificacionSubtel = this.dispositivoForm.get('fechaCertificacionSubtel')?.value;
+          this.originalOficioCertificacionSubtel = this.dispositivoForm.get('oficioCertificacionSubtel')?.value || '';
+          // Limpiar los campos de certificación cuando se selecciona 2025
+          this.dispositivoForm.patchValue({
+            fechaCertificacionSubtel: null,
+            oficioCertificacionSubtel: ''
+          }, { emitEvent: false });
+        } else if (value === 2017 && previousResolutionVersion === 2025) {
+          // Restaurar valores guardados cuando se cambia de 2025 a 2017
+          this.dispositivoForm.patchValue({
+            fechaCertificacionSubtel: this.originalFechaCertificacionSubtel,
+            oficioCertificacionSubtel: this.originalOficioCertificacionSubtel
+          }, { emitEvent: false });
+        }
+      }
+      // Actualizar el valor anterior
+      previousResolutionVersion = value as 2017 | 2025;
+    });
+  }
+
+  private getResolutionVersionValue(): 2017 | 2025 {
+    // Manejar resolutionVersion: mapear el valor del dispositivo, solo usar 2025 si viene vacío
+    let resolutionVersionValue: 2017 | 2025 = 2025; // Default 2025 si viene vacío o inválido
+    
+    if (!this.data) {
+      return 2025;
+    }
+    
+    // Si el dispositivo tiene resolutionVersion válido, usarlo
+    const rawResolutionVersion: any = this.data.resolutionVersion;
+    if (rawResolutionVersion !== undefined && rawResolutionVersion !== null) {
+      let resolutionNum: number | null = null;
+      
+      // Convertir a número si viene como string
+      if (typeof rawResolutionVersion === 'string') {
+        const trimmedValue = String(rawResolutionVersion).trim();
+        // Si es string vacío, mantener el default 2025
+        if (trimmedValue === '') {
+          resolutionVersionValue = 2025;
+        } else {
+          resolutionNum = parseInt(trimmedValue, 10);
+        }
+      } else if (typeof rawResolutionVersion === 'number') {
+        resolutionNum = rawResolutionVersion;
+      }
+      
+      // Solo asignar si es un número válido y es 2017 o 2025
+      if (resolutionNum !== null && !isNaN(resolutionNum) && (resolutionNum === 2017 || resolutionNum === 2025)) {
+        resolutionVersionValue = resolutionNum as 2017 | 2025;
+      }
+      // Si no es válido, resolutionVersionValue ya tiene el default 2025
+    }
+    // Si es undefined o null, resolutionVersionValue ya tiene el default 2025
+    
+    return resolutionVersionValue;
   }
 
   private patchFormValues(): void {
@@ -149,7 +253,22 @@ export class DispositivoFormComponent implements OnInit {
       }
     }
     
+    // Convertir fechaCertificacionSubtel de string a Date si existe
+    let fechaCertificacionSubtelDate: Date | null = null;
+    if (this.data!.fechaCertificacionSubtel) {
+      fechaCertificacionSubtelDate = new Date(this.data!.fechaCertificacionSubtel);
+      // Validar que la fecha sea válida
+      if (isNaN(fechaCertificacionSubtelDate.getTime())) {
+        fechaCertificacionSubtelDate = null;
+      }
+    }
+    
+    // Guardar valores originales de certificación para restaurarlos si el usuario cambia de 2025 a 2017
+    this.originalFechaCertificacionSubtel = fechaCertificacionSubtelDate;
+    this.originalOficioCertificacionSubtel = this.data!.oficioCertificacionSubtel || '';
+    
     // Usar setTimeout para asegurar que Angular Material haya inicializado los selects
+    // Nota: resolutionVersion ya se estableció inmediatamente en ngOnInit() para evitar delay visual
     setTimeout(() => {
       this.dispositivoForm.patchValue({
         modelo: this.data!.modelo || '',
@@ -160,9 +279,14 @@ export class DispositivoFormComponent implements OnInit {
         gananciaAntena: this.data!.gananciaAntena || [],
         EIRP: this.data!.EIRP || [],
         modulo: this.data!.modulo || [],
+        nombreTestReport: this.data!.nombreTestReport || [],
+        testReportFiles: this.data!.testReportFiles || '',
         marca: marcaId,
         distribuidor: distribuidorArray,
-        fechaPublicacion: fechaPublicacionDate
+        fechaPublicacion: fechaPublicacionDate,
+        // resolutionVersion ya se estableció en ngOnInit() inmediatamente, no es necesario establecerlo aquí
+        fechaCertificacionSubtel: fechaCertificacionSubtelDate,
+        oficioCertificacionSubtel: this.data!.oficioCertificacionSubtel || ''
       }, { emitEvent: false });
       
       // Forzar detección de cambios
@@ -243,6 +367,20 @@ export class DispositivoFormComponent implements OnInit {
       fechaPublicacionString = `${year}-${month}-${day}`;
     }
     
+    // Convertir fechaCertificacionSubtel de Date a string ISO si existe
+    // Solo si la resolución es 2017
+    let fechaCertificacionSubtelString: string | null = null;
+    if (formValue.resolutionVersion === 2017 && formValue.fechaCertificacionSubtel && formValue.fechaCertificacionSubtel instanceof Date) {
+      // Convertir a formato ISO (YYYY-MM-DD)
+      const year = formValue.fechaCertificacionSubtel.getFullYear();
+      const month = String(formValue.fechaCertificacionSubtel.getMonth() + 1).padStart(2, '0');
+      const day = String(formValue.fechaCertificacionSubtel.getDate()).padStart(2, '0');
+      fechaCertificacionSubtelString = `${year}-${month}-${day}`;
+    }
+    
+    // Asegurar que resolutionVersion siempre tenga un valor válido
+    const resolutionVersionValue = formValue.resolutionVersion || 2025;
+    
     const submitData: any = {
       modelo: formValue.modelo,
       tipo: formValue.tipo || '',
@@ -253,7 +391,15 @@ export class DispositivoFormComponent implements OnInit {
       frecuencias: Array.isArray(formValue.frecuencias) ? formValue.frecuencias.filter((v: string) => v && v.trim() !== '') : [],
       gananciaAntena: Array.isArray(formValue.gananciaAntena) ? formValue.gananciaAntena.filter((v: string) => v && v.trim() !== '') : [],
       EIRP: Array.isArray(formValue.EIRP) ? formValue.EIRP.filter((v: string) => v && v.trim() !== '') : [],
-      modulo: Array.isArray(formValue.modulo) ? formValue.modulo.filter((v: string) => v && v.trim() !== '') : []
+      modulo: Array.isArray(formValue.modulo) ? formValue.modulo.filter((v: string) => v && v.trim() !== '') : [],
+      nombreTestReport: Array.isArray(formValue.nombreTestReport) ? formValue.nombreTestReport.filter((v: string) => v && v.trim() !== '') : [],
+      testReportFiles: formValue.testReportFiles && typeof formValue.testReportFiles === 'string' ? formValue.testReportFiles.trim() : '',
+      // Siempre incluir los 3 campos nuevos
+      resolutionVersion: resolutionVersionValue,
+      fechaCertificacionSubtel: resolutionVersionValue === 2017 ? fechaCertificacionSubtelString : null,
+      oficioCertificacionSubtel: resolutionVersionValue === 2017 
+        ? (formValue.oficioCertificacionSubtel && typeof formValue.oficioCertificacionSubtel === 'string' ? formValue.oficioCertificacionSubtel.trim() : '')
+        : ''
     };
     
     // En modo edición, distribuidor es array; en creación, es string
@@ -285,6 +431,9 @@ export class DispositivoFormComponent implements OnInit {
 
   // Separadores de teclado para chips (Enter y coma)
   separatorKeysCodes: number[] = [13, 188]; // Enter y coma
+  
+  // Separador solo Enter para nombreTestReport (evita problemas con comas en "Pag. 5,7")
+  separatorKeysCodesEnterOnly: number[] = [13]; // Solo Enter
 
   // Obtener valor de un array del formulario
   getArrayValue(fieldName: string): string[] {
@@ -324,6 +473,18 @@ export class DispositivoFormComponent implements OnInit {
       currentValue.splice(index, 1);
       this.dispositivoForm.get(fieldName)?.setValue([...currentValue]);
     }
+  }
+
+  // Manejar cambios en el archivo de test report
+  onTestReportFilesChange(url: string): void {
+    this.dispositivoForm.get('testReportFiles')?.setValue(url);
+  }
+
+  // Manejar drag and drop para reordenar chips
+  drop(event: CdkDragDrop<string[]>, fieldName: string): void {
+    const currentValue = this.getArrayValue(fieldName);
+    moveItemInArray(currentValue, event.previousIndex, event.currentIndex);
+    this.dispositivoForm.get(fieldName)?.setValue([...currentValue]);
   }
 }
 

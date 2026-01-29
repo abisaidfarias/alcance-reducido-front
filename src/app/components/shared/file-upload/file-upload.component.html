@@ -1,0 +1,78 @@
+<div class="file-upload-container">
+  <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
+    <mat-label>{{ label }}</mat-label>
+    <input 
+      matInput 
+      type="text" 
+      [value]="uploadedUrl ? getFileName(uploadedUrl) : (selectedFile ? selectedFile.name : 'Ningún archivo seleccionado')"
+      [readonly]="true"
+      placeholder="Selecciona un archivo ZIP o RAR para subir">
+    <mat-icon matPrefix>folder_zip</mat-icon>
+    <button 
+      mat-icon-button 
+      matSuffix 
+      type="button"
+      (click)="triggerFileInput()"
+      [disabled]="uploading"
+      matTooltip="Subir archivo ZIP o RAR">
+      <mat-icon>cloud_upload</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <input 
+    type="file" 
+    [id]="fileInputId"
+    accept=".zip,.rar,application/zip,application/x-zip-compressed,application/x-rar-compressed,application/vnd.rar"
+    (change)="onFileSelected($event)"
+    style="display: none;"
+    [disabled]="uploading">
+
+  <!-- Archivo subido -->
+  <div class="uploaded-file" *ngIf="uploadedUrl && !uploading">
+    <div class="file-item uploaded">
+      <mat-icon class="file-icon">description</mat-icon>
+      <span class="file-name" [matTooltip]="uploadedUrl">{{ getFileName(uploadedUrl) }}</span>
+      <a [href]="uploadedUrl" target="_blank" mat-icon-button class="view-button" matTooltip="Ver archivo">
+        <mat-icon>open_in_new</mat-icon>
+      </a>
+      <button 
+        mat-icon-button 
+        class="remove-button"
+        (click)="removeFile()"
+        matTooltip="Eliminar archivo">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Archivo seleccionado pendiente de subir -->
+  <div class="selected-file" *ngIf="selectedFile && !uploading">
+    <div class="file-item selected">
+      <mat-icon class="file-icon">schedule</mat-icon>
+      <span class="file-name">{{ selectedFile.name }}</span>
+      <span class="file-size">({{ formatFileSize(selectedFile.size) }})</span>
+      <button 
+        mat-icon-button 
+        class="remove-button"
+        (click)="removeSelectedFile()"
+        matTooltip="Cancelar subida">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Estado de carga -->
+  <div class="uploading-status" *ngIf="uploading">
+    <mat-spinner diameter="30"></mat-spinner>
+    <span class="uploading-text">Subiendo {{ uploadingFile }}...</span>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="error-message">
+    <mat-icon>error</mat-icon>
+    <span>{{ error }}</span>
+  </div>
+
+  <mat-hint>Solo se permiten archivos ZIP o RAR. Máximo 50MB.</mat-hint>
+</div>
+

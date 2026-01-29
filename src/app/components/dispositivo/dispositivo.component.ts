@@ -34,7 +34,7 @@ import { Distribuidor } from '../../models/distribuidor.interface';
   styleUrl: './dispositivo.component.scss'
 })
 export class DispositivoComponent implements OnInit {
-  displayedColumns: string[] = ['modelo', 'tipo', 'marca', 'distribuidores', 'fechaPublicacion', 'acciones'];
+  displayedColumns: string[] = ['modelo', 'tipo', 'marca', 'distribuidores', 'fechaPublicacion', 'resolutionVersion', 'acciones'];
   dataSource: Dispositivo[] = [];
   distribuidores: Distribuidor[] = [];
   loading = false;
@@ -119,7 +119,7 @@ export class DispositivoComponent implements OnInit {
 
   openDialog(dispositivo?: Dispositivo): void {
     const dialogRef = this.dialog.open(DispositivoFormComponent, {
-      width: '900px',
+      width: '1200px',
       maxWidth: '95vw',
       data: dispositivo || null
     });

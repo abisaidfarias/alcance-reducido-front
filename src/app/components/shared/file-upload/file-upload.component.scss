@@ -1,0 +1,110 @@
+.file-upload-container {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.uploaded-file,
+.selected-file {
+  margin-top: 12px;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  
+  &.uploaded {
+    background: rgba(78, 215, 117, 0.1);
+    border-color: rgba(78, 215, 117, 0.3);
+  }
+  
+  &.selected {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+}
+
+.view-button {
+  color: rgba(78, 215, 117, 0.9);
+  
+  &:hover {
+    color: rgba(78, 215, 117, 1);
+    background: rgba(78, 215, 117, 0.1);
+  }
+}
+
+.file-icon {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.file-name {
+  flex: 1;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-size {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  margin-left: auto;
+}
+
+.remove-button {
+  color: rgba(255, 255, 255, 0.7);
+  
+  &:hover {
+    color: #f44336;
+    background: rgba(244, 67, 54, 0.1);
+  }
+}
+
+.uploading-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(78, 215, 117, 0.1);
+  border: 1px solid rgba(78, 215, 117, 0.3);
+  border-radius: 8px;
+}
+
+.uploading-text {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 14px;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f44336;
+  margin-top: 8px;
+  font-size: 12px;
+  
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+mat-hint {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+}
+

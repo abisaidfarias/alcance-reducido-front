@@ -12,6 +12,11 @@ export interface Dispositivo {
   gananciaAntena?: string[]; // Array de ganancia de antena
   EIRP?: string[]; // Array de EIRP
   modulo?: string[]; // Array de módulos
+  nombreTestReport?: string[]; // Array de nombres de Test Report
+  testReportFiles?: string; // URL del archivo de Test Report
+  resolutionVersion: 2017 | 2025; // Resolución SUBTEL (obligatorio)
+  fechaCertificacionSubtel: string | null; // Fecha de certificación SUBTEL (ISO string o null)
+  oficioCertificacionSubtel: string; // Oficio de certificación SUBTEL (opcional)
   createdAt?: string;
   updatedAt?: string;
 }
@@ -28,6 +33,11 @@ export interface DispositivoCreate {
   gananciaAntena?: string[];
   EIRP?: string[];
   modulo?: string[];
+  nombreTestReport?: string[];
+  testReportFiles?: string;
+  resolutionVersion: 2017 | 2025; // Resolución SUBTEL (obligatorio)
+  fechaCertificacionSubtel?: string | null; // Fecha de certificación SUBTEL (ISO string o null)
+  oficioCertificacionSubtel?: string; // Oficio de certificación SUBTEL (opcional, default '')
 }
 
 export interface DispositivoUpdate {
@@ -42,6 +52,11 @@ export interface DispositivoUpdate {
   gananciaAntena?: string[];
   EIRP?: string[];
   modulo?: string[];
+  nombreTestReport?: string[];
+  testReportFiles?: string;
+  resolutionVersion?: 2017 | 2025; // Resolución SUBTEL
+  fechaCertificacionSubtel?: string | null; // Fecha de certificación SUBTEL (ISO string o null)
+  oficioCertificacionSubtel?: string; // Oficio de certificación SUBTEL (opcional)
 }
 
 // Interfaces para mostrar datos relacionados

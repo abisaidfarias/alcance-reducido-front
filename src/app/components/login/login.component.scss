@@ -1,5 +1,6 @@
 .login-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
@@ -8,12 +9,231 @@
               radial-gradient(900px 600px at 10% 70%, rgba(245,158,11,.12), transparent 55%),
               linear-gradient(180deg, #091127, #060b16 70%, #04070f);
   padding: 20px;
+  position: relative;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-top: 0;
+  z-index: 1;
+  width: 100%;
 }
 
 .login-card {
   width: 100%;
   max-width: 400px;
   padding: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.login-logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  height: 80px;
+  overflow: visible; // Cambiar a visible para que no se corte
+  padding: 10px 20px; // Padding para evitar cortes
+  transition: transform 0.3s ease, filter 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 15px 40px rgba(78,215,117,.25));
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.login-logo {
+  height: 280px; // Aumentado de 200px a 280px
+  width: auto;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-radius: 8px;
+  filter: drop-shadow(0 10px 30px rgba(78,215,117,.14));
+  object-fit: contain;
+  transform: translateX(-10px) translateY(3px) scale(1.5); // Aumentado scale de 1.45 a 1.5
+  transform-origin: center center;
+  
+  // ============================================
+  // OPCIONES DE ANIMACIÓN - DESCOMENTA LA QUE PREFIERAS
+  // ============================================
+  
+  // OPCIÓN 1: Fade in suave con bounce
+  // animation: logoFadeIn 1s ease-out;
+  
+  // OPCIÓN 2: Rotación con fade in
+  // animation: logoRotateFade 1.2s ease-out;
+  
+  // OPCIÓN 3: Slide desde arriba con bounce
+  // animation: logoSlideDown 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  // OPCIÓN 4: Zoom in desde el centro con glow (ACTIVA - MÁS IMPACTANTE)
+  animation: logoZoomGlow 1.5s ease-out;
+  
+  // OPCIÓN 5: Fade in con pulso suave
+  // animation: logoFadePulse 1.8s ease-out;
+  
+  // OPCIÓN 6: Slide desde la izquierda con rotación
+  // animation: logoSlideRotate 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  // OPCIÓN 7: Aparece con efecto de ondas
+  // animation: logoWave 1.5s ease-out;
+}
+
+// ============================================
+// DEFINICIONES DE ANIMACIONES
+// ============================================
+
+// OPCIÓN 1: Fade in suave con bounce
+@keyframes logoFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px) translateY(3px) scale(0.8);
+    filter: drop-shadow(0 0 0 rgba(78,215,117,0));
+  }
+  50% {
+    transform: translateX(-10px) translateY(3px) scale(1.6);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-10px) translateY(3px) scale(1.5);
+    filter: drop-shadow(0 10px 30px rgba(78,215,117,.14));
+  }
+}
+
+// OPCIÓN 2: Rotación con fade in
+@keyframes logoRotateFade {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px) translateY(3px) scale(0.5) rotate(-180deg);
+    filter: drop-shadow(0 0 0 rgba(78,215,117,0));
+  }
+  60% {
+    opacity: 0.8;
+    transform: translateX(-10px) translateY(3px) scale(1.6) rotate(10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-10px) translateY(3px) scale(1.5) rotate(0deg);
+    filter: drop-shadow(0 10px 30px rgba(78,215,117,.14));
+  }
+}
+
+// OPCIÓN 3: Slide desde arriba con bounce
+@keyframes logoSlideDown {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px) translateY(-100px) scale(0.6);
+    filter: drop-shadow(0 0 0 rgba(78,215,117,0));
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(-10px) translateY(10px) scale(1.6);
+  }
+  80% {
+    transform: translateX(-10px) translateY(-5px) scale(1.5);
+  }
+  100% {
+    transform: translateX(-10px) translateY(3px) scale(1.5);
+    filter: drop-shadow(0 10px 30px rgba(78,215,117,.14));
+  }
+}
+
+// OPCIÓN 4: Zoom in desde el centro con glow
+@keyframes logoZoomGlow {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px) translateY(3px) scale(0);
+    filter: drop-shadow(0 0 0 rgba(78,215,117,0));
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateX(-10px) translateY(3px) scale(1.8);
+    filter: drop-shadow(0 0 50px rgba(78,215,117,.5));
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-10px) translateY(3px) scale(1.5);
+    filter: drop-shadow(0 10px 30px rgba(78,215,117,.14));
+  }
+}
+
+// OPCIÓN 5: Fade in con pulso suave
+@keyframes logoFadePulse {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px) translateY(3px) scale(0.7);
+    filter: drop-shadow(0 0 0 rgba(78,215,117,0));
+  }
+  30% {
+    opacity: 0.5;
+    transform: translateX(-10px) translateY(3px) scale(1.3);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-10px) translateY(3px) scale(1.6);
+    filter: drop-shadow(0 0 40px rgba(78,215,117,.3));
+  }
+  70% {
+    transform: translateX(-10px) translateY(3px) scale(1.4);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-10px) translateY(3px) scale(1.5);
+    filter: drop-shadow(0 10px 30px rgba(78,215,117,.14));
+  }
+}
+
+// OPCIÓN 6: Slide desde la izquierda con rotación
+@keyframes logoSlideRotate {
+  0% {
+    opacity: 0;
+    transform: translateX(-200px) translateY(3px) scale(0.5) rotate(-90deg);
+    filter: drop-shadow(0 0 0 rgba(78,215,117,0));
+  }
+  60% {
+    opacity: 0.9;
+    transform: translateX(10px) translateY(3px) scale(1.6) rotate(5deg);
+  }
+  80% {
+    transform: translateX(-5px) translateY(3px) scale(1.5) rotate(-2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-10px) translateY(3px) scale(1.5) rotate(0deg);
+    filter: drop-shadow(0 10px 30px rgba(78,215,117,.14));
+  }
+}
+
+// OPCIÓN 7: Aparece con efecto de ondas
+@keyframes logoWave {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px) translateY(3px) scale(0.3);
+    filter: drop-shadow(0 0 0 rgba(78,215,117,0)) blur(20px);
+  }
+  40% {
+    opacity: 0.6;
+    transform: translateX(-10px) translateY(3px) scale(1.7);
+    filter: drop-shadow(0 0 60px rgba(78,215,117,.6)) blur(5px);
+  }
+  60% {
+    transform: translateX(-10px) translateY(3px) scale(1.4);
+    filter: drop-shadow(0 0 30px rgba(78,215,117,.4)) blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-10px) translateY(3px) scale(1.5);
+    filter: drop-shadow(0 10px 30px rgba(78,215,117,.14)) blur(0px);
+  }
 }
 
 .login-form {

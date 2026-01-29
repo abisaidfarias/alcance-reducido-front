@@ -95,18 +95,42 @@ mat-list-item {
   align-items: center;
   margin-left: 10px;
   
+  .toolbar-logo-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 200px;
+    height: 48px;
+    overflow: hidden;
+    flex: 0 0 auto;
+    padding-left: 20px;
+  }
+  
   .logo-img {
-    height: 40px;
+    height: 122px;
     width: auto;
+    display: block;
+    margin: 0;
+    padding: 0;
     border-radius: 8px;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    object-fit: contain;
+    transform: translateX(-10px) translateY(3px) scale(1.45);
+    transform-origin: center center;
   }
   
   @media (max-width: 599px) {
     margin-left: 8px;
     
+    .toolbar-logo-wrapper {
+      width: 180px;
+      height: 44px;
+      padding-left: 15px;
+    }
+    
     .logo-img {
-      height: 32px;
+      height: 180px;
+      transform: translateX(-8px) translateY(2px) scale(1.35);
     }
   }
 }

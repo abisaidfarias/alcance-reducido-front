@@ -12,9 +12,7 @@ export class ApiService {
   constructor(private http: HttpClient) { }
 
   get<T>(endpoint: string): Observable<T> {
-    const url = `${this.apiUrl}${endpoint}`;
-    console.log('GET Request:', url);
-    return this.http.get<T>(url);
+    return this.http.get<T>(`${this.apiUrl}${endpoint}`);
   }
 
   post<T>(endpoint: string, body: any): Observable<T> {

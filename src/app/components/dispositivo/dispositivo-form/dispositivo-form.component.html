@@ -75,15 +75,60 @@
         </mat-form-field>
       </div>
 
-      <!-- Sección de Especificaciones Técnicas: Grid de 2 columnas -->
+      <!-- Sección de Certificación SUBTEL -->
       <div class="array-fields-section">
+        <h3 class="section-title">Certificación SUBTEL</h3>
+        
+        <div class="specs-grid">
+          <!-- Resolución SUBTEL (Radio buttons) - Ocupa toda la fila -->
+          <div class="spec-field radio-field full-width">
+            <label class="radio-label">
+              <mat-icon class="radio-label-icon">gavel</mat-icon>
+              Resolución SUBTEL <span class="required-asterisk">*</span>
+            </label>
+            <mat-radio-group formControlName="resolutionVersion" class="radio-group">
+              <mat-radio-button [value]="2017" class="radio-button">Resolución 2017</mat-radio-button>
+              <mat-radio-button [value]="2025" class="radio-button">Resolución 2025</mat-radio-button>
+            </mat-radio-group>
+            <div class="error-message" *ngIf="dispositivoForm.get('resolutionVersion')?.hasError('required') && dispositivoForm.get('resolutionVersion')?.touched">
+              La resolución SUBTEL es requerida
+            </div>
+          </div>
+
+          <!-- Fecha y Oficio en la misma fila - Solo visible si Resolución 2017 -->
+          <ng-container *ngIf="dispositivoForm.get('resolutionVersion')?.value === 2017">
+            <!-- Fecha Certificación SUBTEL (Datepicker) -->
+            <mat-form-field appearance="outline" class="spec-field" [floatLabel]="'always'">
+              <mat-label>Fecha Certificación SUBTEL</mat-label>
+              <input matInput [matDatepicker]="pickerSubtel" formControlName="fechaCertificacionSubtel" placeholder="Seleccionar fecha">
+              <mat-datepicker-toggle matIconSuffix [for]="pickerSubtel"></mat-datepicker-toggle>
+              <mat-datepicker #pickerSubtel></mat-datepicker>
+              <mat-icon matPrefix>calendar_today</mat-icon>
+              <mat-hint>Opcional</mat-hint>
+            </mat-form-field>
+
+            <!-- Oficio Certificación SUBTEL (Text) -->
+            <mat-form-field appearance="outline" class="spec-field" [floatLabel]="'always'">
+              <mat-label>Oficio Certificación SUBTEL</mat-label>
+              <input matInput formControlName="oficioCertificacionSubtel" placeholder="Ej: OF-12345-2026" maxlength="200">
+              <mat-icon matPrefix>description</mat-icon>
+              <mat-hint>Opcional</mat-hint>
+            </mat-form-field>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- Sección de Especificaciones Técnicas: Grid de 2 columnas - Solo visible si Resolución 2025 -->
+      <div class="array-fields-section" *ngIf="dispositivoForm.get('resolutionVersion')?.value === 2025">
         <h3 class="section-title">Especificaciones Técnicas</h3>
         
         <div class="specs-grid">
           <mat-form-field appearance="outline" class="spec-field" [floatLabel]="'always'">
             <mat-label>Tecnología</mat-label>
-            <mat-chip-grid #chipGridTecnologia aria-label="Tecnología selection">
-              <mat-chip-row *ngFor="let item of getArrayValue('tecnologia')" (removed)="removeFromArray('tecnologia', item)">
+            <mat-chip-grid #chipGridTecnologia aria-label="Tecnología selection" cdkDropList (cdkDropListDropped)="drop($event, 'tecnologia')">
+              <mat-chip-row *ngFor="let item of getArrayValue('tecnologia'); let i = index" 
+                            cdkDrag
+                            (removed)="removeFromArray('tecnologia', item)">
                 {{ item }}
                 <button matChipRemove [attr.aria-label]="'remove ' + item">
                   <mat-icon>cancel</mat-icon>
@@ -103,8 +148,10 @@
 
           <mat-form-field appearance="outline" class="spec-field" [floatLabel]="'always'">
             <mat-label>Frecuencias</mat-label>
-            <mat-chip-grid #chipGridFrecuencias aria-label="Frecuencias selection">
-              <mat-chip-row *ngFor="let item of getArrayValue('frecuencias')" (removed)="removeFromArray('frecuencias', item)">
+            <mat-chip-grid #chipGridFrecuencias aria-label="Frecuencias selection" cdkDropList (cdkDropListDropped)="drop($event, 'frecuencias')">
+              <mat-chip-row *ngFor="let item of getArrayValue('frecuencias'); let i = index" 
+                            cdkDrag
+                            (removed)="removeFromArray('frecuencias', item)">
                 {{ item }}
                 <button matChipRemove [attr.aria-label]="'remove ' + item">
                   <mat-icon>cancel</mat-icon>
@@ -124,8 +171,10 @@
 
           <mat-form-field appearance="outline" class="spec-field" [floatLabel]="'always'">
             <mat-label>Ganancia de Antena</mat-label>
-            <mat-chip-grid #chipGridGanancia aria-label="Ganancia de Antena selection">
-              <mat-chip-row *ngFor="let item of getArrayValue('gananciaAntena')" (removed)="removeFromArray('gananciaAntena', item)">
+            <mat-chip-grid #chipGridGanancia aria-label="Ganancia de Antena selection" cdkDropList (cdkDropListDropped)="drop($event, 'gananciaAntena')">
+              <mat-chip-row *ngFor="let item of getArrayValue('gananciaAntena'); let i = index" 
+                            cdkDrag
+                            (removed)="removeFromArray('gananciaAntena', item)">
                 {{ item }}
                 <button matChipRemove [attr.aria-label]="'remove ' + item">
                   <mat-icon>cancel</mat-icon>
@@ -145,8 +194,10 @@
 
           <mat-form-field appearance="outline" class="spec-field" [floatLabel]="'always'">
             <mat-label>EIRP</mat-label>
-            <mat-chip-grid #chipGridEIRP aria-label="EIRP selection">
-              <mat-chip-row *ngFor="let item of getArrayValue('EIRP')" (removed)="removeFromArray('EIRP', item)">
+            <mat-chip-grid #chipGridEIRP aria-label="EIRP selection" cdkDropList (cdkDropListDropped)="drop($event, 'EIRP')">
+              <mat-chip-row *ngFor="let item of getArrayValue('EIRP'); let i = index" 
+                            cdkDrag
+                            (removed)="removeFromArray('EIRP', item)">
                 {{ item }}
                 <button matChipRemove [attr.aria-label]="'remove ' + item">
                   <mat-icon>cancel</mat-icon>
@@ -166,8 +217,10 @@
 
           <mat-form-field appearance="outline" class="spec-field" [floatLabel]="'always'">
             <mat-label>Módulo</mat-label>
-            <mat-chip-grid #chipGridModulo aria-label="Módulo selection">
-              <mat-chip-row *ngFor="let item of getArrayValue('modulo')" (removed)="removeFromArray('modulo', item)">
+            <mat-chip-grid #chipGridModulo aria-label="Módulo selection" cdkDropList (cdkDropListDropped)="drop($event, 'modulo')">
+              <mat-chip-row *ngFor="let item of getArrayValue('modulo'); let i = index" 
+                            cdkDrag
+                            (removed)="removeFromArray('modulo', item)">
                 {{ item }}
                 <button matChipRemove [attr.aria-label]="'remove ' + item">
                   <mat-icon>cancel</mat-icon>
@@ -184,6 +237,44 @@
             <mat-icon matPrefix>developer_board</mat-icon>
             <mat-hint>Enter o coma</mat-hint>
           </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Sección de Test Reports - Solo visible si Resolución 2025 -->
+      <div class="array-fields-section" *ngIf="dispositivoForm.get('resolutionVersion')?.value === 2025">
+        <h3 class="section-title">Test Reports</h3>
+        
+        <div class="specs-grid">
+          <mat-form-field appearance="outline" class="spec-field" [floatLabel]="'always'">
+            <mat-label>Nombre Test Report</mat-label>
+            <mat-chip-grid #chipGridNombreTestReport aria-label="Nombre Test Report selection" cdkDropList (cdkDropListDropped)="drop($event, 'nombreTestReport')">
+              <mat-chip-row *ngFor="let item of getArrayValue('nombreTestReport'); let i = index" 
+                            cdkDrag
+                            (removed)="removeFromArray('nombreTestReport', item)">
+                {{ item }}
+                <button matChipRemove [attr.aria-label]="'remove ' + item">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-chip-row>
+            </mat-chip-grid>
+            <input matInput 
+                   matChipInput
+                   placeholder="Ej: X6730B WSCT-ANAB-R&E250700055A-BT_1.pdf Pag. 5,7" 
+                   [matChipInputFor]="chipGridNombreTestReport"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodesEnterOnly"
+                   [matChipInputAddOnBlur]="true"
+                   (matChipInputTokenEnd)="addToArray($event, 'nombreTestReport')">
+            <mat-icon matPrefix>description</mat-icon>
+            <mat-hint>Presiona Enter para agregar (puedes usar comas en el texto)</mat-hint>
+          </mat-form-field>
+
+          <div class="spec-field">
+            <app-file-upload
+              label="Archivo Test Report"
+              [currentUrl]="dispositivoForm.get('testReportFiles')?.value || ''"
+              (urlChange)="onTestReportFilesChange($event)">
+            </app-file-upload>
+          </div>
         </div>
       </div>
     </form>
