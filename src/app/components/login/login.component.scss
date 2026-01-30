@@ -20,6 +20,17 @@
   padding-top: 0;
   z-index: 1;
   width: 100%;
+  
+  // Ajustes para mobile
+  @media (max-width: 768px) {
+    margin-bottom: 16px;
+    padding-top: 16px;
+  }
+  
+  @media (max-width: 480px) {
+    margin-bottom: 12px;
+    padding-top: 12px;
+  }
 }
 
 .login-card {
@@ -48,6 +59,22 @@
   &:active {
     transform: scale(0.98);
   }
+  
+  // Ajustes para mobile
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 420px;
+    height: 110px;
+    padding: 10px 20px;
+    margin-bottom: 16px;
+  }
+  
+  @media (max-width: 480px) {
+    max-width: 380px;
+    height: 100px;
+    padding: 8px 16px;
+    margin-bottom: 12px;
+  }
 }
 
 .login-logo {
@@ -61,6 +88,19 @@
   object-fit: contain;
   transform: translateX(-10px) translateY(3px) scale(1.5); // Aumentado scale de 1.45 a 1.5
   transform-origin: center center;
+  
+  // Ajustes para mobile
+  @media (max-width: 768px) {
+    height: 250px;
+    transform: translateX(0) translateY(0) scale(1.5);
+    filter: drop-shadow(0 8px 20px rgba(78,215,117,.12));
+  }
+  
+  @media (max-width: 480px) {
+    height: 220px;
+    transform: translateX(0) translateY(0) scale(1.4);
+    filter: drop-shadow(0 6px 15px rgba(78,215,117,.1));
+  }
   
   // ============================================
   // OPCIONES DE ANIMACIÓN - DESCOMENTA LA QUE PREFIERAS
@@ -262,5 +302,54 @@ mat-card-header {
 mat-card-title {
   font-size: 24px;
   font-weight: 500;
+}
+
+// Ajustes de animación para mobile - sobreescribir keyframes
+@media (max-width: 768px) {
+  .login-logo {
+    animation: logoZoomGlowMobile 1.2s ease-out;
+  }
+  
+  @keyframes logoZoomGlowMobile {
+    0% {
+      opacity: 0;
+      transform: translateX(0) translateY(0) scale(0);
+      filter: drop-shadow(0 0 0 rgba(78,215,117,0));
+    }
+    50% {
+      opacity: 0.7;
+      transform: translateX(0) translateY(0) scale(1.7);
+      filter: drop-shadow(0 0 40px rgba(78,215,117,.4));
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0) translateY(0) scale(1.5);
+      filter: drop-shadow(0 8px 20px rgba(78,215,117,.12));
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .login-logo {
+    animation: logoZoomGlowMobileSmall 1s ease-out;
+  }
+  
+  @keyframes logoZoomGlowMobileSmall {
+    0% {
+      opacity: 0;
+      transform: translateX(0) translateY(0) scale(0);
+      filter: drop-shadow(0 0 0 rgba(78,215,117,0));
+    }
+    50% {
+      opacity: 0.7;
+      transform: translateX(0) translateY(0) scale(1.6);
+      filter: drop-shadow(0 0 30px rgba(78,215,117,.3));
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0) translateY(0) scale(1.4);
+      filter: drop-shadow(0 6px 15px rgba(78,215,117,.1));
+    }
+  }
 }
 
