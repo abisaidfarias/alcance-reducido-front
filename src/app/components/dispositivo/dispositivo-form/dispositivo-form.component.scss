@@ -304,3 +304,23 @@ mat-dialog-content {
     transition: background-color 0.2s ease;
   }
 }
+
+// Estilo para el icono de selección en autocomplete múltiple
+.selected-icon {
+  margin-left: auto;
+  color: #3f51b5;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+// Estilo para las opciones del autocomplete múltiple
+::ng-deep {
+  .mat-mdc-autocomplete-panel {
+    .mat-mdc-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}

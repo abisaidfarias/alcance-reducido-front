@@ -27,32 +27,69 @@
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field-half" [floatLabel]="'always'">
           <mat-label>Marca</mat-label>
-          <mat-select formControlName="marca">
-            <mat-option *ngFor="let marca of marcas" [value]="marca._id">
+          <input 
+            matInput 
+            #marcaInput
+            [formControl]="marcaFilterControl"
+            [matAutocomplete]="marcaAuto"
+            (blur)="onMarcaBlur()">
+          <mat-autocomplete 
+            #marcaAuto="matAutocomplete"
+            (optionSelected)="onMarcaSelected($event.option.value)">
+            <mat-option *ngFor="let marca of marcasFiltradas" [value]="marca._id">
               {{ marca.marca }}
             </mat-option>
-          </mat-select>
+          </mat-autocomplete>
+          <mat-icon matPrefix>branding_watermark</mat-icon>
+          <button mat-icon-button matSuffix type="button" (click)="marcaInput.focus(); marcaFilterControl.setValue('')">
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
         </mat-form-field>
 
-        <!-- Select simple para crear -->
+        <!-- Autocomplete simple para crear -->
         <mat-form-field *ngIf="!isEditMode" appearance="outline" class="form-field-half" [floatLabel]="'always'">
           <mat-label>Distribuidor</mat-label>
-          <mat-select formControlName="distribuidor">
-            <mat-option *ngFor="let distribuidor of distribuidores" [value]="distribuidor._id">
+          <input 
+            matInput 
+            #distribuidorInput
+            [formControl]="distribuidorFilterControl"
+            [matAutocomplete]="distribuidorAuto"
+            (blur)="onDistribuidorBlur()">
+          <mat-autocomplete 
+            #distribuidorAuto="matAutocomplete"
+            (optionSelected)="onDistribuidorSelected($event.option.value)">
+            <mat-option *ngFor="let distribuidor of distribuidoresFiltrados" [value]="distribuidor._id">
               {{ distribuidor.nombreRepresentante || distribuidor.representante }}
             </mat-option>
-          </mat-select>
+          </mat-autocomplete>
+          <mat-icon matPrefix>business</mat-icon>
+          <button mat-icon-button matSuffix type="button" (click)="distribuidorInput.focus(); distribuidorFilterControl.setValue('')">
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
         </mat-form-field>
 
-        <!-- Select múltiple para editar -->
+        <!-- Autocomplete múltiple para editar -->
         <mat-form-field *ngIf="isEditMode" appearance="outline" class="form-field-half" [floatLabel]="'always'">
           <mat-label>Distribuidores</mat-label>
-          <mat-select formControlName="distribuidor" multiple>
-            <mat-option *ngFor="let distribuidor of distribuidores" [value]="distribuidor._id">
-              {{ distribuidor.nombreRepresentante || distribuidor.representante }}
+          <input 
+            matInput 
+            #distribuidorMultipleInput
+            [formControl]="distribuidorFilterControl"
+            [matAutocomplete]="distribuidorMultipleAuto"
+            (blur)="onDistribuidorMultipleBlur()">
+          <mat-autocomplete 
+            #distribuidorMultipleAuto="matAutocomplete"
+            (optionSelected)="onDistribuidorMultipleSelected($event.option.value)">
+            <mat-option *ngFor="let distribuidor of distribuidoresFiltrados" [value]="distribuidor._id">
+              <span>{{ distribuidor.nombreRepresentante || distribuidor.representante }}</span>
+              <mat-icon *ngIf="distribuidor._id && isDistribuidorSelected(distribuidor._id)" class="selected-icon">check</mat-icon>
             </mat-option>
-          </mat-select>
-          <mat-hint>Múltiples selecciones</mat-hint>
+          </mat-autocomplete>
+          <mat-icon matPrefix>business</mat-icon>
+          <button mat-icon-button matSuffix type="button" (click)="distribuidorMultipleInput.focus(); distribuidorFilterControl.setValue('')">
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
+          <mat-hint>Múltiples selecciones - Busca y selecciona</mat-hint>
         </mat-form-field>
       </div>
 

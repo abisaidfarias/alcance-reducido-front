@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
+import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -15,6 +16,7 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../shared/confirm-dia
 import { ErrorDialogComponent, ErrorDialogData } from '../shared/error-dialog/error-dialog.component';
 import { DistribuidorService } from '../../services/distribuidor.service';
 import { Distribuidor } from '../../models/distribuidor.interface';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-dispositivo',
@@ -25,6 +27,7 @@ import { Distribuidor } from '../../models/distribuidor.interface';
     MatButtonModule,
     MatIconModule,
     MatTableModule,
+    MatSortModule,
     MatDialogModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
@@ -33,11 +36,13 @@ import { Distribuidor } from '../../models/distribuidor.interface';
   templateUrl: './dispositivo.component.html',
   styleUrl: './dispositivo.component.scss'
 })
-export class DispositivoComponent implements OnInit {
+export class DispositivoComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['modelo', 'tipo', 'marca', 'distribuidores', 'fechaPublicacion', 'resolutionVersion', 'acciones'];
-  dataSource: Dispositivo[] = [];
+  dataSource = new MatTableDataSource<Dispositivo>([]);
   distribuidores: Distribuidor[] = [];
   loading = false;
+  
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private dispositivoService: DispositivoService,
@@ -49,6 +54,35 @@ export class DispositivoComponent implements OnInit {
   ngOnInit(): void {
     this.loadDispositivos();
     this.loadDistribuidores();
+  }
+
+  ngAfterViewInit(): void {
+    // Configurar función de ordenamiento personalizada
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'marca':
+          return this.getMarcaDisplay(item);
+        case 'distribuidores':
+          return this.getDistribuidoresDisplay(item);
+        case 'tipo':
+          return this.getTipoDisplay(item.tipo);
+        case 'fechaPublicacion':
+          return item.fechaPublicacion ? new Date(item.fechaPublicacion).getTime() : 0;
+        case 'resolutionVersion':
+          return item.resolutionVersion || 0;
+        default:
+          return (item as any)[property];
+      }
+    };
+    
+    // Intentar conectar el sort si ya hay datos
+    this.connectSort();
+  }
+
+  private connectSort(): void {
+    if (this.sort && this.dataSource) {
+      this.dataSource.sort = this.sort;
+    }
   }
 
   loadDistribuidores(): void {
@@ -102,15 +136,20 @@ export class DispositivoComponent implements OnInit {
         
         console.log('Dispositivos procesados:', dispositivos);
         console.log('Cantidad:', dispositivos.length);
-        this.dataSource = dispositivos;
+        this.dataSource.data = dispositivos;
         this.loading = false;
+        
+        // Conectar el sort después de que los datos se carguen y la tabla se renderice
+        setTimeout(() => {
+          this.connectSort();
+        }, 200);
       },
       error: (error) => {
         console.error('Error completo al cargar dispositivos:', error);
         console.error('Status:', error.status);
         console.error('Status Text:', error.statusText);
         console.error('Error body:', error.error);
-        this.dataSource = [];
+        this.dataSource.data = [];
         this.loading = false;
         this.showErrorDialog('Error al cargar dispositivos', error);
       }
@@ -135,6 +174,9 @@ export class DispositivoComponent implements OnInit {
                 duration: 3000
               });
               this.loadDispositivos();
+              setTimeout(() => {
+                this.connectSort();
+              }, 200);
             },
             error: (error) => {
               console.error('Error al actualizar dispositivo:', error);
@@ -152,6 +194,9 @@ export class DispositivoComponent implements OnInit {
               });
               // Recargar la lista de dispositivos
               this.loadDispositivos();
+              setTimeout(() => {
+                this.connectSort();
+              }, 200);
             },
             error: (error) => {
               console.error('Error al crear dispositivo:', error);
@@ -198,6 +243,9 @@ export class DispositivoComponent implements OnInit {
               duration: 3000
             });
             this.loadDispositivos();
+            setTimeout(() => {
+              this.connectSort();
+            }, 200);
           },
           error: (error) => {
             console.error('Error al eliminar dispositivo:', error);

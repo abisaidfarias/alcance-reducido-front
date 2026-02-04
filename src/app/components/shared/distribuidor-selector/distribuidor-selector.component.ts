@@ -4,6 +4,8 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -19,6 +21,8 @@ import { Router } from '@angular/router';
     MatDialogModule,
     MatFormFieldModule,
     MatSelectModule,
+    MatAutocompleteModule,
+    MatInputModule,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule
@@ -34,11 +38,18 @@ export class DistribuidorSelectorComponent implements OnInit {
   public data = inject(MAT_DIALOG_DATA);
 
   distribuidores: any[] = [];
+  distribuidoresFiltrados: any[] = [];
   loading = false;
   distribuidorControl = new FormControl('', [Validators.required]);
+  distribuidorFilterControl = new FormControl('');
 
   ngOnInit(): void {
     this.loadDistribuidores();
+    
+    // Configurar filtro para autocomplete
+    this.distribuidorFilterControl.valueChanges.subscribe(value => {
+      this.filterDistribuidores(value || '');
+    });
   }
 
   loadDistribuidores(): void {
@@ -58,11 +69,13 @@ export class DistribuidorSelectorComponent implements OnInit {
         } else {
           this.distribuidores = [];
         }
+        this.distribuidoresFiltrados = this.distribuidores;
       },
       error: (error) => {
         console.error('Error al cargar distribuidores:', error);
         this.loading = false;
         this.distribuidores = [];
+        this.distribuidoresFiltrados = [];
       }
     });
   }
@@ -116,30 +129,61 @@ export class DistribuidorSelectorComponent implements OnInit {
     }
   }
 
-  onSelectOpened(open: boolean): void {
-    if (!open) return;
-    setTimeout(() => {
-      const panel = document.querySelector('.cdk-overlay-pane .glass-select-panel');
-      console.log('=== PANEL DEBUG ===');
-      console.log('PANEL', panel);
-      console.log('PANEL HTML', panel?.outerHTML);
-      
-      const listCandidates = panel?.querySelectorAll('.mdc-list, .mat-mdc-select-panel, .mdc-menu-surface, .cdk-virtual-scroll-viewport');
-      console.log('CANDIDATES', listCandidates);
-      
-      listCandidates?.forEach(el => {
-        const cs = getComputedStyle(el as Element);
-        console.log('Element:', el.className);
-        console.log('  maxH:', cs.maxHeight, 'h:', cs.height, 'overflowY:', cs.overflowY, 'overflow:', cs.overflow);
-        console.log('  display:', cs.display, 'position:', cs.position);
-      });
-      
-      // También verificar el panel mismo
-      if (panel) {
-        const panelCs = getComputedStyle(panel as Element);
-        console.log('PANEL SELF - maxH:', panelCs.maxHeight, 'h:', panelCs.height, 'overflowY:', panelCs.overflowY, 'overflow:', panelCs.overflow);
+
+  // Filtrar distribuidores
+  filterDistribuidores(search: string): void {
+    const searchLower = search.toLowerCase().trim();
+    if (!searchLower) {
+      this.distribuidoresFiltrados = this.distribuidores;
+      return;
+    }
+    this.distribuidoresFiltrados = this.distribuidores.filter(d => {
+      const label = this.getDistributorLabel(d).toLowerCase();
+      return label.includes(searchLower);
+    });
+  }
+
+  // Manejar selección de distribuidor
+  onDistribuidorSelected(distribuidorId: string): void {
+    this.distribuidorControl.setValue(distribuidorId);
+    const distribuidor = this.distribuidores.find(d => this.getDistributorId(d) === distribuidorId);
+    if (distribuidor) {
+      this.distribuidorFilterControl.setValue(
+        this.getDistributorLabel(distribuidor),
+        { emitEvent: false }
+      );
+    }
+  }
+
+  // Validar distribuidor al perder el foco
+  onDistribuidorBlur(): void {
+    const filterValue = this.distribuidorFilterControl.value || '';
+    const distribuidorId = this.distribuidorControl.value;
+    
+    // Si hay un ID seleccionado, verificar que el texto coincida
+    if (distribuidorId) {
+      const distribuidor = this.distribuidores.find(d => this.getDistributorId(d) === distribuidorId);
+      if (distribuidor) {
+        const nombreCorrecto = this.getDistributorLabel(distribuidor);
+        if (nombreCorrecto !== filterValue) {
+          // El texto no coincide con el distribuidor seleccionado, limpiar
+          this.distribuidorControl.setValue('');
+          this.distribuidorFilterControl.setValue('', { emitEvent: false });
+        } else {
+          // Restaurar el texto correcto
+          this.distribuidorFilterControl.setValue(nombreCorrecto, { emitEvent: false });
+        }
       }
-      console.log('=== END DEBUG ===');
-    }, 0);
+    } else {
+      // No hay selección, verificar si el texto escrito coincide con algún distribuidor
+      const distribuidorEncontrado = this.distribuidores.find(d => {
+        const nombre = this.getDistributorLabel(d).toLowerCase();
+        return nombre === filterValue.toLowerCase().trim();
+      });
+      if (!distribuidorEncontrado && filterValue.trim() !== '') {
+        // El texto no coincide con ningún distribuidor, limpiar
+        this.distribuidorFilterControl.setValue('', { emitEvent: false });
+      }
+    }
   }
 }

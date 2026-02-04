@@ -21,14 +21,23 @@
     <div *ngIf="!loading">
       <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
         <mat-label>Distribuidor</mat-label>
-        <mat-select [formControl]="distribuidorControl" [panelClass]="'glass-select-panel'" (openedChange)="onSelectOpened($event)">
-          <mat-select-trigger>
-            {{ getSelectedDistributorLabel() }}
-          </mat-select-trigger>
-          <mat-option *ngFor="let distribuidor of distribuidores" [value]="getDistributorId(distribuidor)">
+        <input 
+          matInput 
+          #distribuidorInput
+          [formControl]="distribuidorFilterControl"
+          [matAutocomplete]="distribuidorAuto"
+          (blur)="onDistribuidorBlur()"
+          placeholder="Buscar distribuidor...">
+        <mat-autocomplete 
+          #distribuidorAuto="matAutocomplete"
+          (optionSelected)="onDistribuidorSelected($event.option.value)">
+          <mat-option *ngFor="let distribuidor of distribuidoresFiltrados" [value]="getDistributorId(distribuidor)">
             {{ getDistributorLabel(distribuidor) }}
           </mat-option>
-        </mat-select>
+        </mat-autocomplete>
+        <button mat-icon-button matSuffix type="button" class="suffix-button" (click)="distribuidorInput.focus(); distribuidorFilterControl.setValue('')">
+          <mat-icon class="arrow-icon">arrow_drop_down</mat-icon>
+        </button>
         <mat-error *ngIf="distribuidorControl.hasError('required')">
           Debe seleccionar un distribuidor
         </mat-error>

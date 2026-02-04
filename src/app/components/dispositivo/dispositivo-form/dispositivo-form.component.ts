@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
@@ -34,6 +35,7 @@ import { Distribuidor } from '../../../models/distribuidor.interface';
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
+    MatAutocompleteModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatChipsModule,
@@ -50,10 +52,14 @@ export class DispositivoFormComponent implements OnInit {
   isEditMode = false;
   marcas: Marca[] = [];
   distribuidores: Distribuidor[] = [];
+  marcasFiltradas: Marca[] = [];
+  distribuidoresFiltrados: Distribuidor[] = [];
   loadingMarcas = false;
   loadingDistribuidores = false;
   marcasLoaded = false;
   distribuidoresLoaded = false;
+  marcaFilterControl = new FormControl('');
+  distribuidorFilterControl = new FormControl('');
   // Guardar valores originales de certificación para restaurarlos si se cambia de 2025 a 2017
   private originalFechaCertificacionSubtel: Date | null = null;
   private originalOficioCertificacionSubtel: string = '';
@@ -106,6 +112,15 @@ export class DispositivoFormComponent implements OnInit {
     
     this.loadMarcas();
     this.loadDistribuidores();
+
+    // Configurar filtros para autocomplete
+    this.marcaFilterControl.valueChanges.subscribe(value => {
+      this.filterMarcas(value || '');
+    });
+
+    this.distribuidorFilterControl.valueChanges.subscribe(value => {
+      this.filterDistribuidores(value || '');
+    });
 
     // Manejar cambios en resolutionVersion: guardar/restaurar valores de certificación
     let previousResolutionVersion: 2017 | 2025 | null = null;
@@ -267,7 +282,7 @@ export class DispositivoFormComponent implements OnInit {
     this.originalFechaCertificacionSubtel = fechaCertificacionSubtelDate;
     this.originalOficioCertificacionSubtel = this.data!.oficioCertificacionSubtel || '';
     
-    // Usar setTimeout para asegurar que Angular Material haya inicializado los selects
+    // Usar setTimeout para asegurar que Angular Material haya inicializado los autocompletes
     // Nota: resolutionVersion ya se estableció inmediatamente en ngOnInit() para evitar delay visual
     setTimeout(() => {
       this.dispositivoForm.patchValue({
@@ -289,9 +304,30 @@ export class DispositivoFormComponent implements OnInit {
         oficioCertificacionSubtel: this.data!.oficioCertificacionSubtel || ''
       }, { emitEvent: false });
       
+      // Establecer valores de los filtros para autocomplete
+      if (marcaId) {
+        const marca = this.marcas.find(m => m._id === marcaId);
+        if (marca) {
+          this.marcaFilterControl.setValue(marca.marca, { emitEvent: false });
+        }
+      }
+      
+      if (this.isEditMode && Array.isArray(distribuidorArray) && distribuidorArray.length > 0) {
+        // En modo edición, limpiar el filtro para permitir búsqueda
+        this.distribuidorFilterControl.setValue('', { emitEvent: false });
+      } else if (!this.isEditMode && distribuidorArray && distribuidorArray.length > 0) {
+        const distribuidor = this.distribuidores.find(d => d._id === distribuidorArray[0]);
+        if (distribuidor) {
+          this.distribuidorFilterControl.setValue(
+            distribuidor.nombreRepresentante || distribuidor.representante,
+            { emitEvent: false }
+          );
+        }
+      }
+      
       // Forzar detección de cambios
       this.cdr.detectChanges();
-    }, 100);
+    }, 150);
   }
 
   loadMarcas(): void {
@@ -311,6 +347,7 @@ export class DispositivoFormComponent implements OnInit {
         }
         
         this.marcas = marcas;
+        this.marcasFiltradas = marcas;
         this.loadingMarcas = false;
         this.marcasLoaded = true;
         this.patchFormValues();
@@ -341,6 +378,7 @@ export class DispositivoFormComponent implements OnInit {
         }
         
         this.distribuidores = distribuidores;
+        this.distribuidoresFiltrados = distribuidores;
         this.loadingDistribuidores = false;
         this.distribuidoresLoaded = true;
         this.patchFormValues();
@@ -419,16 +457,6 @@ export class DispositivoFormComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  getMarcaDisplay(marcaId: string): string {
-    const marca = this.marcas.find(m => m._id === marcaId);
-    return marca ? marca.marca : marcaId;
-  }
-
-  getDistribuidorDisplay(distribuidorId: string): string {
-    const distribuidor = this.distribuidores.find(d => d._id === distribuidorId);
-    return distribuidor ? distribuidor.representante : distribuidorId;
-  }
-
   // Separadores de teclado para chips (Enter y coma)
   separatorKeysCodes: number[] = [13, 188]; // Enter y coma
   
@@ -485,6 +513,154 @@ export class DispositivoFormComponent implements OnInit {
     const currentValue = this.getArrayValue(fieldName);
     moveItemInArray(currentValue, event.previousIndex, event.currentIndex);
     this.dispositivoForm.get(fieldName)?.setValue([...currentValue]);
+  }
+
+  // Filtrar marcas
+  filterMarcas(search: string): void {
+    const searchLower = search.toLowerCase().trim();
+    if (!searchLower) {
+      this.marcasFiltradas = this.marcas;
+      return;
+    }
+    this.marcasFiltradas = this.marcas.filter(marca =>
+      marca.marca.toLowerCase().includes(searchLower)
+    );
+  }
+
+  // Filtrar distribuidores
+  filterDistribuidores(search: string): void {
+    const searchLower = search.toLowerCase().trim();
+    if (!searchLower) {
+      this.distribuidoresFiltrados = this.distribuidores;
+      return;
+    }
+    this.distribuidoresFiltrados = this.distribuidores.filter(distribuidor => {
+      const nombre = (distribuidor.nombreRepresentante || distribuidor.representante || '').toLowerCase();
+      return nombre.includes(searchLower);
+    });
+  }
+
+  // Obtener display value para marca
+  getMarcaDisplay(marcaId: string): string {
+    const marca = this.marcas.find(m => m._id === marcaId);
+    return marca ? marca.marca : '';
+  }
+
+  // Obtener display value para distribuidor
+  getDistribuidorDisplay(distribuidorId: string): string {
+    const distribuidor = this.distribuidores.find(d => d._id === distribuidorId);
+    return distribuidor ? (distribuidor.nombreRepresentante || distribuidor.representante) : '';
+  }
+
+  // Manejar selección de marca
+  onMarcaSelected(marcaId: string): void {
+    this.dispositivoForm.get('marca')?.setValue(marcaId);
+    const marca = this.marcas.find(m => m._id === marcaId);
+    if (marca) {
+      this.marcaFilterControl.setValue(marca.marca, { emitEvent: false });
+    }
+  }
+
+  // Validar marca al perder el foco
+  onMarcaBlur(): void {
+    const filterValue = this.marcaFilterControl.value || '';
+    const marcaId = this.dispositivoForm.get('marca')?.value;
+    
+    // Si hay un ID seleccionado, verificar que el texto coincida
+    if (marcaId) {
+      const marca = this.marcas.find(m => m._id === marcaId);
+      if (marca && marca.marca !== filterValue) {
+        // El texto no coincide con la marca seleccionada, limpiar
+        this.dispositivoForm.get('marca')?.setValue('');
+        this.marcaFilterControl.setValue('', { emitEvent: false });
+      } else if (marca) {
+        // Restaurar el texto correcto
+        this.marcaFilterControl.setValue(marca.marca, { emitEvent: false });
+      }
+    } else {
+      // No hay selección, verificar si el texto escrito coincide con alguna marca
+      const marcaEncontrada = this.marcas.find(m => m.marca.toLowerCase() === filterValue.toLowerCase().trim());
+      if (!marcaEncontrada && filterValue.trim() !== '') {
+        // El texto no coincide con ninguna marca, limpiar
+        this.marcaFilterControl.setValue('', { emitEvent: false });
+      }
+    }
+  }
+
+  // Manejar selección de distribuidor (simple)
+  onDistribuidorSelected(distribuidorId: string): void {
+    this.dispositivoForm.get('distribuidor')?.setValue(distribuidorId);
+    const distribuidor = this.distribuidores.find(d => d._id === distribuidorId);
+    if (distribuidor) {
+      this.distribuidorFilterControl.setValue(
+        distribuidor.nombreRepresentante || distribuidor.representante,
+        { emitEvent: false }
+      );
+    }
+  }
+
+  // Validar distribuidor al perder el foco (simple)
+  onDistribuidorBlur(): void {
+    const filterValue = this.distribuidorFilterControl.value || '';
+    const distribuidorId = this.dispositivoForm.get('distribuidor')?.value;
+    
+    // Si hay un ID seleccionado, verificar que el texto coincida
+    if (distribuidorId) {
+      const distribuidor = this.distribuidores.find(d => d._id === distribuidorId);
+      if (distribuidor) {
+        const nombreCorrecto = distribuidor.nombreRepresentante || distribuidor.representante;
+        if (nombreCorrecto !== filterValue) {
+          // El texto no coincide con el distribuidor seleccionado, limpiar
+          this.dispositivoForm.get('distribuidor')?.setValue('');
+          this.distribuidorFilterControl.setValue('', { emitEvent: false });
+        } else {
+          // Restaurar el texto correcto
+          this.distribuidorFilterControl.setValue(nombreCorrecto, { emitEvent: false });
+        }
+      }
+    } else {
+      // No hay selección, verificar si el texto escrito coincide con algún distribuidor
+      const distribuidorEncontrado = this.distribuidores.find(d => {
+        const nombre = (d.nombreRepresentante || d.representante || '').toLowerCase();
+        return nombre === filterValue.toLowerCase().trim();
+      });
+      if (!distribuidorEncontrado && filterValue.trim() !== '') {
+        // El texto no coincide con ningún distribuidor, limpiar
+        this.distribuidorFilterControl.setValue('', { emitEvent: false });
+      }
+    }
+  }
+
+  // Manejar selección de distribuidor (múltiple)
+  onDistribuidorMultipleSelected(distribuidorId: string): void {
+    const currentValue = this.dispositivoForm.get('distribuidor')?.value || [];
+    if (!Array.isArray(currentValue)) {
+      return;
+    }
+    const index = currentValue.indexOf(distribuidorId);
+    if (index >= 0) {
+      // Remover si ya está seleccionado
+      currentValue.splice(index, 1);
+    } else {
+      // Agregar si no está seleccionado
+      currentValue.push(distribuidorId);
+    }
+    this.dispositivoForm.get('distribuidor')?.setValue([...currentValue]);
+    this.distribuidorFilterControl.setValue('', { emitEvent: false });
+  }
+
+  // Verificar si distribuidor está seleccionado (múltiple)
+  isDistribuidorSelected(distribuidorId: string | undefined): boolean {
+    if (!distribuidorId) return false;
+    const currentValue = this.dispositivoForm.get('distribuidor')?.value || [];
+    return Array.isArray(currentValue) && currentValue.includes(distribuidorId);
+  }
+
+  // Validar distribuidor múltiple al perder el foco
+  onDistribuidorMultipleBlur(): void {
+    // En modo múltiple, simplemente limpiar el campo de búsqueda
+    // ya que las selecciones se mantienen en el array
+    this.distribuidorFilterControl.setValue('', { emitEvent: false });
   }
 }
 

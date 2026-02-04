@@ -444,13 +444,7 @@
                     <td class="tech-value">
                       <div class="test-report-list">
                         <div *ngFor="let report of dispositivoSeleccionado.nombreTestReport" class="test-report-item">
-                          <a *ngIf="getTestReportUrl(parseTestReport(report).fileName)" 
-                             [href]="getTestReportUrl(parseTestReport(report).fileName)" 
-                             target="_blank" 
-                             class="test-report-link">
-                            {{ parseTestReport(report).fileName }}
-                          </a>
-                          <span *ngIf="!getTestReportUrl(parseTestReport(report).fileName)" class="test-report-text">
+                          <span class="test-report-text">
                             {{ parseTestReport(report).fileName }}
                           </span>
                           <span *ngIf="parseTestReport(report).pages" class="test-report-pill">

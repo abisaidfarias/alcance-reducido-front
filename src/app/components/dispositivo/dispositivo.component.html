@@ -19,44 +19,44 @@
         <p>Cargando dispositivos...</p>
       </div>
 
-      <div *ngIf="!loading && dataSource.length === 0" class="no-data">
+      <div *ngIf="!loading && dataSource.data.length === 0" class="no-data">
         <p>No hay dispositivos registrados</p>
       </div>
 
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z2" *ngIf="!loading && dataSource.length > 0">
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2" *ngIf="!loading && dataSource.data.length > 0">
         <ng-container matColumnDef="modelo">
-          <th mat-header-cell *matHeaderCellDef> Modelo </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Modelo </th>
           <td mat-cell *matCellDef="let element"> {{element.modelo}} </td>
         </ng-container>
 
         <ng-container matColumnDef="tipo">
-          <th mat-header-cell *matHeaderCellDef> Tipo </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </th>
           <td mat-cell *matCellDef="let element"> {{getTipoDisplay(element.tipo)}} </td>
         </ng-container>
 
         <ng-container matColumnDef="marca">
-          <th mat-header-cell *matHeaderCellDef> Marca </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Marca </th>
           <td mat-cell *matCellDef="let element">
             {{getMarcaDisplay(element)}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="distribuidores">
-          <th mat-header-cell *matHeaderCellDef> Distribuidores </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Distribuidores </th>
           <td mat-cell *matCellDef="let element">
             {{getDistribuidoresDisplay(element)}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="fechaPublicacion">
-          <th mat-header-cell *matHeaderCellDef> Fecha de Publicación </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha de Publicación </th>
           <td mat-cell *matCellDef="let element">
             {{element.fechaPublicacion ? (element.fechaPublicacion | date:'dd/MM/yyyy') : 'No disponible'}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="resolutionVersion">
-          <th mat-header-cell *matHeaderCellDef> Resolución </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Resolución </th>
           <td mat-cell *matCellDef="let element">
             {{element.resolutionVersion || '—'}}
           </td>
