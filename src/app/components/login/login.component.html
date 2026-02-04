@@ -6,34 +6,34 @@
   </div>
   <mat-card class="login-card">
     <mat-card-header>
-      <mat-card-title>Iniciar Sesión</mat-card-title>
+      <mat-card-title>{{ t('login.title') }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
+          <mat-label>{{ t('login.email') }}</mat-label>
           <input matInput type="email" formControlName="email" required>
           <mat-icon matPrefix>email</mat-icon>
           <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
-            El email es requerido
+            {{ t('login.email_required') }}
           </mat-error>
           <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
-            Email inválido
+            {{ t('login.email_invalid') }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Contraseña</mat-label>
+          <mat-label>{{ t('login.password') }}</mat-label>
           <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required>
           <mat-icon matPrefix>lock</mat-icon>
           <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
             <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
           <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
-            La contraseña es requerida
+            {{ t('login.password_required') }}
           </mat-error>
           <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
-            La contraseña debe tener al menos 6 caracteres
+            {{ t('login.password_minlength') }}
           </mat-error>
         </mat-form-field>
 
@@ -42,8 +42,8 @@
         </div>
 
         <button mat-raised-button color="primary" type="submit" class="full-width" [disabled]="loading || loginForm.invalid">
-          <span *ngIf="!loading">Iniciar Sesión</span>
-          <span *ngIf="loading">Cargando...</span>
+          <span *ngIf="!loading">{{ t('login.submit') }}</span>
+          <span *ngIf="loading">{{ t('login.loading') }}</span>
         </button>
       </form>
     </mat-card-content>

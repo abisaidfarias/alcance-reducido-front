@@ -11,6 +11,7 @@ import { DispositivoService } from '../../services/dispositivo.service';
 import { Dispositivo } from '../../models/dispositivo.interface';
 import { DistribuidorService } from '../../services/distribuidor.service';
 import { AuthService } from '../../services/auth.service';
+import { TranslationService, Language } from '../../services/translation.service';
 
 @Component({
   selector: 'app-representante',
@@ -46,15 +47,20 @@ export class RepresentanteComponent implements OnInit {
   
   // Exponer authService para usar en el template
   authService: AuthService;
+  currentLanguage: Language = 'es';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private dispositivoService: DispositivoService,
     private distribuidorService: DistribuidorService,
-    authService: AuthService
+    authService: AuthService,
+    public translationService: TranslationService
   ) {
     this.authService = authService;
+    this.translationService.getCurrentLanguage().subscribe(lang => {
+      this.currentLanguage = lang;
+    });
   }
 
   ngOnInit(): void {
@@ -388,5 +394,14 @@ export class RepresentanteComponent implements OnInit {
     }
     
     return this.dispositivoSeleccionado.testReportFiles || null;
+  }
+
+  toggleLanguage(): void {
+    const newLang: Language = this.currentLanguage === 'es' ? 'en' : 'es';
+    this.translationService.setLanguage(newLang);
+  }
+
+  t(key: string): string {
+    return this.translationService.translate(key);
   }
 }

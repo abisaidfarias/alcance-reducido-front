@@ -10,15 +10,18 @@
         </a>
 
         <nav class="nav-links" aria-label="Navegación">
-          <a (click)="goToHome()" style="cursor: pointer;">Home</a>
-          <a (click)="goToHome()" style="cursor: pointer;">Normativa</a>
-          <a (click)="goToHome()" style="cursor: pointer;">Servicios</a>
-          <a (click)="goToHome()" style="cursor: pointer;">Contacto</a>
+          <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.home') }}</a>
+          <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.normativa') }}</a>
+          <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.servicios') }}</a>
+          <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.contacto') }}</a>
         </nav>
 
         <div class="nav-cta">
-          <a class="btn ghost" (click)="goToHome()" style="cursor: pointer;">Contacto</a>
-          <a class="btn primary" (click)="goToHome()" style="cursor: pointer;">Solicitar asesoría</a>
+          <button class="btn ghost small language-btn" (click)="toggleLanguage()" [title]="currentLanguage === 'es' ? 'English' : 'Español'">
+            {{ currentLanguage === 'es' ? 'EN' : 'ES' }}
+          </button>
+          <a class="btn ghost" (click)="goToHome()" style="cursor: pointer;">{{ t('nav.contacto') }}</a>
+          <a class="btn primary" (click)="goToHome()" style="cursor: pointer;">{{ t('representante.solicitar_asesoria') }}</a>
         </div>
       </div>
     </div>
@@ -27,7 +30,7 @@
   <!-- Loading -->
   <div class="loading-container" *ngIf="loading">
     <mat-spinner diameter="50"></mat-spinner>
-    <p>Cargando información...</p>
+    <p>{{ t('representante.cargando') }}</p>
   </div>
 
   <!-- Vista de Marcas (solo si tiene datos) -->
@@ -37,7 +40,7 @@
       <div class="container">
         <span class="pill">
           <span class="dot"></span>
-          Página del distribuidor / importador
+          {{ t('representante.pagina_distribuidor') }}
         </span>
 
         <div class="breadcrumbs" aria-label="Breadcrumbs">
@@ -52,7 +55,7 @@
           <div>
             <h1 class="h1">{{ getNombreRepresentante() }}</h1>
             <p class="sub">
-              Selecciona una marca para ver los equipos disponibles. Esta página corresponde al importador/distribuidor asociado al QR del empaque.
+              {{ t('representante.seleccionar_marca') }}
             </p>
           </div>
 
@@ -62,7 +65,7 @@
               <input 
                 id="brandSearch" 
                 type="search" 
-                placeholder="Buscar marca (ej: Xiaomi, Samsung, Nothing…)" 
+                [placeholder]="t('representante.buscar_marca')" 
                 [(ngModel)]="searchQuery"
                 (input)="filterMarcas()" />
             </div>
@@ -83,7 +86,7 @@
             [attr.data-name]="marca.marca?.toLowerCase()">
             <div>
               <p class="brand-name">{{ marca.marca || marca.fabricante }}</p>
-              <p class="brand-hint">Ver modelos disponibles</p>
+              <p class="brand-hint">{{ t('representante.ver_modelos') }}</p>
             </div>
             <div class="brand-cta">
               <span class="arrow">→</span>
@@ -92,11 +95,11 @@
         </div>
 
         <div class="no-data" *ngIf="marcasFiltradas.length === 0 && marcas.length > 0">
-          <p>No se encontraron marcas con ese nombre</p>
+          <p>{{ t('representante.no_marcas') }}</p>
         </div>
 
         <div class="no-data" *ngIf="marcas.length === 0">
-          <p>No hay marcas disponibles</p>
+          <p>{{ t('representante.sin_marcas') }}</p>
         </div>
       </div>
     </section>
@@ -116,23 +119,23 @@
             <div class="footer-logo-wrapper">
               <img class="brand-logo-img footer-logo" src="assets/lb-technology-logo.png" alt="LB Technology" />
             </div>
-            <div style="font-weight: 750;">Alcance Reducido · Operado por LB Technology</div>
+            <div style="font-weight: 750;">{{ t('footer.alcance_reducido') }}</div>
           </div>
           <div>
-            © {{ currentYear }} LB Technology. Todos los derechos reservados.
+            © {{ currentYear }} LB Technology. {{ t('footer.derechos') }}
             <div style="margin-top:6px;">
               <span style="color: var(--muted2);">
-                Aviso: contenido informativo de alto nivel. La implementación final depende del caso y documentación del equipo.
+                {{ t('footer.aviso') }}
               </span>
             </div>
           </div>
         </div>
 
         <div class="foot-links">
-          <a (click)="goToHome()" style="cursor: pointer;">Home</a>
-          <a (click)="goToHome()" style="cursor: pointer;">Normativa</a>
-          <a (click)="goToHome()" style="cursor: pointer;">Servicios</a>
-          <a (click)="goToHome()" style="cursor: pointer;">Contacto</a>
+          <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.home') }}</a>
+          <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.normativa') }}</a>
+          <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.servicios') }}</a>
+          <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.contacto') }}</a>
         </div>
       </div>
     </div>
@@ -145,7 +148,7 @@
       <div class="container">
         <span class="pill">
           <span class="dot"></span>
-          Marca habilitada
+          {{ t('representante.marca_habilitada') }}
         </span>
 
         <div class="breadcrumbs" aria-label="Breadcrumbs">
@@ -158,7 +161,7 @@
           <div>
             <h1 class="h1">{{ marcaSeleccionada?.marca || marcaSeleccionada?.fabricante }}</h1>
             <p class="sub">
-              Selecciona un modelo para acceder a la información comercial y técnica asociada al QR del empaque.
+              {{ t('representante.seleccionar_modelo') }}
             </p>
           </div>
 
@@ -168,7 +171,7 @@
               <input 
                 id="modelSearch" 
                 type="search" 
-                placeholder="Buscar modelo (ej: v10, v11…)" 
+                [placeholder]="t('representante.buscar_modelo')" 
                 [(ngModel)]="searchQueryDispositivos"
                 (input)="filterDispositivos()" />
             </div>
@@ -189,7 +192,7 @@
             [attr.data-name]="dispositivo.modelo.toLowerCase()">
             <div>
               <p class="brand-name">{{ dispositivo.modelo }}</p>
-              <p class="brand-hint">Ver información del dispositivo</p>
+              <p class="brand-hint">{{ t('representante.ver_info') }}</p>
             </div>
             <div class="brand-cta">
               <span class="arrow">→</span>
@@ -198,11 +201,11 @@
         </div>
 
         <div class="no-data" *ngIf="dispositivosFiltrados.length === 0 && dispositivos.length > 0">
-          <p>No se encontraron modelos con ese nombre</p>
+          <p>{{ t('representante.no_modelos') }}</p>
         </div>
 
         <div class="no-data" *ngIf="dispositivos.length === 0">
-          <p>No hay dispositivos disponibles para esta marca</p>
+          <p>{{ t('representante.sin_dispositivos') }}</p>
         </div>
       </div>
     </section>
@@ -216,23 +219,23 @@
               <div class="footer-logo-wrapper">
                 <img class="brand-logo-img footer-logo" src="assets/lb-technology-logo.png" alt="LB Technology" />
               </div>
-              <div style="font-weight: 750;">Alcance Reducido · Operado por LB Technology</div>
+              <div style="font-weight: 750;">{{ t('footer.alcance_reducido') }}</div>
             </div>
             <div>
-              © {{ currentYear }} LB Technology. Todos los derechos reservados.
+              © {{ currentYear }} LB Technology. {{ t('footer.derechos') }}
               <div style="margin-top:6px;">
                 <span style="color: var(--muted2);">
-                  Aviso: contenido informativo de alto nivel. La implementación final depende del caso y documentación del equipo.
+                  {{ t('footer.aviso') }}
                 </span>
               </div>
             </div>
           </div>
 
           <div class="foot-links">
-            <a (click)="goToHome()" style="cursor: pointer;">Home</a>
-            <a (click)="goToHome()" style="cursor: pointer;">Normativa</a>
-            <a (click)="goToHome()" style="cursor: pointer;">Servicios</a>
-            <a (click)="goToHome()" style="cursor: pointer;">Contacto</a>
+            <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.home') }}</a>
+            <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.normativa') }}</a>
+            <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.servicios') }}</a>
+            <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.contacto') }}</a>
           </div>
         </div>
       </div>
@@ -246,13 +249,13 @@
       <div class="container">
         <span class="pill">
           <span class="dot"></span>
-          Ficha del dispositivo
+          {{ t('representante.ficha_dispositivo') }}
         </span>
 
         <div class="breadcrumbs" aria-label="Breadcrumbs">
-          <a class="crumb" (click)="volverAtras()" style="cursor: pointer;" title="Volver a modelos">← {{ getNombreRepresentante() }}</a>
+          <a class="crumb" (click)="volverAtras()" style="cursor: pointer;" [title]="t('representante.volver_modelos')">← {{ getNombreRepresentante() }}</a>
           <span style="opacity:.6;">/</span>
-          <a class="crumb" (click)="volverADispositivos()" style="cursor: pointer;" title="Volver a dispositivos">{{ marcaSeleccionada?.marca || marcaSeleccionada?.fabricante }}</a>
+          <a class="crumb" (click)="volverADispositivos()" style="cursor: pointer;" [title]="t('representante.volver_dispositivos')">{{ marcaSeleccionada?.marca || marcaSeleccionada?.fabricante }}</a>
           <span style="opacity:.6;">/</span>
           <span class="crumb" aria-current="page">{{ dispositivoSeleccionado.modelo }}</span>
         </div>
@@ -261,7 +264,7 @@
           <div>
             <h1 class="h1">{{ marcaSeleccionada?.marca || marcaSeleccionada?.fabricante }} • {{ dispositivoSeleccionado.modelo }}</h1>
             <p class="sub">
-              Información comercial y técnica disponible para consulta pública (QR del empaque). Contenido conforme a alcance reducido SUBTEL, según documentación proporcionada por el importador/distribuidor.
+              {{ t('representante.info_disponible') }}
             </p>
           </div>
         </div>
@@ -276,59 +279,59 @@
           <!-- Columna izquierda: Información Comercial -->
           <div class="detalle-info-column">
             <div class="info-section-card">
-              <h2 class="info-section-title">A. INFORMACIÓN COMERCIAL</h2>
-              <p class="info-section-subtitle">Datos de publicación y contacto</p>
+              <h2 class="info-section-title">{{ t('representante.info_comercial') }}</h2>
+              <p class="info-section-subtitle">{{ t('representante.info_comercial_sub') }}</p>
               
               <div class="info-grid">
                 <div class="info-item">
-                  <label class="info-label">FECHA DE PUBLICACIÓN</label>
+                  <label class="info-label">{{ t('representante.fecha_publicacion') }}</label>
                   <p class="info-value">{{ getFechaPublicacion() }}</p>
                 </div>
 
                 <div class="info-item">
-                  <label class="info-label">NOMBRE COMERCIAL DEL EQUIPO</label>
-                  <p class="info-value">{{ dispositivoSeleccionado.nombreComercial || dispositivoSeleccionado.modelo || 'No disponible' }}</p>
+                  <label class="info-label">{{ t('representante.nombre_comercial') }}</label>
+                  <p class="info-value">{{ dispositivoSeleccionado.nombreComercial || dispositivoSeleccionado.modelo || t('representante.no_disponible') }}</p>
                 </div>
 
                 <div class="info-item">
-                  <label class="info-label">FABRICANTE</label>
-                  <p class="info-value">{{ marcaSeleccionada?.fabricante || marcaSeleccionada?.marca || 'No disponible' }}</p>
+                  <label class="info-label">{{ t('representante.fabricante') }}</label>
+                  <p class="info-value">{{ marcaSeleccionada?.fabricante || marcaSeleccionada?.marca || t('representante.no_disponible') }}</p>
                 </div>
 
                 <div class="info-item">
-                  <label class="info-label">IMPORTADOR O REPRESENTANTE EN CHILE</label>
-                  <p class="info-value">{{ getNombreRepresentante() || 'No disponible' }}</p>
+                  <label class="info-label">{{ t('representante.importador') }}</label>
+                  <p class="info-value">{{ getNombreRepresentante() || t('representante.no_disponible') }}</p>
                 </div>
 
                 <div class="info-item">
-                  <label class="info-label">DOMICILIO</label>
-                  <p class="info-value">{{ distribuidor?.domicilio || 'No disponible' }}</p>
+                  <label class="info-label">{{ t('representante.domicilio') }}</label>
+                  <p class="info-value">{{ distribuidor?.domicilio || t('representante.no_disponible') }}</p>
                 </div>
 
                 <div class="info-item">
-                  <label class="info-label">CORREO ELECTRÓNICO DE CONTACTO</label>
+                  <label class="info-label">{{ t('representante.email_contacto') }}</label>
                   <p class="info-value">
                     <a *ngIf="distribuidor?.email" [href]="'mailto:' + distribuidor.email" class="info-link">
                       {{ distribuidor.email }}
                     </a>
-                    <span *ngIf="!distribuidor?.email">No disponible</span>
+                    <span *ngIf="!distribuidor?.email">{{ t('representante.no_disponible') }}</span>
                   </p>
                 </div>
 
                 <div class="info-item full-width">
-                  <label class="info-label">SITIO WEB</label>
+                  <label class="info-label">{{ t('representante.sitio_web') }}</label>
                   <p class="info-value">
                     <a *ngIf="distribuidor?.sitioWeb" [href]="getWebsiteUrl(distribuidor.sitioWeb)" target="_blank" class="info-link">
                       {{ distribuidor.sitioWeb }}
                     </a>
-                    <span *ngIf="!distribuidor?.sitioWeb">No disponible</span>
+                    <span *ngIf="!distribuidor?.sitioWeb">{{ t('representante.no_disponible') }}</span>
                   </p>
                 </div>
 
               </div>
 
               <div class="info-notice" *ngIf="distribuidor">
-                <p><strong>Importante sobre el representante:</strong> Según confirmación oficial de OIRS-SUBTEL, el importador o representante debe tener domicilio legal en Chile. Es un requisito obligatorio sin excepciones.</p>
+                <p><strong>{{ t('representante.importante_representante') }}</strong> {{ t('representante.importante_texto') }}</p>
               </div>
             </div>
           </div>
@@ -336,8 +339,8 @@
           <!-- Columna derecha: Imagen -->
           <div class="detalle-imagen-column">
             <div class="detalle-imagen-card">
-              <h3 class="imagen-title">IMAGEN</h3>
-              <p class="imagen-subtitle">Fotografía del equipo</p>
+              <h3 class="imagen-title">{{ t('representante.imagen') }}</h3>
+              <p class="imagen-subtitle">{{ t('representante.fotografia') }}</p>
               <div class="photo-frame">
                 <img 
                   *ngIf="dispositivoSeleccionado?.foto && !imageLoadError"
@@ -352,7 +355,7 @@
                     <path d="M8.5 13.5C9.32843 13.5 10 12.8284 10 12C10 11.1716 9.32843 10.5 8.5 10.5C7.67157 10.5 7 11.1716 7 12C7 12.8284 7.67157 13.5 8.5 13.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M21 15L16 10L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  <p>Sin imagen</p>
+                  <p>{{ t('representante.sin_imagen') }}</p>
                 </div>
               </div>
             </div>
@@ -362,32 +365,32 @@
         <!-- Segunda fila: B. CARACTERÍSTICAS TÉCNICAS (full width) - Visible para ambas resoluciones -->
         <div class="tech-section" *ngIf="authService.isAuthenticated() || hasTechnicalData() || dispositivoSeleccionado.resolutionVersion == 2017 || dispositivoSeleccionado.resolutionVersion === '2017'">
           <div class="info-section-card">
-            <h2 class="info-section-title">B. CARACTERÍSTICAS TÉCNICAS</h2>
-            <p class="info-section-subtitle">Resolución {{ dispositivoSeleccionado.resolutionVersion || '—' }}</p>
+            <h2 class="info-section-title">{{ t('representante.caracteristicas') }}</h2>
+            <p class="info-section-subtitle">{{ t('representante.resolucion') }} {{ dispositivoSeleccionado.resolutionVersion || '—' }}</p>
             
             <table class="tech-table">
               <thead>
                 <tr>
-                  <th class="tech-header-param">PARÁMETRO</th>
-                  <th class="tech-header-value">VALOR</th>
+                  <th class="tech-header-param">{{ t('representante.parametro') }}</th>
+                  <th class="tech-header-value">{{ t('representante.valor') }}</th>
                 </tr>
               </thead>
               <tbody>
                 <!-- Fila: Tipo de Dispositivo - Visible para ambas resoluciones -->
                 <tr *ngIf="dispositivoSeleccionado.tipo">
-                  <td class="tech-param">Tipo de Dispositivo</td>
+                  <td class="tech-param">{{ t('representante.tipo_dispositivo') }}</td>
                   <td class="tech-value">{{ dispositivoSeleccionado.tipo }}</td>
                 </tr>
                 
                 <!-- Filas específicas para Resolución 2017 -->
                 <ng-container *ngIf="dispositivoSeleccionado.resolutionVersion == 2017 || dispositivoSeleccionado.resolutionVersion === '2017'">
                   <tr>
-                    <td class="tech-param">Fecha de Certificación SUBTEL</td>
+                    <td class="tech-param">{{ t('representante.fecha_certificacion') }}</td>
                     <td class="tech-value">{{ getFechaCertificacionSubtel() }}</td>
                   </tr>
                   
                   <tr>
-                    <td class="tech-param">Oficio de Certificación SUBTEL</td>
+                    <td class="tech-param">{{ t('representante.oficio_certificacion') }}</td>
                     <td class="tech-value">{{ dispositivoSeleccionado.oficioCertificacionSubtel || '—' }}</td>
                   </tr>
                 </ng-container>
@@ -395,7 +398,7 @@
                 <!-- Filas específicas para Resolución 2025 - Todas las especificaciones técnicas -->
                 <ng-container *ngIf="dispositivoSeleccionado.resolutionVersion == 2025 || dispositivoSeleccionado.resolutionVersion === '2025'">
                   <tr *ngIf="dispositivoSeleccionado.tecnologia && dispositivoSeleccionado.tecnologia.length > 0">
-                    <td class="tech-param">Tecnología / modulación</td>
+                    <td class="tech-param">{{ t('representante.tecnologia') }}</td>
                     <td class="tech-value">
                       <div class="array-value-list">
                         <div *ngFor="let item of dispositivoSeleccionado.tecnologia" class="array-value-item">{{ item }}</div>
@@ -404,7 +407,7 @@
                   </tr>
                   
                   <tr *ngIf="dispositivoSeleccionado.frecuencias && dispositivoSeleccionado.frecuencias.length > 0">
-                    <td class="tech-param">Frecuencias</td>
+                    <td class="tech-param">{{ t('representante.frecuencias') }}</td>
                     <td class="tech-value">
                       <div class="array-value-list">
                         <div *ngFor="let item of dispositivoSeleccionado.frecuencias" class="array-value-item">{{ item }}</div>
@@ -413,7 +416,7 @@
                   </tr>
                   
                   <tr *ngIf="dispositivoSeleccionado.gananciaAntena && dispositivoSeleccionado.gananciaAntena.length > 0">
-                    <td class="tech-param">Ganancia de antena (dBi)</td>
+                    <td class="tech-param">{{ t('representante.ganancia_antena') }}</td>
                     <td class="tech-value">
                       <div class="array-value-list">
                         <div *ngFor="let item of dispositivoSeleccionado.gananciaAntena" class="array-value-item">{{ item }}</div>
@@ -422,7 +425,7 @@
                   </tr>
                   
                   <tr *ngIf="dispositivoSeleccionado.EIRP && dispositivoSeleccionado.EIRP.length > 0">
-                    <td class="tech-param">P.I.R.E. (EIRP)</td>
+                    <td class="tech-param">{{ t('representante.eirp') }}</td>
                     <td class="tech-value">
                       <div class="array-value-list">
                         <div *ngFor="let item of dispositivoSeleccionado.EIRP" class="array-value-item">{{ item }}</div>
@@ -431,7 +434,7 @@
                   </tr>
                   
                   <tr *ngIf="dispositivoSeleccionado.modulo && dispositivoSeleccionado.modulo.length > 0">
-                    <td class="tech-param">Módulos</td>
+                    <td class="tech-param">{{ t('representante.modulos') }}</td>
                     <td class="tech-value">
                       <div class="array-value-list">
                         <div *ngFor="let item of dispositivoSeleccionado.modulo" class="array-value-item">{{ item }}</div>
@@ -440,7 +443,7 @@
                   </tr>
                   
                   <tr *ngIf="dispositivoSeleccionado.nombreTestReport && dispositivoSeleccionado.nombreTestReport.length > 0">
-                    <td class="tech-param">Nombre de Test Report</td>
+                    <td class="tech-param">{{ t('representante.nombre_test_report') }}</td>
                     <td class="tech-value">
                       <div class="test-report-list">
                         <div *ngFor="let report of dispositivoSeleccionado.nombreTestReport" class="test-report-item">
@@ -466,10 +469,10 @@
                 </div>
                 <div class="test-report-banner-texts">
                   <div class="test-report-banner-title">
-                    INFORME DE ENSAYO (TEST REPORT)
+                    {{ t('representante.informe_ensayo') }}
                   </div>
                   <div class="test-report-banner-subtitle">
-                    En una página real, aquí se incluiría el PDF descargable del informe de ensayo.
+                    {{ t('representante.informe_ensayo_desc') }}
                   </div>
                 </div>
               </div>
@@ -481,7 +484,7 @@
                 rel="noopener"
                 download
               >
-                Descargar Test Report
+                {{ t('representante.descargar_test_report') }}
               </a>
             </div>
           </div>
@@ -490,15 +493,15 @@
         <!-- Tercera fila: C. DECLARACIÓN DE CONFORMIDAD (full width) -->
         <div class="conformidad-section">
           <div class="info-section-card">
-            <h2 class="info-section-title">C. DECLARACIÓN DE CONFORMIDAD</h2>
-            <p class="info-section-subtitle">Texto requerido</p>
+            <h2 class="info-section-title">{{ t('representante.declaracion') }}</h2>
+            <p class="info-section-subtitle">{{ t('representante.texto_requerido') }}</p>
             
             <div class="conformidad-quote">
-              <p>El equipo previamente individualizado cumple con las disposiciones establecidas en la Norma Técnica de Equipos de alcance reducido, aprobada por la resolución exenta N° 1.985, de 2017, de la Subsecretaría de Telecomunicaciones.</p>
+              <p>{{ t('representante.declaracion_texto') }}</p>
             </div>
             
             <p class="conformidad-note">
-              Este texto se presenta como declaración requerida por el proceso de alcance reducido. La documentación de respaldo se mantiene disponible para requerimientos.
+              {{ t('representante.declaracion_nota') }}
             </p>
           </div>
         </div>
@@ -514,23 +517,23 @@
               <div class="footer-logo-wrapper">
                 <img class="brand-logo-img footer-logo" src="assets/lb-technology-logo.png" alt="LB Technology" />
               </div>
-              <div style="font-weight: 750;">Alcance Reducido · Operado por LB Technology</div>
+              <div style="font-weight: 750;">{{ t('footer.alcance_reducido') }}</div>
             </div>
             <div>
-              © {{ currentYear }} LB Technology. Todos los derechos reservados.
+              © {{ currentYear }} LB Technology. {{ t('footer.derechos') }}
               <div style="margin-top:6px;">
                 <span style="color: var(--muted2);">
-                  Aviso: contenido informativo de alto nivel. La implementación final depende del caso y documentación del equipo.
+                  {{ t('footer.aviso') }}
                 </span>
               </div>
             </div>
           </div>
 
           <div class="foot-links">
-            <a (click)="goToHome()" style="cursor: pointer;">Home</a>
-            <a (click)="goToHome()" style="cursor: pointer;">Normativa</a>
-            <a (click)="goToHome()" style="cursor: pointer;">Servicios</a>
-            <a (click)="goToHome()" style="cursor: pointer;">Contacto</a>
+            <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.home') }}</a>
+            <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.normativa') }}</a>
+            <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.servicios') }}</a>
+            <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.contacto') }}</a>
           </div>
         </div>
       </div>

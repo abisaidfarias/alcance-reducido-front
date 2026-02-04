@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
+import { TranslationService, Language } from '../../services/translation.service';
 
 @Component({
   selector: 'app-login',
@@ -29,12 +30,17 @@ export class LoginComponent {
   hidePassword = true;
   loading = false;
   error = '';
+  currentLanguage: Language = 'es';
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    public translationService: TranslationService
   ) {
+    this.translationService.getCurrentLanguage().subscribe(lang => {
+      this.currentLanguage = lang;
+    });
     // Si ya está autenticado, redirigir según el tipo de usuario
     if (this.authService.isAuthenticated()) {
       this.redirectByUserType();
@@ -66,6 +72,15 @@ export class LoginComponent {
 
   goToHome(): void {
     this.router.navigate(['/']);
+  }
+
+  toggleLanguage(): void {
+    const newLang: Language = this.currentLanguage === 'es' ? 'en' : 'es';
+    this.translationService.setLanguage(newLang);
+  }
+
+  t(key: string): string {
+    return this.translationService.translate(key);
   }
 
   onSubmit(): void {

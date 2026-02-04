@@ -10,36 +10,40 @@
       </a>
 
       <nav class="nav-links" aria-label="Secciones">
-        <a href="#normativa">Normativa</a>
-        <a href="#como">Proceso</a>
-        <a href="#docs">Docs</a>
-        <a href="#timeline">Fechas</a>
-        <a href="#servicios">Servicios</a>
-        <a href="#qr">QR</a>
+        <a href="#normativa">{{ t('nav.normativa') }}</a>
+        <a href="#como">{{ t('nav.proceso') }}</a>
+        <a href="#docs">{{ t('nav.docs') }}</a>
+        <a href="#timeline">{{ t('nav.fechas') }}</a>
+        <a href="#servicios">{{ t('nav.servicios') }}</a>
+        <a href="#qr">{{ t('nav.qr') }}</a>
       </nav>
 
       <div class="nav-cta">
-        <a class="btn ghost small" href="#contacto">Contacto</a>
-        <button class="btn ghost small" (click)="openDistribuidorSelector()">Distribuidores</button>
-        <button class="btn ghost small" (click)="goToLogin()">Login</button>
-        <a class="btn primary small" href="#cotizar">Solicitar certificación</a>
+        <button class="btn ghost small language-btn" (click)="toggleLanguage()" [title]="currentLanguage === 'es' ? 'English' : 'Español'">
+          {{ currentLanguage === 'es' ? 'EN' : 'ES' }}
+        </button>
+        <a class="btn ghost small" href="#contacto">{{ t('nav.contacto') }}</a>
+        <button class="btn ghost small" (click)="openDistribuidorSelector()">{{ t('nav.distribuidores') }}</button>
+        <button class="btn ghost small" (click)="goToLogin()">{{ t('nav.login') }}</button>
+        <a class="btn primary small" href="#cotizar">{{ t('nav.solicitar_certificacion') }}</a>
         <button class="btn small burger" (click)="toggleMobileMenu()" [attr.aria-expanded]="mobileMenuOpen" aria-controls="mobileMenu">
-          <span aria-hidden="true">☰</span> Menú
+          <span aria-hidden="true">☰</span> {{ t('nav.menu') }}
         </button>
       </div>
     </div>
 
     <div class="mobile-menu" id="mobileMenu" [style.display]="mobileMenuOpen ? 'block' : 'none'">
-      <a href="#normativa" (click)="closeMobileMenu()">Normativa</a>
-      <a href="#como" (click)="closeMobileMenu()">Proceso</a>
-      <a href="#docs" (click)="closeMobileMenu()">Docs</a>
-      <a href="#timeline" (click)="closeMobileMenu()">Fechas</a>
-      <a href="#servicios" (click)="closeMobileMenu()">Servicios</a>
-      <a href="#qr" (click)="closeMobileMenu()">QR</a>
-      <a href="#contacto" (click)="closeMobileMenu()">Contacto</a>
-      <a (click)="openDistribuidorSelector(); closeMobileMenu()">Distribuidores</a>
-      <a (click)="goToLogin(); closeMobileMenu()">Login</a>
-      <a href="#cotizar" (click)="closeMobileMenu()">Solicitar certificación</a>
+      <a (click)="toggleLanguage(); closeMobileMenu()">{{ currentLanguage === 'es' ? 'English' : 'Español' }}</a>
+      <a href="#normativa" (click)="closeMobileMenu()">{{ t('nav.normativa') }}</a>
+      <a href="#como" (click)="closeMobileMenu()">{{ t('nav.proceso') }}</a>
+      <a href="#docs" (click)="closeMobileMenu()">{{ t('nav.docs') }}</a>
+      <a href="#timeline" (click)="closeMobileMenu()">{{ t('nav.fechas') }}</a>
+      <a href="#servicios" (click)="closeMobileMenu()">{{ t('nav.servicios') }}</a>
+      <a href="#qr" (click)="closeMobileMenu()">{{ t('nav.qr') }}</a>
+      <a href="#contacto" (click)="closeMobileMenu()">{{ t('nav.contacto') }}</a>
+      <a (click)="openDistribuidorSelector(); closeMobileMenu()">{{ t('nav.distribuidores') }}</a>
+      <a (click)="goToLogin(); closeMobileMenu()">{{ t('nav.login') }}</a>
+      <a href="#cotizar" (click)="closeMobileMenu()">{{ t('nav.solicitar_certificacion') }}</a>
     </div>
   </div>
 </div>
@@ -47,35 +51,33 @@
 <!-- HERO -->
 <header class="hero" id="top">
   <div class="container">
-    <span class="pill"><span class="dot"></span> Cumplimiento SUBTEL · equipos de alcance reducido · vigencia febrero 2026</span>
+    <span class="pill"><span class="dot"></span> {{ t('hero.pill') }}</span>
 
     <div class="hero-grid">
       <div>
-        <h1 class="h1">Certificación y cumplimiento de equipos de alcance reducido <span style="color:rgba(255,255,255,.75)">SUBTEL</span></h1>
-        <p class="sub">
-          Servicio ejecutivo para **cumplir normativa SUBTEL** en Chile para dispositivos que operan con radiofrecuencia
-          (WiFi, Bluetooth, Zigbee, RFID). En pocos días dejamos tu documentación ordenada, entregables listos y el camino claro para comercializar.
+        <h1 class="h1">{{ t('hero.title') }} <span style="color:rgba(255,255,255,.75)">SUBTEL</span></h1>
+        <p class="sub" [innerHTML]="formatText('hero.subtitle')">
         </p>
 
         <div class="hero-actions">
           <a class="btn primary" href="#cotizar">
-            Solicitar certificación
+            {{ t('hero.cta_certificacion') }}
             <span aria-hidden="true">→</span>
           </a>
           <a class="btn" href="#qr">
-            Generar QR
+            {{ t('hero.cta_qr') }}
             <span aria-hidden="true">↘</span>
           </a>
           <a class="btn" href="#normativa">
-            Conocer la normativa
+            {{ t('hero.cta_normativa') }}
             <span aria-hidden="true">↘</span>
           </a>
         </div>
       </div>
 
       <aside class="hero-card" aria-label="Resumen ejecutivo">
-        <h3>Lo más importante</h3>
-        <p>Checklist claro, seguimiento y entregables listos para implementación (QR, documentación y soporte).</p>
+        <h3>{{ t('hero.card_title') }}</h3>
+        <p>{{ t('hero.card_desc') }}</p>
 
         <ul class="list">
           <li class="li">
@@ -85,8 +87,8 @@
               </svg>
             </div>
             <div>
-              <b>Portal web + QR</b>
-              <span>Código QR listo para imprimir y pegar en el packaging, con acceso a la información requerida.</span>
+              <b>{{ t('hero.portal_qr') }}</b>
+              <span>{{ t('hero.portal_qr_desc') }}</span>
             </div>
           </li>
 
@@ -97,8 +99,8 @@
               </svg>
             </div>
             <div>
-              <b>Proceso simple y rápido</b>
-              <span>4 pasos para avanzar desde "documentos" a "comercialización".</span>
+              <b>{{ t('hero.proceso_rapido') }}</b>
+              <span>{{ t('hero.proceso_rapido_desc') }}</span>
             </div>
           </li>
 
@@ -109,8 +111,8 @@
               </svg>
             </div>
             <div>
-              <b>Acompañamiento experto</b>
-              <span>Revisión técnica, consistencia documental y soporte ante requerimientos.</span>
+              <b>{{ t('hero.acompanamiento') }}</b>
+              <span>{{ t('hero.acompanamiento_desc') }}</span>
             </div>
           </li>
         </ul>
@@ -122,11 +124,8 @@
 <!-- NORMATIVA -->
 <section id="normativa">
   <div class="container">
-    <h2 class="section-title">Normativa: ¿qué es y por qué importa?</h2>
-    <p class="section-sub">
-      La normativa SUBTEL para **equipos de alcance reducido** define requisitos para importación, distribución
-      y comercialización en Chile de dispositivos que operan con radiofrecuencia (ej. WiFi/Bluetooth/Zigbee/RFID).
-      En la práctica, tu objetivo es **cumplir con el soporte técnico exigible** y mantener **trazabilidad**.
+    <h2 class="section-title">{{ t('normativa.title') }}</h2>
+    <p class="section-sub" [innerHTML]="formatText('normativa.subtitle')">
     </p>
 
     <div class="grid-3" style="margin-top: 12px;">
@@ -137,8 +136,8 @@
             <path d="M7 12h10M12 7v10" stroke="white" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
-        <h4>Portal web y QR (si aplica)</h4>
-        <p>Implementación de acceso web conforme a SUBTEL y generación de código QR listo para empaque.</p>
+        <h4>{{ t('normativa.portal_qr') }}</h4>
+        <p>{{ t('normativa.portal_qr_desc') }}</p>
       </div>
 
       <div class="card">
@@ -148,8 +147,8 @@
             <path d="M4 4h4M20 4h-4M4 20h4M20 20h-4" stroke="white" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
-        <h4>Documentación digital</h4>
-        <p>Soporte técnico organizado para respaldo y consultas, con trazabilidad.</p>
+        <h4>{{ t('normativa.documentacion') }}</h4>
+        <p>{{ t('normativa.documentacion_desc') }}</p>
       </div>
 
       <div class="card">
@@ -159,8 +158,8 @@
             <path d="M7 7l10 10" stroke="white" stroke-width="2" stroke-linecap="round" opacity=".7"/>
           </svg>
         </div>
-        <h4>Proceso actualizado</h4>
-        <p>Te ayudamos a adaptar el proceso y dejarlo "operable" para tu equipo y tus proveedores.</p>
+        <h4>{{ t('normativa.proceso') }}</h4>
+        <p>{{ t('normativa.proceso_desc') }}</p>
       </div>
     </div>
   </div>
@@ -169,32 +168,32 @@
 <!-- CÓMO FUNCIONA -->
 <section id="como">
   <div class="container">
-    <h2 class="section-title">Cómo certificar / cumplir en 4 pasos</h2>
-    <p class="section-sub">Proceso simple para avanzar rápido desde documentación hasta salida a mercado.</p>
+    <h2 class="section-title">{{ t('como.title') }}</h2>
+    <p class="section-sub">{{ t('como.subtitle') }}</p>
 
     <div class="grid-4 steps">
       <div class="step">
         <div class="num">1</div>
-        <h4>Envíanos la información</h4>
-        <p>Recibimos tu documentación técnica y revisamos consistencia (modelo, tecnología, variante, etc.).</p>
+        <h4>{{ t('como.paso1') }}</h4>
+        <p>{{ t('como.paso1_desc') }}</p>
       </div>
 
       <div class="step">
         <div class="num">2</div>
-        <h4>Habilitamos un portal web</h4>
-        <p>Implementamos un acceso web de acuerdo a la normativa SUBTEL con la información comercial y técnica.</p>
+        <h4>{{ t('como.paso2') }}</h4>
+        <p>{{ t('como.paso2_desc') }}</p>
       </div>
 
       <div class="step">
         <div class="num">3</div>
-        <h4>Acceso al portal Web y Código QR</h4>
-        <p>Te generamos el código QR necesario para imprimir y listo para pegar en el packing.</p>
+        <h4>{{ t('como.paso3') }}</h4>
+        <p>{{ t('como.paso3_desc') }}</p>
       </div>
 
       <div class="step">
         <div class="num">4</div>
-        <h4>Comercializa cumpliendo</h4>
-        <p>Quedas listo para importar/distribuir/comercializar con respaldo documental y trazabilidad.</p>
+        <h4>{{ t('como.paso4') }}</h4>
+        <p>{{ t('como.paso4_desc') }}</p>
       </div>
     </div>
   </div>
@@ -203,9 +202,9 @@
 <!-- EQUIPOS -->
 <section id="equipos">
   <div class="container">
-    <h2 class="section-title">Equipos típicos de alcance reducido</h2>
+    <h2 class="section-title">{{ t('equipos.title') }}</h2>
     <p class="section-sub">
-      Dispositivos que usan radiofrecuencia de corto alcance. (Lista referencial: ajustamos por tu caso.)
+      {{ t('equipos.subtitle') }}
     </p>
 
     <div class="grid-4">
@@ -218,8 +217,8 @@
             <circle cx="12" cy="18" r="1.6" fill="white"/>
           </svg>
         </div>
-        <h4>WiFi</h4>
-        <p>Routers, access points, IoT, cámaras, domótica.</p>
+        <h4>{{ t('equipos.wifi') }}</h4>
+        <p>{{ t('equipos.wifi_desc') }}</p>
       </div>
 
       <div class="card">
@@ -228,8 +227,8 @@
             <path d="M7 7c5-5 10 0 5 5L7 17c-5-5 0-10 5-5" stroke="white" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
-        <h4>Bluetooth</h4>
-        <p>Auriculares, parlantes, wearables, accesorios.</p>
+        <h4>{{ t('equipos.bluetooth') }}</h4>
+        <p>{{ t('equipos.bluetooth_desc') }}</p>
       </div>
 
       <div class="card">
@@ -239,8 +238,8 @@
             <path d="M8 6h8M6 10h12M8 14h8M6 18h12" stroke="white" stroke-width="2" stroke-linecap="round" opacity=".85"/>
           </svg>
         </div>
-        <h4>Zigbee</h4>
-        <p>Domótica, hubs, sensores inteligentes, controladores.</p>
+        <h4>{{ t('equipos.zigbee') }}</h4>
+        <p>{{ t('equipos.zigbee_desc') }}</p>
       </div>
 
       <div class="card">
@@ -250,8 +249,8 @@
             <path d="M4 9h3M4 15h3M17 9h3M17 15h3" stroke="white" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
-        <h4>RFID</h4>
-        <p>Tags, lectores, control de acceso, inventario.</p>
+        <h4>{{ t('equipos.rfid') }}</h4>
+        <p>{{ t('equipos.rfid_desc') }}</p>
       </div>
     </div>
   </div>
@@ -260,39 +259,39 @@
 <!-- DOCUMENTOS -->
 <section id="docs">
   <div class="container">
-    <h2 class="section-title">Documentos necesarios</h2>
-    <p class="section-sub">Para iniciar, necesitamos el set mínimo de documentos.</p>
+    <h2 class="section-title">{{ t('docs.title') }}</h2>
+    <p class="section-sub">{{ t('docs.subtitle') }}</p>
 
     <div class="grid-4" style="margin-top: 12px;">
       <div class="card doc">
         <div class="mini" aria-hidden="true">📷</div>
         <div>
-          <h4>Fotos internas y externas</h4>
-          <p>Imágenes claras del interior y exterior del equipo.</p>
+          <h4>{{ t('docs.fotos') }}</h4>
+          <p>{{ t('docs.fotos_desc') }}</p>
         </div>
       </div>
 
       <div class="card doc">
         <div class="mini" aria-hidden="true">📡</div>
         <div>
-          <h4>Reportes RF</h4>
-          <p>Ensayos RF / test report del módulo o equipo (según corresponda).</p>
+          <h4>{{ t('docs.reportes_rf') }}</h4>
+          <p>{{ t('docs.reportes_rf_desc') }}</p>
         </div>
       </div>
 
       <div class="card doc">
         <div class="mini" aria-hidden="true">📄</div>
         <div>
-          <h4>Ficha técnica</h4>
-          <p>Especificaciones y características técnicas del producto.</p>
+          <h4>{{ t('docs.ficha_tecnica') }}</h4>
+          <p>{{ t('docs.ficha_tecnica_desc') }}</p>
         </div>
       </div>
 
       <div class="card doc">
         <div class="mini" aria-hidden="true">🏢</div>
         <div>
-          <h4>Distribuidor / Importador</h4>
-          <p>Datos del distribuidor/importador y contacto comercial/técnico.</p>
+          <h4>{{ t('docs.distribuidor') }}</h4>
+          <p>{{ t('docs.distribuidor_desc') }}</p>
         </div>
       </div>
     </div>
@@ -302,39 +301,39 @@
 <!-- TIMELINE -->
 <section id="timeline">
   <div class="container">
-    <h2 class="section-title">Timeline hacia 2026</h2>
-    <p class="section-sub">Para planificar tu transición y evitar atrasos logísticos.</p>
+    <h2 class="section-title">{{ t('timeline.title') }}</h2>
+    <p class="section-sub">{{ t('timeline.subtitle') }}</p>
 
     <div class="timeline-h">
       <div class="timeline-row">
         <div class="t-step">
-          <div class="t-kicker">Mayo 2025</div>
-          <h4>Publicación normativa</h4>
-          <p>Se publica la resolución y comienza el proceso de adopción.</p>
+          <div class="t-kicker">{{ t('timeline.mayo_2025') }}</div>
+          <h4>{{ t('timeline.publicacion') }}</h4>
+          <p>{{ t('timeline.publicacion_desc') }}</p>
         </div>
 
         <div class="t-arrow">➜</div>
 
         <div class="t-step active">
-          <div class="t-kicker">Hoy – Febrero 2026</div>
-          <h4>Transición</h4>
-          <p>Preparación de portal web, QR y documentación mínima por modelo.</p>
+          <div class="t-kicker">{{ t('timeline.hoy_2026') }}</div>
+          <h4>{{ t('timeline.transicion') }}</h4>
+          <p>{{ t('timeline.transicion_desc') }}</p>
         </div>
 
         <div class="t-arrow">➜</div>
 
         <div class="t-step">
-          <div class="t-kicker">22 Febrero 2026</div>
-          <h4>Entrada en vigencia</h4>
-          <p>Los equipos comercializados deben cumplir con el soporte/implementación aplicable.</p>
+          <div class="t-kicker">{{ t('timeline.feb_2026') }}</div>
+          <h4>{{ t('timeline.vigencia') }}</h4>
+          <p>{{ t('timeline.vigencia_desc') }}</p>
         </div>
 
         <div class="t-arrow">➜</div>
 
         <div class="t-step">
-          <div class="t-kicker">Post 2026</div>
-          <h4>Control y trazabilidad</h4>
-          <p>Mantener respaldo técnico y coherencia documental ante requerimientos.</p>
+          <div class="t-kicker">{{ t('timeline.post_2026') }}</div>
+          <h4>{{ t('timeline.control') }}</h4>
+          <p>{{ t('timeline.control_desc') }}</p>
         </div>
       </div>
     </div>
@@ -344,21 +343,21 @@
 <!-- SERVICIOS -->
 <section id="servicios">
   <div class="container">
-    <h2 class="section-title">Nuestros servicios</h2>
-    <p class="section-sub">Soluciones completas para certificación / cumplimiento de equipos de alcance reducido.</p>
+    <h2 class="section-title">{{ t('servicios.title') }}</h2>
+    <p class="section-sub">{{ t('servicios.subtitle') }}</p>
 
     <div class="grid-4">
       <div class="card" style="outline: 2px solid rgba(78,215,117,.22);">
         <span class="pill" style="border-color: rgba(78,215,117,.35); color: rgba(255,255,255,.85); margin-bottom: 10px;">
-          <span class="dot"></span> Destacado
+          <span class="dot"></span> {{ t('servicios.destacado') }}
         </span>
         <div class="icon" aria-hidden="true">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
             <path d="M20 6L9 17l-5-5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
-        <h4>Certificación / Cumplimiento SUBTEL</h4>
-        <p>Checklist, revisión documental y acompañamiento integral.</p>
+        <h4>{{ t('servicios.certificacion') }}</h4>
+        <p>{{ t('servicios.certificacion_desc') }}</p>
         <div style="margin-top: 10px; color: var(--muted); font-size: 13px;">
           ✓ WiFi · Bluetooth · Zigbee · RFID<br/>
           ✓ Soporte para importación/comercialización<br/>
@@ -372,8 +371,8 @@
             <path d="M4 4h7v7H4V4zM13 4h7v7h-7V4zM4 13h7v7H4v-7zM13 13h7v7h-7v-7z" stroke="white" stroke-width="2"/>
           </svg>
         </div>
-        <h4>Portal web + QR</h4>
-        <p>Código QR listo para impresión y acceso web con la información requerida por SUBTEL.</p>
+        <h4>{{ t('servicios.portal_qr') }}</h4>
+        <p>{{ t('servicios.portal_qr_desc') }}</p>
         <div style="margin-top: 10px; color: var(--muted); font-size: 13px;">
           ✓ Formato listo para packaging<br/>
           ✓ Archivos listos para impresión
@@ -388,8 +387,8 @@
             <path d="M5 21h14" stroke="white" stroke-width="2" stroke-linecap="round" opacity=".85"/>
           </svg>
         </div>
-        <h4>Plataforma digital</h4>
-        <p>Repositorio seguro de documentación, control de versiones y trazabilidad.</p>
+        <h4>{{ t('servicios.plataforma') }}</h4>
+        <p>{{ t('servicios.plataforma_desc') }}</p>
         <div style="margin-top: 10px; color: var(--muted); font-size: 13px;">
           ✓ Gestión 100% online<br/>
           ✓ Seguimiento y almacenamiento seguro
@@ -403,8 +402,8 @@
             <path d="M9 12h6M9 16h6M9 8h3" stroke="white" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
-        <h4>Documentación técnica</h4>
-        <p>Revisión, normalización y soporte para pedir correcciones al fabricante (si falta algo).</p>
+        <h4>{{ t('servicios.documentacion') }}</h4>
+        <p>{{ t('servicios.documentacion_desc') }}</p>
         <div style="margin-top: 10px; color: var(--muted); font-size: 13px;">
           ✓ Informes técnicos profesionales<br/>
           ✓ Revisión de consistencia
@@ -417,29 +416,29 @@
 <!-- QR SECTION -->
 <section id="qr">
   <div class="container">
-    <h2 class="section-title">Generar QR</h2>
+    <h2 class="section-title">{{ t('qr.title') }}</h2>
     <p class="section-sub">
-      Te entregamos el código QR listo para imprimir y pegar en el packing, con acceso al portal web conforme a la normativa SUBTEL.
+      {{ t('qr.subtitle') }}
     </p>
 
     <div class="grid-3">
       <div class="card">
-        <h4>1) Envía tu modelo</h4>
-        <p>Marca, modelo y tecnología (WiFi/Bluetooth/Zigbee/RFID) + país de comercialización (Chile).</p>
+        <h4>{{ t('qr.paso1') }}</h4>
+        <p>{{ t('qr.paso1_desc') }}</p>
       </div>
       <div class="card">
-        <h4>2) Validamos documentos</h4>
-        <p>Revisamos el set mínimo y te pedimos lo faltante para generar el QR con respaldo.</p>
+        <h4>{{ t('qr.paso2') }}</h4>
+        <p>{{ t('qr.paso2_desc') }}</p>
       </div>
       <div class="card">
-        <h4>3) Te entregamos QR</h4>
-        <p>Archivo listo para impresión y uso en empaque, asociado al portal web.</p>
+        <h4>{{ t('qr.paso3') }}</h4>
+        <p>{{ t('qr.paso3_desc') }}</p>
       </div>
     </div>
 
     <div style="margin-top: 16px; display:flex; gap:10px; flex-wrap:wrap;">
-      <a class="btn primary" href="#cotizar">Quiero generar QR →</a>
-      <a class="btn" href="#contacto">Hablar con un asesor</a>
+      <a class="btn primary" href="#cotizar">{{ t('qr.cta') }}</a>
+      <a class="btn" href="#contacto">{{ t('qr.asesor') }}</a>
     </div>
   </div>
 </section>
@@ -449,17 +448,17 @@
   <div class="container">
     <div class="cta">
       <div>
-        <h3>¿Listo para cumplir y salir rápido?</h3>
+        <h3>{{ t('cta.title') }}</h3>
         <p>
-          Envíanos el modelo del equipo + tecnología (WiFi/Bluetooth/Zigbee/RFID). Te respondemos con checklist, ruta crítica y próximos pasos.
+          {{ t('cta.subtitle') }}
         </p>
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <a class="btn primary" href="mailto:camilo&#64;lbtechnology-la.com?subject=Solicitud%20Alcance%20Reducido%20SUBTEL&body=Hola,%20quiero%20iniciar%20el%20proceso.%0A%0AEmpresa:%20_____%0AMarca:%20_____%0AModelo:%20_____%0ATecnolog%C3%ADa:%20(WiFi/Bluetooth/Zigbee/RFID)%0ACantidad:%20_____%0A%0AGracias.">
-          Escribir por email
+          {{ t('cta.email') }}
           <span aria-hidden="true">✉️</span>
         </a>
-        <a class="btn" href="#contacto">Ver contacto</a>
+        <a class="btn" href="#contacto">{{ t('cta.contacto') }}</a>
       </div>
     </div>
   </div>
@@ -468,26 +467,26 @@
 <!-- CONTACTO -->
 <section id="contacto">
   <div class="container">
-    <h2 class="section-title">Contacto</h2>
+    <h2 class="section-title">{{ t('contacto.title') }}</h2>
 
     <div class="grid-3">
       <div class="card">
-        <h4>Email</h4>
+        <h4>{{ t('contacto.email') }}</h4>
         <p><a href="mailto:camilo&#64;lbtechnology-la.com">camilo&#64;lbtechnology-la.com</a></p>
       </div>
       <div class="card">
-        <h4>Teléfono / WhatsApp</h4>
+        <h4>{{ t('contacto.telefono') }}</h4>
         <p><a href="https://wa.me/56961577724" target="_blank" rel="noopener">+56 9 6157 7724</a></p>
       </div>
       <div class="card">
-        <h4>WeChat</h4>
+        <h4>{{ t('contacto.wechat') }}</h4>
         <p><b>camiloe81</b></p>
       </div>
     </div>
 
     <div style="margin-top:14px" class="card">
-      <h4>Operado por</h4>
-      <p><b>LB Technology</b><br/>Santiago, Chile · Atención remota y coordinación logística</p>
+      <h4>{{ t('contacto.operado') }}</h4>
+      <p><b>LB Technology</b><br/>{{ t('contacto.operado_desc') }}</p>
     </div>
   </div>
 </section>
@@ -503,21 +502,21 @@
             <div style="font-weight: 750;">Alcance Reducido · Operado por LB Technology</div>
           </div>
         <div>
-          © {{ currentYear }} LB Technology. Todos los derechos reservados.
+          © {{ currentYear }} LB Technology. {{ t('footer.derechos') }}
           <div style="margin-top:6px;">
             <span style="color: var(--muted2);">
-              Aviso: contenido informativo de alto nivel. La implementación final depende del caso y documentación del equipo.
+              {{ t('footer.aviso') }}
             </span>
           </div>
         </div>
       </div>
 
       <div class="foot-links" style="display:grid; gap:8px; justify-content:start;">
-        <a href="#normativa">Normativa</a>
-        <a href="#docs">Docs</a>
-        <a href="#servicios">Servicios</a>
-        <a href="#qr">QR</a>
-        <a href="#contacto">Contacto</a>
+        <a href="#normativa">{{ t('nav.normativa') }}</a>
+        <a href="#docs">{{ t('nav.docs') }}</a>
+        <a href="#servicios">{{ t('nav.servicios') }}</a>
+        <a href="#qr">{{ t('nav.qr') }}</a>
+        <a href="#contacto">{{ t('nav.contacto') }}</a>
       </div>
     </div>
   </div>
