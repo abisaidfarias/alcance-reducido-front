@@ -16,6 +16,10 @@ export const routes: Routes = [
     path: 'representante/:nombre',
     loadComponent: () => import('./components/representante/representante.component').then(m => m.RepresentanteComponent)
   },
+  {
+    path: 'dispositivo/:id',
+    loadComponent: () => import('./components/dispositivo-detalle/dispositivo-detalle.component').then(m => m.DispositivoDetalleComponent)
+  },
   // Redirección especial: /fabricante/infinix -> /representante/luxuryspa
   {
     path: 'fabricante/infinix',

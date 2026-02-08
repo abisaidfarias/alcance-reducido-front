@@ -46,8 +46,8 @@
           </button>
         </mat-form-field>
 
-        <!-- Autocomplete simple para crear -->
-        <mat-form-field *ngIf="!isEditMode" appearance="outline" class="form-field-half" [floatLabel]="'always'">
+        <!-- Autocomplete simple para distribuidor (siempre uno solo) -->
+        <mat-form-field appearance="outline" class="form-field-half" [floatLabel]="'always'">
           <mat-label>Distribuidor</mat-label>
           <input 
             matInput 
@@ -66,30 +66,6 @@
           <button mat-icon-button matSuffix type="button" (click)="distribuidorInput.focus(); distribuidorFilterControl.setValue('')">
             <mat-icon>arrow_drop_down</mat-icon>
           </button>
-        </mat-form-field>
-
-        <!-- Autocomplete múltiple para editar -->
-        <mat-form-field *ngIf="isEditMode" appearance="outline" class="form-field-half" [floatLabel]="'always'">
-          <mat-label>Distribuidores</mat-label>
-          <input 
-            matInput 
-            #distribuidorMultipleInput
-            [formControl]="distribuidorFilterControl"
-            [matAutocomplete]="distribuidorMultipleAuto"
-            (blur)="onDistribuidorMultipleBlur()">
-          <mat-autocomplete 
-            #distribuidorMultipleAuto="matAutocomplete"
-            (optionSelected)="onDistribuidorMultipleSelected($event.option.value)">
-            <mat-option *ngFor="let distribuidor of distribuidoresFiltrados" [value]="distribuidor._id">
-              <span>{{ distribuidor.nombreRepresentante || distribuidor.representante }}</span>
-              <mat-icon *ngIf="distribuidor._id && isDistribuidorSelected(distribuidor._id)" class="selected-icon">check</mat-icon>
-            </mat-option>
-          </mat-autocomplete>
-          <mat-icon matPrefix>business</mat-icon>
-          <button mat-icon-button matSuffix type="button" (click)="distribuidorMultipleInput.focus(); distribuidorFilterControl.setValue('')">
-            <mat-icon>arrow_drop_down</mat-icon>
-          </button>
-          <mat-hint>Múltiples selecciones - Busca y selecciona</mat-hint>
         </mat-form-field>
       </div>
 
@@ -324,4 +300,3 @@
     </button>
   </mat-dialog-actions>
 </div>
-

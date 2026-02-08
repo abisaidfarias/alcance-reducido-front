@@ -1,0 +1,337 @@
+<div class="representante-container">
+  <!-- NAV -->
+  <div class="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a class="brand-row" (click)="goToHome()" style="cursor: pointer;" aria-label="Ir al Home">
+          <div class="brand-logo-wrapper">
+            <img class="brand-logo-img" src="assets/lb-technology-logo.png" alt="LB Technology" />
+          </div>
+        </a>
+
+        <nav class="nav-links" aria-label="Navegación">
+          <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.home') }}</a>
+          <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.normativa') }}</a>
+          <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.servicios') }}</a>
+        </nav>
+
+        <div class="nav-cta">
+          <button class="btn ghost small language-btn" (click)="toggleLanguage()" [title]="currentLanguage === 'es' ? 'English' : 'Español'">
+            {{ currentLanguage === 'es' ? 'EN' : 'ES' }}
+          </button>
+          <a class="btn ghost" (click)="goToHome()" style="cursor: pointer;">{{ t('nav.contacto') }}</a>
+          <a class="btn primary" (click)="goToHome()" style="cursor: pointer;">{{ t('representante.solicitar_asesoria') }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>{{ t('representante.cargando') }}</p>
+  </div>
+
+  <!-- Vista de Detalle del Dispositivo -->
+  <div class="detalle-dispositivo-section" *ngIf="!loading && dispositivo">
+    <!-- PAGE HEADER -->
+    <header class="page">
+      <div class="container">
+        <span class="pill">
+          <span class="dot"></span>
+          {{ t('representante.ficha_dispositivo') }}
+        </span>
+
+        <div class="breadcrumbs" aria-label="Breadcrumbs">
+          <a class="crumb" *ngIf="getDistribuidorNombre()" (click)="goToRepresentante()" style="cursor: pointer;" title="Ir al distribuidor">← {{ getDistribuidorNombre() }}</a>
+          <a class="crumb" *ngIf="!getDistribuidorNombre()" (click)="goToHome()" style="cursor: pointer;" title="Ir al Home">
+            <mat-icon style="font-size: 16px; width: 16px; height: 16px; line-height: 16px; vertical-align: middle;">home</mat-icon>
+          </a>
+          <span style="opacity:.6;">/</span>
+          <span class="crumb" *ngIf="getMarcaNombre()">{{ getMarcaNombre() }}</span>
+          <span style="opacity:.6;" *ngIf="getMarcaNombre()">/</span>
+          <span class="crumb" aria-current="page">{{ dispositivo.modelo }}</span>
+        </div>
+
+        <div class="title-row">
+          <div>
+            <h1 class="h1">
+              <span *ngIf="getMarcaNombre()">{{ getMarcaNombre() }} • </span>{{ dispositivo.modelo }}
+            </h1>
+            <p class="sub">
+              {{ t('representante.info_disponible') }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <section class="detalle-section">
+      <div class="container">
+        <!-- Primera fila: A. INFORMACIÓN COMERCIAL + IMAGEN (2 columnas) -->
+        <div class="top-grid">
+          <!-- Columna izquierda: Información Comercial -->
+          <div class="detalle-info-column">
+            <div class="info-section-card">
+              <h2 class="info-section-title">{{ t('representante.info_comercial') }}</h2>
+              <p class="info-section-subtitle">{{ t('representante.info_comercial_sub') }}</p>
+              
+              <div class="info-grid">
+                <div class="info-item">
+                  <label class="info-label">{{ t('representante.fecha_publicacion') }}</label>
+                  <p class="info-value">{{ getFechaPublicacion() }}</p>
+                </div>
+
+                <div class="info-item">
+                  <label class="info-label">{{ t('representante.nombre_comercial') }}</label>
+                  <p class="info-value">{{ dispositivo.nombreComercial || dispositivo.modelo || t('representante.no_disponible') }}</p>
+                </div>
+
+                <div class="info-item">
+                  <label class="info-label">{{ t('representante.fabricante') }}</label>
+                  <p class="info-value">{{ getFabricanteNombre() || t('representante.no_disponible') }}</p>
+                </div>
+
+                <div class="info-item">
+                  <label class="info-label">{{ t('representante.importador') }}</label>
+                  <p class="info-value">{{ getDistribuidorNombre() || t('representante.no_disponible') }}</p>
+                </div>
+
+                <div class="info-item">
+                  <label class="info-label">{{ t('representante.domicilio') }}</label>
+                  <p class="info-value">{{ getDistribuidorDomicilio() || t('representante.no_disponible') }}</p>
+                </div>
+
+                <div class="info-item">
+                  <label class="info-label">{{ t('representante.email_contacto') }}</label>
+                  <p class="info-value">
+                    <a *ngIf="getDistribuidorEmail()" [href]="'mailto:' + getDistribuidorEmail()" class="info-link">
+                      {{ getDistribuidorEmail() }}
+                    </a>
+                    <span *ngIf="!getDistribuidorEmail()">{{ t('representante.no_disponible') }}</span>
+                  </p>
+                </div>
+
+                <div class="info-item full-width">
+                  <label class="info-label">{{ t('representante.sitio_web') }}</label>
+                  <p class="info-value">
+                    <a *ngIf="getDistribuidorSitioWeb()" [href]="getWebsiteUrl(getDistribuidorSitioWeb())" target="_blank" class="info-link">
+                      {{ getDistribuidorSitioWeb() }}
+                    </a>
+                    <span *ngIf="!getDistribuidorSitioWeb()">{{ t('representante.no_disponible') }}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="info-notice" *ngIf="getDistribuidorNombre()">
+                <p><strong>{{ t('representante.importante_representante') }}</strong> {{ t('representante.importante_texto') }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna derecha: Imagen -->
+          <div class="detalle-imagen-column">
+            <div class="detalle-imagen-card">
+              <h3 class="imagen-title">{{ t('representante.imagen') }}</h3>
+              <p class="imagen-subtitle">{{ t('representante.fotografia') }}</p>
+              <div class="photo-frame">
+                <img 
+                  *ngIf="dispositivo?.foto && !imageLoadError"
+                  [src]="dispositivo.foto" 
+                  [alt]="dispositivo.modelo"
+                  class="photo-frame-image"
+                  (error)="onImageError($event)"
+                  (load)="imageLoadError = false">
+                <div *ngIf="!dispositivo?.foto || imageLoadError" class="photo-placeholder">
+                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 19V5C21 3.9 20.1 3 19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.5 13.5C9.32843 13.5 10 12.8284 10 12C10 11.1716 9.32843 10.5 8.5 10.5C7.67157 10.5 7 11.1716 7 12C7 12.8284 7.67157 13.5 8.5 13.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 15L16 10L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <p>{{ t('representante.sin_imagen') }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Segunda fila: B. CARACTERÍSTICAS TÉCNICAS (full width) -->
+        <div class="tech-section" *ngIf="authService.isAuthenticated() || hasTechnicalData() || dispositivo.resolutionVersion == 2017 || dispositivo.resolutionVersion === '2017'">
+          <div class="info-section-card">
+            <h2 class="info-section-title">{{ t('representante.caracteristicas') }}</h2>
+            <p class="info-section-subtitle">{{ t('representante.resolucion') }} {{ dispositivo.resolutionVersion || '—' }}</p>
+            
+            <table class="tech-table">
+              <thead>
+                <tr>
+                  <th class="tech-header-param">{{ t('representante.parametro') }}</th>
+                  <th class="tech-header-value">{{ t('representante.valor') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Fila: Tipo de Dispositivo -->
+                <tr *ngIf="dispositivo.tipo">
+                  <td class="tech-param">{{ t('representante.tipo_dispositivo') }}</td>
+                  <td class="tech-value">{{ dispositivo.tipo }}</td>
+                </tr>
+                
+                <!-- Filas específicas para Resolución 2017 -->
+                <ng-container *ngIf="dispositivo.resolutionVersion == 2017 || dispositivo.resolutionVersion === '2017'">
+                  <tr>
+                    <td class="tech-param">{{ t('representante.fecha_certificacion') }}</td>
+                    <td class="tech-value">{{ getFechaCertificacionSubtel() }}</td>
+                  </tr>
+                  
+                  <tr>
+                    <td class="tech-param">{{ t('representante.oficio_certificacion') }}</td>
+                    <td class="tech-value">{{ dispositivo.oficioCertificacionSubtel || '—' }}</td>
+                  </tr>
+                </ng-container>
+                
+                <!-- Filas específicas para Resolución 2025 -->
+                <ng-container *ngIf="dispositivo.resolutionVersion == 2025 || dispositivo.resolutionVersion === '2025'">
+                  <tr *ngIf="dispositivo.tecnologia && dispositivo.tecnologia.length > 0">
+                    <td class="tech-param">{{ t('representante.tecnologia') }}</td>
+                    <td class="tech-value">
+                      <div class="array-value-list">
+                        <div *ngFor="let item of dispositivo.tecnologia" class="array-value-item">{{ item }}</div>
+                      </div>
+                    </td>
+                  </tr>
+                  
+                  <tr *ngIf="dispositivo.frecuencias && dispositivo.frecuencias.length > 0">
+                    <td class="tech-param">{{ t('representante.frecuencias') }}</td>
+                    <td class="tech-value">
+                      <div class="array-value-list">
+                        <div *ngFor="let item of dispositivo.frecuencias" class="array-value-item">{{ item }}</div>
+                      </div>
+                    </td>
+                  </tr>
+                  
+                  <tr *ngIf="dispositivo.gananciaAntena && dispositivo.gananciaAntena.length > 0">
+                    <td class="tech-param">{{ t('representante.ganancia_antena') }}</td>
+                    <td class="tech-value">
+                      <div class="array-value-list">
+                        <div *ngFor="let item of dispositivo.gananciaAntena" class="array-value-item">{{ item }}</div>
+                      </div>
+                    </td>
+                  </tr>
+                  
+                  <tr *ngIf="dispositivo.EIRP && dispositivo.EIRP.length > 0">
+                    <td class="tech-param">{{ t('representante.eirp') }}</td>
+                    <td class="tech-value">
+                      <div class="array-value-list">
+                        <div *ngFor="let item of dispositivo.EIRP" class="array-value-item">{{ item }}</div>
+                      </div>
+                    </td>
+                  </tr>
+                  
+                  <tr *ngIf="dispositivo.modulo && dispositivo.modulo.length > 0">
+                    <td class="tech-param">{{ t('representante.modulos') }}</td>
+                    <td class="tech-value">
+                      <div class="array-value-list">
+                        <div *ngFor="let item of dispositivo.modulo" class="array-value-item">{{ item }}</div>
+                      </div>
+                    </td>
+                  </tr>
+                  
+                  <tr *ngIf="dispositivo.nombreTestReport && dispositivo.nombreTestReport.length > 0">
+                    <td class="tech-param">{{ t('representante.nombre_test_report') }}</td>
+                    <td class="tech-value">
+                      <div class="test-report-list">
+                        <div *ngFor="let report of dispositivo.nombreTestReport" class="test-report-item">
+                          <span class="test-report-text">
+                            {{ parseTestReport(report).fileName }}
+                          </span>
+                          <span *ngIf="parseTestReport(report).pages" class="test-report-pill">
+                            {{ parseTestReport(report).pages }}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+
+            <!-- Banner de Test Report -->
+            <div *ngIf="(dispositivo.resolutionVersion == 2025 || dispositivo.resolutionVersion === '2025') && dispositivo.testReportFiles && dispositivo.testReportFiles.trim() !== ''" class="test-report-banner">
+              <div class="test-report-banner-left">
+                <div class="test-report-banner-icon">
+                  <mat-icon>description</mat-icon>
+                </div>
+                <div class="test-report-banner-texts">
+                  <div class="test-report-banner-title">
+                    {{ t('representante.informe_ensayo') }}
+                  </div>
+                  <div class="test-report-banner-subtitle">
+                    {{ t('representante.informe_ensayo_desc') }}
+                  </div>
+                </div>
+              </div>
+
+              <a
+                class="test-report-banner-button"
+                [href]="dispositivo.testReportFiles"
+                target="_blank"
+                rel="noopener"
+                download
+              >
+                {{ t('representante.descargar_test_report') }}
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tercera fila: C. DECLARACIÓN DE CONFORMIDAD (full width) -->
+        <div class="conformidad-section">
+          <div class="info-section-card">
+            <h2 class="info-section-title">{{ t('representante.declaracion') }}</h2>
+            <p class="info-section-subtitle">{{ t('representante.texto_requerido') }}</p>
+            
+            <div class="conformidad-quote">
+              <p>{{ t('representante.declaracion_texto') }}</p>
+            </div>
+            
+            <p class="conformidad-note">
+              {{ t('representante.declaracion_nota') }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom: 8px;">
+              <div class="footer-logo-wrapper">
+                <img class="brand-logo-img footer-logo" src="assets/lb-technology-logo.png" alt="LB Technology" />
+              </div>
+              <div style="font-weight: 750;">{{ t('footer.alcance_reducido') }}</div>
+            </div>
+            <div>
+              © {{ currentYear }} LB Technology. {{ t('footer.derechos') }}
+            </div>
+          </div>
+
+          <div class="foot-links">
+            <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.home') }}</a>
+            <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.normativa') }}</a>
+            <a (click)="goToHome()" style="cursor: pointer;">{{ t('nav.servicios') }}</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Vista vacía -->
+  <div class="empty-view" *ngIf="!loading && !dispositivo">
+    <div class="container" style="text-align: center; padding: 80px 20px;">
+      <h2>{{ t('representante.no_disponible') }}</h2>
+    </div>
+  </div>
+</div>

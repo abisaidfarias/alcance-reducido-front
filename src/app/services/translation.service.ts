@@ -150,6 +150,19 @@ export class TranslationService {
     'selector.cancel': { es: 'Cancelar', en: 'Cancel' },
     'selector.go': { es: 'Ir al Distribuidor', en: 'Go to Distributor' },
 
+    // Dispositivo Selector Modal
+    'dispositivo_selector.title': { es: 'Seleccionar Dispositivo', en: 'Select Device' },
+    'dispositivo_selector.subtitle': { es: 'Selecciona un dispositivo para continuar', en: 'Select a device to continue' },
+    'dispositivo_selector.label': { es: 'Dispositivo', en: 'Device' },
+    'dispositivo_selector.placeholder': { es: 'Buscar dispositivo...', en: 'Search device...' },
+    'dispositivo_selector.required': { es: 'Debe seleccionar un dispositivo', en: 'You must select a device' },
+    'dispositivo_selector.no_data': { es: 'No hay dispositivos disponibles', en: 'No devices available' },
+    'dispositivo_selector.cancel': { es: 'Cancelar', en: 'Cancel' },
+    'dispositivo_selector.go': { es: 'Ir al Dispositivo', en: 'Go to Device' },
+
+    // Nav
+    'nav.dispositivos': { es: 'Dispositivos', en: 'Devices' },
+
     // Footer
     'footer.derechos': { es: 'Todos los derechos reservados.', en: 'All rights reserved.' },
     

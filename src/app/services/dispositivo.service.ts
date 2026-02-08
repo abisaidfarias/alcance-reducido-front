@@ -30,6 +30,14 @@ export class DispositivoService {
   delete(id: string): Observable<void> {
     return this.apiService.delete<void>(`${this.endpoint}/${id}`);
   }
+
+  getPublic(): Observable<any> {
+    return this.apiService.get<any>(`${this.endpoint}/public`);
+  }
+
+  getPublicById(id: string): Observable<any> {
+    return this.apiService.get<any>(`${this.endpoint}/public/${id}`);
+  }
 }
 
 

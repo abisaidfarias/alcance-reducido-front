@@ -37,7 +37,7 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrl: './dispositivo.component.scss'
 })
 export class DispositivoComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['modelo', 'tipo', 'marca', 'distribuidores', 'fechaPublicacion', 'resolutionVersion', 'acciones'];
+  displayedColumns: string[] = ['modelo', 'tipo', 'marca', 'distribuidor', 'fechaPublicacion', 'resolutionVersion', 'acciones'];
   dataSource = new MatTableDataSource<Dispositivo>([]);
   distribuidores: Distribuidor[] = [];
   loading = false;
@@ -62,8 +62,8 @@ export class DispositivoComponent implements OnInit, AfterViewInit {
       switch (property) {
         case 'marca':
           return this.getMarcaDisplay(item);
-        case 'distribuidores':
-          return this.getDistribuidoresDisplay(item);
+        case 'distribuidor':
+          return this.getDistribuidorDisplay(item);
         case 'tipo':
           return this.getTipoDisplay(item.tipo);
         case 'fechaPublicacion':
@@ -289,41 +289,22 @@ export class DispositivoComponent implements OnInit, AfterViewInit {
     return element.marca;
   }
 
-  getDistribuidoresDisplay(element: Dispositivo): string {
-    if (!element.distribuidores) {
+  getDistribuidorDisplay(element: Dispositivo): string {
+    if (!element.distribuidor) {
       return '-';
     }
     
-    let distribuidoresArray: any[] = [];
+    const distribuidorItem = element.distribuidor;
     
-    // Manejar diferentes formatos de respuesta
-    if (Array.isArray(element.distribuidores)) {
-      distribuidoresArray = element.distribuidores;
-    } else {
-      return '-';
+    // Si es un objeto con representante (populado)
+    if (typeof distribuidorItem === 'object' && distribuidorItem !== null && 'representante' in distribuidorItem) {
+      return (distribuidorItem as any).representante;
     }
     
-    if (distribuidoresArray.length === 0) {
-      return '-';
-    }
-    
-    if (distribuidoresArray.length === 1) {
-      // Si hay un solo distribuidor, mostrar su nombre
-      const distribuidorItem = distribuidoresArray[0];
-      
-      // Si es un objeto con representante (populado)
-      if (typeof distribuidorItem === 'object' && distribuidorItem !== null && 'representante' in distribuidorItem) {
-        return distribuidorItem.representante;
-      }
-      
-      // Si es solo un ID (string), buscar en la lista
-      const distribuidorId = typeof distribuidorItem === 'string' ? distribuidorItem : distribuidorItem._id;
-      const distribuidor = this.distribuidores.find(d => d._id === distribuidorId);
-      return distribuidor ? distribuidor.representante : (distribuidorId || '-');
-    } else {
-      // Si hay más de uno, mostrar el número
-      return `${distribuidoresArray.length} distribuidores`;
-    }
+    // Si es solo un ID (string), buscar en la lista
+    const distribuidorId = typeof distribuidorItem === 'string' ? distribuidorItem : (distribuidorItem as any)._id;
+    const distribuidor = this.distribuidores.find(d => d._id === distribuidorId);
+    return distribuidor ? distribuidor.representante : (distribuidorId || '-');
   }
 
   getTipoDisplay(tipo: string): string {

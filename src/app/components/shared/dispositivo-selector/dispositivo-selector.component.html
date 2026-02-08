@@ -1,0 +1,58 @@
+<div class="modal-wrapper">
+  <div class="modal-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h2 mat-dialog-title>{{ t('dispositivo_selector.title') }}</h2>
+        <p class="header-subtitle">{{ t('dispositivo_selector.subtitle') }}</p>
+      </div>
+      <button type="button" aria-label="Cerrar" (click)="onCancel()" class="glass-close">
+        <svg viewBox="0 0 24 24" class="close-icon" aria-hidden="true">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <mat-dialog-content class="modal-body">
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+
+    <div *ngIf="!loading">
+      <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
+        <mat-label>{{ t('dispositivo_selector.label') }}</mat-label>
+        <input 
+          matInput 
+          #dispositivoInput
+          [formControl]="dispositivoFilterControl"
+          [matAutocomplete]="dispositivoAuto"
+          (blur)="onDispositivoBlur()"
+          [placeholder]="t('dispositivo_selector.placeholder')">
+        <mat-autocomplete 
+          #dispositivoAuto="matAutocomplete"
+          (optionSelected)="onDispositivoSelected($event.option.value)">
+          <mat-option *ngFor="let dispositivo of dispositivosFiltrados" [value]="getDispositivoId(dispositivo)">
+            {{ getDispositivoLabel(dispositivo) }}
+          </mat-option>
+        </mat-autocomplete>
+        <button mat-icon-button matSuffix type="button" class="suffix-button" (click)="dispositivoInput.focus(); dispositivoFilterControl.setValue('')">
+          <mat-icon class="arrow-icon">arrow_drop_down</mat-icon>
+        </button>
+        <mat-error *ngIf="dispositivoControl.hasError('required')">
+          {{ t('dispositivo_selector.required') }}
+        </mat-error>
+      </mat-form-field>
+
+      <p *ngIf="dispositivos.length === 0" class="no-data-message">
+        {{ t('dispositivo_selector.no_data') }}
+      </p>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="modal-footer" align="end">
+    <button mat-button (click)="onCancel()">{{ t('dispositivo_selector.cancel') }}</button>
+    <button mat-raised-button color="primary" (click)="onSelect()" [disabled]="dispositivoControl.invalid || loading">
+      {{ t('dispositivo_selector.go') }}
+    </button>
+  </mat-dialog-actions>
+</div>

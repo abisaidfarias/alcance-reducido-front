@@ -5,7 +5,7 @@ export interface Dispositivo {
   tipo: string; // Campo abierto (no enum)
   foto?: string;
   marca: string; // ObjectId de Marca
-  distribuidores: string[]; // Array de ObjectIds de Distribuidor
+  distribuidor: string | null; // ObjectId de Distribuidor (un solo distribuidor)
   fechaPublicacion?: string;
   tecnologia?: string[]; // Array de tecnologías
   frecuencias?: string[]; // Array de frecuencias
@@ -26,7 +26,7 @@ export interface DispositivoCreate {
   tipo?: string; // Opcional, default vacío
   foto?: string;
   marca: string;
-  distribuidores: string[];
+  distribuidor: string | null; // ObjectId de Distribuidor (un solo distribuidor)
   fechaPublicacion?: string;
   tecnologia?: string[];
   frecuencias?: string[];
@@ -45,7 +45,7 @@ export interface DispositivoUpdate {
   tipo?: string;
   foto?: string;
   marca?: string;
-  distribuidores?: string[];
+  distribuidor?: string | null; // ObjectId de Distribuidor (un solo distribuidor)
   fechaPublicacion?: string;
   tecnologia?: string[];
   frecuencias?: string[];
@@ -60,15 +60,14 @@ export interface DispositivoUpdate {
 }
 
 // Interfaces para mostrar datos relacionados
-export interface DispositivoWithRelations extends Omit<Dispositivo, 'marca' | 'distribuidores'> {
+export interface DispositivoWithRelations extends Omit<Dispositivo, 'marca' | 'distribuidor'> {
   marca?: {
     _id: string;
     fabricante: string;
     marca: string;
   };
-  distribuidores?: Array<{
+  distribuidor?: {
     _id: string;
     representante: string;
-  }>;
+  } | null;
 }
-

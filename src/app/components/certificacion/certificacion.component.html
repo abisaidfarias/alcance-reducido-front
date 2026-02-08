@@ -20,6 +20,7 @@
           {{ currentLanguage === 'es' ? 'EN' : 'ES' }}
         </button>
         <button class="btn ghost small" (click)="openDistribuidorSelector()">{{ t('nav.distribuidores') }}</button>
+        <button class="btn ghost small" (click)="openDispositivoSelector()">{{ t('nav.dispositivos') }}</button>
         <button class="btn ghost small" (click)="goToLogin()">{{ t('nav.login') }}</button>
         <a class="btn primary small" href="#cotizar">{{ t('nav.solicitar_certificacion') }}</a>
         <button class="btn small burger" (click)="toggleMobileMenu()" [attr.aria-expanded]="mobileMenuOpen" aria-controls="mobileMenu">
@@ -34,6 +35,7 @@
       <a href="#como" (click)="closeMobileMenu()">{{ t('nav.proceso') }}</a>
       <a href="#servicios" (click)="closeMobileMenu()">{{ t('nav.servicios') }}</a>
       <a (click)="openDistribuidorSelector(); closeMobileMenu()">{{ t('nav.distribuidores') }}</a>
+      <a (click)="openDispositivoSelector(); closeMobileMenu()">{{ t('nav.dispositivos') }}</a>
       <a (click)="goToLogin(); closeMobileMenu()">{{ t('nav.login') }}</a>
       <a href="#cotizar" (click)="closeMobileMenu()">{{ t('nav.solicitar_certificacion') }}</a>
     </div>

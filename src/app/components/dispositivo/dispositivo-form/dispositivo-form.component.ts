@@ -72,14 +72,12 @@ export class DispositivoFormComponent implements OnInit {
     private distribuidorService: DistribuidorService,
     private cdr: ChangeDetectorRef
   ) {
-    // Inicializar según el modo: string para crear, array para editar
-    const isEdit = !!this.data;
     this.dispositivoForm = this.fb.group({
       modelo: [''],
       tipo: [''], // Campo abierto, no enum
       foto: [''],
       marca: [''],
-      distribuidor: isEdit ? [[] as string[]] : [''],
+      distribuidor: [''], // Un solo distribuidor (string ID)
       fechaPublicacion: [''],
       tecnologia: [[] as string[]],
       frecuencias: [[] as string[]],
@@ -225,21 +223,13 @@ export class DispositivoFormComponent implements OnInit {
       }
     }
     
-    // Manejar distribuidores: en modo edición puede venir como array de objetos o array de strings
-    let distribuidorValue: string | string[] = '';
-    if (this.data.distribuidores) {
-      if (Array.isArray(this.data.distribuidores) && this.data.distribuidores.length > 0) {
-        // En modo edición, mantener todos los distribuidores como array
-        distribuidorValue = this.data.distribuidores.map((dist: any) => {
-          if (typeof dist === 'object' && dist !== null && '_id' in dist) {
-            return dist._id;
-          } else if (typeof dist === 'string') {
-            return dist;
-          }
-          return '';
-        }).filter((id: string) => id !== '');
-      } else if (typeof this.data.distribuidores === 'string') {
-        distribuidorValue = [this.data.distribuidores];
+    // Manejar distribuidor: ahora es un solo valor (string ID o objeto)
+    let distribuidorId = '';
+    if (this.data.distribuidor) {
+      if (typeof this.data.distribuidor === 'object' && this.data.distribuidor !== null && '_id' in this.data.distribuidor) {
+        distribuidorId = (this.data.distribuidor as any)._id;
+      } else if (typeof this.data.distribuidor === 'string') {
+        distribuidorId = this.data.distribuidor;
       }
     }
     
@@ -248,15 +238,10 @@ export class DispositivoFormComponent implements OnInit {
       tipo: this.data.tipo,
       foto: this.data.foto,
       marcaId,
-      distribuidorValue,
+      distribuidorId,
       marcasDisponibles: this.marcas.length,
       distribuidoresDisponibles: this.distribuidores.length
     });
-    
-    // Asegurar que distribuidorValue sea siempre un array para modo edición
-    const distribuidorArray = Array.isArray(distribuidorValue) 
-      ? distribuidorValue 
-      : (distribuidorValue ? [distribuidorValue] : []);
     
     // Convertir fechaPublicacion de string a Date si existe
     let fechaPublicacionDate: Date | null = null;
@@ -297,7 +282,7 @@ export class DispositivoFormComponent implements OnInit {
         nombreTestReport: this.data!.nombreTestReport || [],
         testReportFiles: this.data!.testReportFiles || '',
         marca: marcaId,
-        distribuidor: distribuidorArray,
+        distribuidor: distribuidorId,
         fechaPublicacion: fechaPublicacionDate,
         // resolutionVersion ya se estableció en ngOnInit() inmediatamente, no es necesario establecerlo aquí
         fechaCertificacionSubtel: fechaCertificacionSubtelDate,
@@ -312,11 +297,8 @@ export class DispositivoFormComponent implements OnInit {
         }
       }
       
-      if (this.isEditMode && Array.isArray(distribuidorArray) && distribuidorArray.length > 0) {
-        // En modo edición, limpiar el filtro para permitir búsqueda
-        this.distribuidorFilterControl.setValue('', { emitEvent: false });
-      } else if (!this.isEditMode && distribuidorArray && distribuidorArray.length > 0) {
-        const distribuidor = this.distribuidores.find(d => d._id === distribuidorArray[0]);
+      if (distribuidorId) {
+        const distribuidor = this.distribuidores.find(d => d._id === distribuidorId);
         if (distribuidor) {
           this.distribuidorFilterControl.setValue(
             distribuidor.nombreRepresentante || distribuidor.representante,
@@ -424,6 +406,7 @@ export class DispositivoFormComponent implements OnInit {
       tipo: formValue.tipo || '',
       foto: formValue.foto || '',
       marca: formValue.marca,
+      distribuidor: formValue.distribuidor || null, // Un solo distribuidor
       fechaPublicacion: fechaPublicacionString,
       tecnologia: Array.isArray(formValue.tecnologia) ? formValue.tecnologia.filter((v: string) => v && v.trim() !== '') : [],
       frecuencias: Array.isArray(formValue.frecuencias) ? formValue.frecuencias.filter((v: string) => v && v.trim() !== '') : [],
@@ -439,16 +422,6 @@ export class DispositivoFormComponent implements OnInit {
         ? (formValue.oficioCertificacionSubtel && typeof formValue.oficioCertificacionSubtel === 'string' ? formValue.oficioCertificacionSubtel.trim() : '')
         : ''
     };
-    
-    // En modo edición, distribuidor es array; en creación, es string
-    if (this.isEditMode) {
-      submitData.distribuidores = Array.isArray(formValue.distribuidor) 
-        ? formValue.distribuidor.filter((id: string) => id !== '') // Filtrar valores vacíos
-        : [];
-    } else {
-      // En modo creación, convertir string a array
-      submitData.distribuidores = formValue.distribuidor ? [formValue.distribuidor] : [];
-    }
     
     this.dialogRef.close(submitData);
   }
@@ -587,7 +560,7 @@ export class DispositivoFormComponent implements OnInit {
     }
   }
 
-  // Manejar selección de distribuidor (simple)
+  // Manejar selección de distribuidor
   onDistribuidorSelected(distribuidorId: string): void {
     this.dispositivoForm.get('distribuidor')?.setValue(distribuidorId);
     const distribuidor = this.distribuidores.find(d => d._id === distribuidorId);
@@ -599,7 +572,7 @@ export class DispositivoFormComponent implements OnInit {
     }
   }
 
-  // Validar distribuidor al perder el foco (simple)
+  // Validar distribuidor al perder el foco
   onDistribuidorBlur(): void {
     const filterValue = this.distribuidorFilterControl.value || '';
     const distribuidorId = this.dispositivoForm.get('distribuidor')?.value;
@@ -630,37 +603,4 @@ export class DispositivoFormComponent implements OnInit {
       }
     }
   }
-
-  // Manejar selección de distribuidor (múltiple)
-  onDistribuidorMultipleSelected(distribuidorId: string): void {
-    const currentValue = this.dispositivoForm.get('distribuidor')?.value || [];
-    if (!Array.isArray(currentValue)) {
-      return;
-    }
-    const index = currentValue.indexOf(distribuidorId);
-    if (index >= 0) {
-      // Remover si ya está seleccionado
-      currentValue.splice(index, 1);
-    } else {
-      // Agregar si no está seleccionado
-      currentValue.push(distribuidorId);
-    }
-    this.dispositivoForm.get('distribuidor')?.setValue([...currentValue]);
-    this.distribuidorFilterControl.setValue('', { emitEvent: false });
-  }
-
-  // Verificar si distribuidor está seleccionado (múltiple)
-  isDistribuidorSelected(distribuidorId: string | undefined): boolean {
-    if (!distribuidorId) return false;
-    const currentValue = this.dispositivoForm.get('distribuidor')?.value || [];
-    return Array.isArray(currentValue) && currentValue.includes(distribuidorId);
-  }
-
-  // Validar distribuidor múltiple al perder el foco
-  onDistribuidorMultipleBlur(): void {
-    // En modo múltiple, simplemente limpiar el campo de búsqueda
-    // ya que las selecciones se mantienen en el array
-    this.distribuidorFilterControl.setValue('', { emitEvent: false });
-  }
 }
-

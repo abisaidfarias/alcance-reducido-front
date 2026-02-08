@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { DistribuidorSelectorComponent } from '../shared/distribuidor-selector/distribuidor-selector.component';
+import { DispositivoSelectorComponent } from '../shared/dispositivo-selector/dispositivo-selector.component';
 import { TranslationService, Language } from '../../services/translation.service';
 
 @Component({
@@ -55,6 +56,16 @@ export class CertificacionComponent implements OnInit, AfterViewInit {
 
   openDistribuidorSelector(): void {
     this.dialog.open(DistribuidorSelectorComponent, {
+      width: '500px',
+      maxWidth: '800px',
+      disableClose: false,
+      panelClass: 'glass-dialog',
+      backdropClass: 'glass-dialog-backdrop'
+    });
+  }
+
+  openDispositivoSelector(): void {
+    this.dialog.open(DispositivoSelectorComponent, {
       width: '500px',
       maxWidth: '800px',
       disableClose: false,
