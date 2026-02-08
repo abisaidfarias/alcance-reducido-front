@@ -140,9 +140,18 @@ export class TranslationService {
     'contacto.operado': { es: 'Operado por', en: 'Operated by' },
     'contacto.operado_desc': { es: 'Santiago, Chile · Atención remota y coordinación logística', en: 'Santiago, Chile · Remote service and logistical coordination' },
     
+    // Distribuidor Selector Modal
+    'selector.title': { es: 'Seleccionar Distribuidor', en: 'Select Distributor' },
+    'selector.subtitle': { es: 'Selecciona un distribuidor para continuar', en: 'Select a distributor to continue' },
+    'selector.label': { es: 'Distribuidor', en: 'Distributor' },
+    'selector.placeholder': { es: 'Buscar distribuidor...', en: 'Search distributor...' },
+    'selector.required': { es: 'Debe seleccionar un distribuidor', en: 'You must select a distributor' },
+    'selector.no_data': { es: 'No hay distribuidores disponibles', en: 'No distributors available' },
+    'selector.cancel': { es: 'Cancelar', en: 'Cancel' },
+    'selector.go': { es: 'Ir al Distribuidor', en: 'Go to Distributor' },
+
     // Footer
     'footer.derechos': { es: 'Todos los derechos reservados.', en: 'All rights reserved.' },
-    'footer.aviso': { es: 'Aviso: contenido informativo de alto nivel. La implementación final depende del caso y documentación del equipo.', en: 'Notice: high-level informational content. Final implementation depends on the case and equipment documentation.' },
     
     // Login
     'login.title': { es: 'Iniciar Sesión', en: 'Sign In' },

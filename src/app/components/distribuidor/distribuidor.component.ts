@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,6 +13,7 @@ import { Distribuidor } from '../../models/distribuidor.interface';
 import { DistribuidorFormComponent } from './distribuidor-form/distribuidor-form.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../shared/confirm-dialog/confirm-dialog.component';
 import { ErrorDialogComponent, ErrorDialogData } from '../shared/error-dialog/error-dialog.component';
+import { QrSizeDialogComponent } from '../shared/qr-size-dialog/qr-size-dialog.component';
 import { environment } from '../../../environments/environment';
 import * as QRCode from 'qrcode';
 
@@ -258,16 +259,30 @@ export class DistribuidorComponent implements OnInit {
     
     const qrUrl = this.getRepresentanteUrl(distribuidor);
     
-    // Generar el QR como imagen
+    // Abrir modal para seleccionar tamaño
+    const dialogRef = this.dialog.open(QrSizeDialogComponent, {
+      width: '420px',
+      maxWidth: '95vw',
+      panelClass: 'rounded-dialog',
+      data: { url: qrUrl }
+    });
+
+    dialogRef.afterClosed().subscribe((selectedSize: number | null) => {
+      if (!selectedSize) return;
+      this.doGenerateQR(distribuidor, qrUrl, selectedSize);
+    });
+  }
+
+  private doGenerateQR(distribuidor: Distribuidor, qrUrl: string, qrSize: number): void {
+    // Generar el QR como imagen con el tamaño seleccionado
     QRCode.toDataURL(qrUrl, {
-      width: 300,
+      width: qrSize,
       margin: 2,
       color: {
         dark: '#000000',
         light: '#FFFFFF'
       }
     }).then((qrDataUrl: string) => {
-      // Crear un canvas para combinar el QR con el texto SUBTEL
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       
@@ -275,17 +290,14 @@ export class DistribuidorComponent implements OnInit {
         throw new Error('No se pudo obtener el contexto del canvas');
       }
       
-      // Cargar la imagen del QR
       const qrImage = new Image();
       qrImage.src = qrDataUrl;
       
       qrImage.onload = () => {
-        // Dimensiones del QR
-        const qrSize = 300;
-        const padding = 20;
-        const textHeight = 50; // Espacio para el texto SUBTEL
+        const padding = Math.round(qrSize * 0.06);
+        const fontSize = Math.max(10, Math.round(qrSize * 0.04));
+        const textHeight = Math.round(qrSize * 0.18);
         
-        // Configurar el canvas (con espacio para texto SUBTEL)
         canvas.width = qrSize + (padding * 2);
         canvas.height = qrSize + (padding * 2) + textHeight;
         
@@ -296,22 +308,23 @@ export class DistribuidorComponent implements OnInit {
         // Dibujar el QR
         ctx.drawImage(qrImage, padding, padding, qrSize, qrSize);
         
-        // Dibujar el texto "SUBTEL" en negrita y más grande
+        // Texto debajo del QR
         ctx.fillStyle = '#000000';
-        ctx.font = 'bold 24px Arial'; // Negrita y tamaño más grande
+        ctx.font = `bold ${fontSize}px Arial`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
         
-        // Posición del texto debajo del QR
-        const textY = qrSize + padding + 15;
-        ctx.fillText('SUBTEL', canvas.width / 2, textY);
+        const lineSpacing = Math.round(fontSize * 1.5);
+        const textY = qrSize + padding + Math.round(padding * 0.5);
+        ctx.fillText('Escanea aquí para información', canvas.width / 2, textY);
+        ctx.fillText('sobre el Alcance Reducido', canvas.width / 2, textY + lineSpacing);
         
-        // Convertir el canvas a imagen y descargar
+        // Descargar
         canvas.toBlob((blob) => {
           if (blob) {
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.download = `QR_${distribuidor.representante.replace(/[^a-z0-9]/gi, '_')}.png`;
+            link.download = `QR_${distribuidor.representante.replace(/[^a-z0-9]/gi, '_')}_${qrSize}px.png`;
             link.href = url;
             link.click();
             URL.revokeObjectURL(url);

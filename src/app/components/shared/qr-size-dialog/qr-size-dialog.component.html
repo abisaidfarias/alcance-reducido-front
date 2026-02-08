@@ -1,0 +1,39 @@
+<div class="modal-wrapper">
+  <div class="modal-header">
+    <h2 mat-dialog-title>
+      <mat-icon class="header-icon">qr_code</mat-icon>
+      Generar código QR
+    </h2>
+  </div>
+
+  <mat-dialog-content class="modal-body">
+    <div class="url-preview">
+      <label class="field-label">URL del representante</label>
+      <div class="url-box">{{ data?.url || '' }}</div>
+      <p class="url-hint">Esta URL será codificada en el código QR</p>
+    </div>
+
+    <div class="size-section">
+      <label class="field-label">Tamaño PNG</label>
+      <mat-radio-group [(ngModel)]="selectedSize" class="size-radio-group">
+        <mat-radio-button
+          *ngFor="let option of sizeOptions"
+          [value]="option.value"
+          class="size-radio-option">
+          <span class="option-label">{{ option.label }}</span>
+          <span class="option-desc">({{ option.description }})</span>
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="modal-footer" align="end">
+    <button mat-button (click)="onCancel()">
+      Cancelar
+    </button>
+    <button mat-raised-button color="primary" (click)="onGenerate()">
+      <mat-icon>download</mat-icon>
+      Generar y descargar
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DistribuidorService } from '../../../services/distribuidor.service';
+import { TranslationService } from '../../../services/translation.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -33,6 +34,7 @@ import { Router } from '@angular/router';
 })
 export class DistribuidorSelectorComponent implements OnInit {
   private distribuidorService = inject(DistribuidorService);
+  private translationService = inject(TranslationService);
   private router = inject(Router);
   public dialogRef = inject(MatDialogRef<DistribuidorSelectorComponent>);
   public data = inject(MAT_DIALOG_DATA);
@@ -129,6 +131,10 @@ export class DistribuidorSelectorComponent implements OnInit {
     }
   }
 
+
+  t(key: string): string {
+    return this.translationService.translate(key);
+  }
 
   // Filtrar distribuidores
   filterDistribuidores(search: string): void {

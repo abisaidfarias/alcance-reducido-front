@@ -2,8 +2,8 @@
   <div class="modal-header">
     <div class="header-content">
       <div class="header-text">
-        <h2 mat-dialog-title>Seleccionar Distribuidor</h2>
-        <p class="header-subtitle">Selecciona un distribuidor para continuar</p>
+        <h2 mat-dialog-title>{{ t('selector.title') }}</h2>
+        <p class="header-subtitle">{{ t('selector.subtitle') }}</p>
       </div>
       <button type="button" aria-label="Cerrar" (click)="onCancel()" class="glass-close">
         <svg viewBox="0 0 24 24" class="close-icon" aria-hidden="true">
@@ -20,14 +20,14 @@
 
     <div *ngIf="!loading">
       <mat-form-field appearance="outline" class="full-width" [floatLabel]="'always'">
-        <mat-label>Distribuidor</mat-label>
+        <mat-label>{{ t('selector.label') }}</mat-label>
         <input 
           matInput 
           #distribuidorInput
           [formControl]="distribuidorFilterControl"
           [matAutocomplete]="distribuidorAuto"
           (blur)="onDistribuidorBlur()"
-          placeholder="Buscar distribuidor...">
+          [placeholder]="t('selector.placeholder')">
         <mat-autocomplete 
           #distribuidorAuto="matAutocomplete"
           (optionSelected)="onDistribuidorSelected($event.option.value)">
@@ -39,20 +39,20 @@
           <mat-icon class="arrow-icon">arrow_drop_down</mat-icon>
         </button>
         <mat-error *ngIf="distribuidorControl.hasError('required')">
-          Debe seleccionar un distribuidor
+          {{ t('selector.required') }}
         </mat-error>
       </mat-form-field>
 
       <p *ngIf="distribuidores.length === 0" class="no-data-message">
-        No hay distribuidores disponibles
+        {{ t('selector.no_data') }}
       </p>
     </div>
   </mat-dialog-content>
 
   <mat-dialog-actions class="modal-footer" align="end">
-    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-button (click)="onCancel()">{{ t('selector.cancel') }}</button>
     <button mat-raised-button color="primary" (click)="onSelect()" [disabled]="distribuidorControl.invalid || loading">
-      Ir al Distribuidor
+      {{ t('selector.go') }}
     </button>
   </mat-dialog-actions>
 </div>

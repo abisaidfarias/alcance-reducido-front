@@ -12,17 +12,13 @@
       <nav class="nav-links" aria-label="Secciones">
         <a href="#normativa">{{ t('nav.normativa') }}</a>
         <a href="#como">{{ t('nav.proceso') }}</a>
-        <a href="#docs">{{ t('nav.docs') }}</a>
-        <a href="#timeline">{{ t('nav.fechas') }}</a>
         <a href="#servicios">{{ t('nav.servicios') }}</a>
-        <a href="#qr">{{ t('nav.qr') }}</a>
       </nav>
 
       <div class="nav-cta">
         <button class="btn ghost small language-btn" (click)="toggleLanguage()" [title]="currentLanguage === 'es' ? 'English' : 'Español'">
           {{ currentLanguage === 'es' ? 'EN' : 'ES' }}
         </button>
-        <a class="btn ghost small" href="#contacto">{{ t('nav.contacto') }}</a>
         <button class="btn ghost small" (click)="openDistribuidorSelector()">{{ t('nav.distribuidores') }}</button>
         <button class="btn ghost small" (click)="goToLogin()">{{ t('nav.login') }}</button>
         <a class="btn primary small" href="#cotizar">{{ t('nav.solicitar_certificacion') }}</a>
@@ -36,11 +32,7 @@
       <a (click)="toggleLanguage(); closeMobileMenu()">{{ currentLanguage === 'es' ? 'English' : 'Español' }}</a>
       <a href="#normativa" (click)="closeMobileMenu()">{{ t('nav.normativa') }}</a>
       <a href="#como" (click)="closeMobileMenu()">{{ t('nav.proceso') }}</a>
-      <a href="#docs" (click)="closeMobileMenu()">{{ t('nav.docs') }}</a>
-      <a href="#timeline" (click)="closeMobileMenu()">{{ t('nav.fechas') }}</a>
       <a href="#servicios" (click)="closeMobileMenu()">{{ t('nav.servicios') }}</a>
-      <a href="#qr" (click)="closeMobileMenu()">{{ t('nav.qr') }}</a>
-      <a href="#contacto" (click)="closeMobileMenu()">{{ t('nav.contacto') }}</a>
       <a (click)="openDistribuidorSelector(); closeMobileMenu()">{{ t('nav.distribuidores') }}</a>
       <a (click)="goToLogin(); closeMobileMenu()">{{ t('nav.login') }}</a>
       <a href="#cotizar" (click)="closeMobileMenu()">{{ t('nav.solicitar_certificacion') }}</a>
@@ -503,11 +495,6 @@
           </div>
         <div>
           © {{ currentYear }} LB Technology. {{ t('footer.derechos') }}
-          <div style="margin-top:6px;">
-            <span style="color: var(--muted2);">
-              {{ t('footer.aviso') }}
-            </span>
-          </div>
         </div>
       </div>
 
