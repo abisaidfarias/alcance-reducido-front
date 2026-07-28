@@ -43,6 +43,10 @@ jobs:
     environment:
       name: production
       url: https://alcance-reducido.com
+    env:
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
     steps:
       - name: Descargar artefacto de build
         uses: actions/download-artifact@v4
@@ -55,11 +59,11 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ vars.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Subir archivos estáticos (cache largo)
         run: |
-          aws s3 sync dist/ s3://${{ vars.S3_BUCKET }}/ \
+          aws s3 sync dist/ s3://${{ env.S3_BUCKET }}/ \
             --delete \
             --cache-control "public, max-age=31536000" \
             --exclude "*.html" \
@@ -68,7 +72,7 @@ jobs:
 
       - name: Subir HTML/JSON (sin cache)
         run: |
-          aws s3 sync dist/ s3://${{ vars.S3_BUCKET }}/ \
+          aws s3 sync dist/ s3://${{ env.S3_BUCKET }}/ \
             --delete \
             --cache-control "no-cache, no-store, must-revalidate" \
             --exclude "*" \
@@ -79,5 +83,5 @@ jobs:
       - name: Invalidar cache de CloudFront
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
